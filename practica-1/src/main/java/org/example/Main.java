@@ -40,7 +40,7 @@ public class Main {
 
     public static void main(String[] args) throws IOException, InterruptedException {
         Scanner sc = new Scanner(System.in);
-        System.out.print("Favor de introducir la URL: ");
+        System.out.print("🌐 ➜ Ingrese una URL valida: ");
         String url = sc.nextLine();
 
         HttpClient client = HttpClient.newHttpClient();
@@ -48,13 +48,13 @@ public class Main {
         HttpResponse<String> response = client.send(request, HttpResponse.BodyHandlers.ofString());
         String contentType = response.headers().firstValue("Content-Type").orElse("Unknown");
 
-        System.out.println("Tipo de documento: " + contentType);
+        System.out.println("📜 Content-Type: " + contentType);
 
         if (contentType.contains("text/html")) {
             Document document = Jsoup.parse(response.body());
 
             System.out.println(
-                    "Cantidad de lineas contenidad en el recurso retornado: " + response.body().split("\n").length);
+                    "📊 Cantidad de líneas contenidad en el recurso retornado: " + response.body().split("\n").length);
 
             Elements paragraphs = document.select("p");
             System.out.println("Cantidad de párrafos que contiene el documento:" + paragraphs.size());
@@ -63,7 +63,7 @@ public class Main {
             for (Element paragraph : paragraphs) {
                 imgInsideParagraphs += paragraph.select("img").size();
             }
-            System.out.println("Cantidad de imagenes dentro de parrafos: " + imgInsideParagraphs);
+            System.out.println("🌠 Cantidad de imagenes dentro de parrafos: " + imgInsideParagraphs);
             Elements forms = document.select("form");
             for (Element form : forms) {
                 String method = form.attr("method").toUpperCase();
@@ -85,7 +85,7 @@ public class Main {
                             .header("Content-type", "application/x-www-form-urlencoded")
                             .POST(HttpRequest.BodyPublishers.ofString(bodyParam)).build();
                     HttpResponse<String> postResponse = client.send(postRequest, HttpResponse.BodyHandlers.ofString());
-                    System.out.println("Status code del response: " + postResponse.statusCode());
+                    System.out.println("Status code del response:🚀 " + postResponse.statusCode());
 
                     System.out.println("¿Quieres ver la respuesta del servidor? (y/n)");
                     String input;
