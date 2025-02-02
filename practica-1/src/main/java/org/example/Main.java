@@ -60,13 +60,12 @@ public class Main {
                             .header("Content-type", "application/x-www-form-urlencoded")
                             .POST(HttpRequest.BodyPublishers.ofString(bodyParam)).build();
                     HttpResponse<String> postResponse = client.send(postRequest, HttpResponse.BodyHandlers.ofString());
-
                     System.out.println("Status code del response: " + postResponse.statusCode());
                     System.out.println("Headers:");
                     postResponse.headers().map().forEach((key, value) -> {
                         System.out.println(key + ": " + value);
                     });
-                    System.out.println("Body del formulario: " + postResponse.body());
+                    System.out.println("Body del formulario: \n" + postResponse.body());
                 }
             }
         }
@@ -80,7 +79,8 @@ public class Main {
             else if (url.endsWith("/") && action.startsWith("/")) {
                 StringBuilder sb = new StringBuilder(action);
                 sb.deleteCharAt(0);
-                return action = sb.toString();
+                action = url + sb.toString();
+                return action;
             } else
                 return action = url + "/" + action;
         }
