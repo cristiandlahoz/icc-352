@@ -23,7 +23,7 @@ public class Main {
         HttpResponse<String> response = client.send(request, HttpResponse.BodyHandlers.ofString());
         String contentType = response.headers().firstValue("Content-Type").orElse("Unknown");
 
-        System.out.println("Tipo de documento: : " + contentType);
+        System.out.println("Tipo de documento: " + contentType);
 
         if (contentType.contains("text/html")) {
             Document document = Jsoup.parse(response.body());
@@ -54,12 +54,19 @@ public class Main {
                     System.out.println(("Campo del input dentro del formulario: " + campo + " tipo: " + tipo));
                 }
                 if (method.equals("POST")) {
+                    String bodyParam = "asignatura=practica1";
                     HttpRequest postRequest = HttpRequest.newBuilder().uri(URI.create(action))
                             .header("matricula-id", "10149779")
                             .header("Content-type", "application/x-www-form-urlencoded")
-                            .POST(HttpRequest.BodyPublishers.ofString("asignatura=practica1")).build();
+                            .POST(HttpRequest.BodyPublishers.ofString(bodyParam)).build();
                     HttpResponse<String> postResponse = client.send(postRequest, HttpResponse.BodyHandlers.ofString());
-                    System.out.println("Respuesta a traves del formulario: " + postResponse.body());
+
+                    System.out.println("Status code del response: " + postResponse.statusCode());
+                    System.out.println("Headers:");
+                    postResponse.headers().map().forEach((key, value) -> {
+                        System.out.println(key + ": " + value);
+                    });
+                    System.out.println("Body del formulario: " + postResponse.body());
                 }
             }
         }
