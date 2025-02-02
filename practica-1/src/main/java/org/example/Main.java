@@ -23,6 +23,8 @@ public class Main {
         HttpResponse<String> response = client.send(request, HttpResponse.BodyHandlers.ofString());
         String contentType = response.headers().firstValue("Content-Type").orElse("Unknown");
 
+        System.out.println("Tipo de documento: : " + contentType);
+
         if (contentType.contains("text/html")) {
             Document document = Jsoup.parse(response.body());
 
@@ -61,7 +63,6 @@ public class Main {
                 }
             }
         }
-        System.out.println("Tipo de documento: : " + contentType);
         sc.close();
     }
 
