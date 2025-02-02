@@ -13,6 +13,31 @@ import java.net.http.HttpResponse;
 import java.util.Scanner;
 
 public class Main {
+    enum UserResponse {
+        YES("y"), NO("n");
+
+        private final String value;
+
+        UserResponse(String value) {
+            this.value = value;
+        }
+
+        public String getValue() {
+            return value;
+        }
+
+        public static boolean isAllow(String value) {
+            for (UserResponse element : UserResponse.values()) {
+                if (element.getValue().equalsIgnoreCase(value)) {
+                    return true;
+                }
+
+            }
+            return false;
+        }
+
+    }
+
     public static void main(String[] args) throws IOException, InterruptedException {
         Scanner sc = new Scanner(System.in);
         System.out.print("Favor de introducir la URL: ");
@@ -45,8 +70,8 @@ public class Main {
                 String action = form.attr("action");
 
                 action = validarUrl(url, action);
-                System.out.println("Action del formulario tipo: " + method);
                 Elements inputs = form.select("input");
+                System.out.println("Action del formulario tipo: " + method + " | Cantidad de inputs: " + inputs.size());
 
                 for (Element input : inputs) {
                     String campo = input.attr("name");
@@ -61,14 +86,29 @@ public class Main {
                             .POST(HttpRequest.BodyPublishers.ofString(bodyParam)).build();
                     HttpResponse<String> postResponse = client.send(postRequest, HttpResponse.BodyHandlers.ofString());
                     System.out.println("Status code del response: " + postResponse.statusCode());
-                    System.out.println("Headers:");
-                    postResponse.headers().map().forEach((key, value) -> {
-                        System.out.println(key + ": " + value);
-                    });
-                    System.out.println("Body del formulario: \n" + postResponse.body());
+
+                    System.out.println("¿Quieres ver la respuesta del servidor? (y/n)");
+                    String input;
+                    do {
+                        input = sc.nextLine().trim().toLowerCase();
+                        if (UserResponse.isAllow(input)) {
+                            if (input.equalsIgnoreCase(UserResponse.YES.getValue())) {
+                                System.out.println("Headers:");
+                                postResponse.headers().map().forEach((key, value) -> {
+                                    System.out.println(key + ": " + value);
+                                });
+                                System.out.println("Body del formulario: \n" + postResponse.body());
+                            }
+                        } else {
+                            System.out.println("Favor de insertar un input valido 'y' o 'n'");
+                        }
+
+                    } while (!UserResponse.isAllow(input));
+
                 }
             }
         }
+        System.out.println("Feliz Dia!!");
         sc.close();
     }
 
