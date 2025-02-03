@@ -13,6 +13,9 @@ import java.net.http.HttpResponse;
 import java.util.Scanner;
 
 public class Main {
+    public static final String RED = "\u001B[31m";
+    public static final String YELLOW = "\u001B[33m";
+
     enum UserResponse {
         YES("y"), NO("n");
 
@@ -87,7 +90,7 @@ public class Main {
                     HttpResponse<String> postResponse = client.send(postRequest, HttpResponse.BodyHandlers.ofString());
                     System.out.println("Status code del response:🚀 " + postResponse.statusCode());
 
-                    System.out.println("¿Quieres ver la respuesta del servidor? (y/n)");
+                    System.out.println(YELLOW + "¿Quieres ver la respuesta del servidor? (y/n)");
                     String input;
                     do {
                         input = sc.nextLine().trim().toLowerCase();
@@ -100,7 +103,7 @@ public class Main {
                                 System.out.println("Body del formulario: \n" + postResponse.body());
                             }
                         } else {
-                            System.out.println("Favor de insertar un input valido 'y' o 'n'");
+                            System.out.println(RED + "Favor de insertar un input valido 'y' o 'n'");
                         }
 
                     } while (!UserResponse.isAllow(input));
@@ -108,7 +111,7 @@ public class Main {
                 }
             }
         }
-        System.out.println("Feliz Dia!!");
+        System.out.println(YELLOW + "Feliz Dia!!");
         sc.close();
     }
 
