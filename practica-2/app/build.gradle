@@ -6,21 +6,20 @@
  */
 
 plugins {
-    // Apply the application plugin to add support for building a CLI application in Java.
+    id 'java'
     id 'application'
 }
 
 repositories {
-    // Use Maven Central for resolving dependencies.
     mavenCentral()
 }
 
 dependencies {
     // Use JUnit test framework.
     testImplementation libs.junit
-
-    // This dependency is used by the application.
     implementation libs.guava
+    implementation("io.javalin:javalin:6.4.0")
+    implementation("org.slf4j:slf4j-simple:2.0.16")
 }
 
 // Apply a specific Java toolchain to ease working on different environments.
