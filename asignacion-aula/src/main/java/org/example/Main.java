@@ -53,8 +53,8 @@ public class Main {
 				return;
 			}
 			// Estamos haciendo fake de un servicio de autenticacion, busque en un servicio.
-			ctx.cookie("user", usuario, 920);
-			ctx.cookie("password", contrasena, 920);
+			ctx.cookie("user", usuario, 120);
+			ctx.cookie("password", contrasena, 120);
 			// enviando a la vista.
 			ctx.redirect("/");
 		});
