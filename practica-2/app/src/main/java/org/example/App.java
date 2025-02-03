@@ -10,6 +10,6 @@ public class App {
 
         var app = Javalin.create(/* config */)
                 .get("/", ctx -> ctx.result("Hello World"))
-                .start(7070);
+                .start(7777);
     }
 }
