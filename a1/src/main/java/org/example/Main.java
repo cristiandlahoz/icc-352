@@ -1,44 +1,62 @@
 package org.example;
 
-import  io.javalin.Javalin;
+import io.javalin.Javalin;
 import io.javalin.http.staticfiles.Location;
 
 public class Main {
-    public static void main(String[] args) {
+	enum Routes {
+		LOGIN("/login.html");
 
-        var app = Javalin.create(config -> {
-            //configurando los documentos estaticos.
-            config.staticFiles.add(staticFileConfig -> {
-                staticFileConfig.hostedPath = "/";
-                staticFileConfig.directory = "/public";
-                staticFileConfig.location = Location.CLASSPATH;
-                staticFileConfig.precompress = false;
-                staticFileConfig.aliasCheck = null;
-            });}).get("/", ctx -> ctx.result("Hello World")).start(7070);
+		private final String value;
 
+		Routes(String value) {
+			this.value = value;
+		}
 
-        app.before("*", ctxContext -> {
-            if(ctxContext.cookie("user") == null || ctxContext.cookie("password")== null){//no ha realizado el proceso de login.
-                ctxContext.redirect("/formulario.html");
-                return;
-            }
-            ctxContext.result("Hola "+ctxContext.cookie("nombre"));
-        });
+		public String getValue() {
+			return this.value;
+		}
+	}
 
-        app.post("/login-cookies", ctxContext -> {
-            //recibiendo información del formulario.
-            String usuario = ctxContext.formParam("user");
-            String contrasena = ctxContext.formParam("password");
-            if(usuario==null || contrasena == null){
-                //errror para procesar la información.
-                ctxContext.redirect("/formulario.html");
-                return;
-            }
-            //Estamos haciendo fake de un servicio de autenticacion, busque en un servicio.
-            ctxContext.cookie("user", usuario, 120);
-            ctxContext.cookie("password", contrasena, 120);
-            //enviando a la vista.
-            ctxContext.redirect("/");
-        });
-    }
+	public static void main(String[] args) {
+
+		var app = Javalin.create(config -> {
+			// configurando los documentos estaticos.
+			config.staticFiles.add(staticFileConfig -> {
+				staticFileConfig.hostedPath = "/";
+				staticFileConfig.directory = "/public";
+				staticFileConfig.location = Location.CLASSPATH;
+				staticFileConfig.precompress = false;
+				staticFileConfig.aliasCheck = null;
+			});
+		}).start(8080);
+
+		app.before(ctx -> {
+			if ((ctx.cookie("user") == null || ctx.cookie("password") == null)
+					&& !ctx.path().equalsIgnoreCase(Routes.LOGIN.getValue())
+					&& !ctx.path().equalsIgnoreCase("/login-cookies")) {
+				ctx.redirect(Routes.LOGIN.getValue());
+				return;
+			}
+		});
+
+		app.get("/", ctx -> {
+			ctx.redirect("/home.html");
+		});
+		app.post("/login-cookies", ctx -> {
+
+			String usuario = ctx.formParam("user");
+			String contrasena = ctx.formParam("password");
+			if (usuario == null || contrasena == null) {
+				// errror para procesar la información.
+				ctx.redirect(Routes.LOGIN.getValue());
+				return;
+			}
+			// Estamos haciendo fake de un servicio de autenticacion, busque en un servicio.
+			ctx.cookie("user", usuario, 920);
+			ctx.cookie("password", contrasena, 920);
+			// enviando a la vista.
+			ctx.redirect("/");
+		});
+	}
 }

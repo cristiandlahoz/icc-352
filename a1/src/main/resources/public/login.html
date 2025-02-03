@@ -2,57 +2,161 @@
 <html lang="en">
 
 <head>
-    <meta charset="UTF-8">
-    <title>Login</title>
-    <style type="text/css">
-        body {
-            background-color: #f0f0f2;
-            margin: 0;
-            padding: 0;
-            font-family: -apple-system, system-ui, BlinkMacSystemFont, "Segoe UI", "Open Sans", "Helvetica Neue", Helvetica, Arial, sans-serif;
-
-        }
-
-        div {
-            width: 600px;
-            margin: 5em auto;
-            padding: 2em;
-            background-color: #fdfdff;
-            border-radius: 0.5em;
-            box-shadow: 2px 3px 7px 2px rgba(0, 0, 0, 0.02);
-        }
-
-        input {
-            color: black;
-            border: 2px solid #8707ff;
-            border-radius: 10px;
-            padding: 10px 25px;
-            background: transparent;
-            max-width: 190px;
-        }
-
-        input:active {
-            box-shadow: 2px 2px 15px #8707ff inset;
-        }
-
-        @media (max-width: 700px) {
-            div {
-                margin: 0 auto;
-                width: auto;
-            }
-        }
-    </style>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Responsive Login Form HTML CSS | CodingNepal</title>
+    <link rel="stylesheet" href="style.css" />
+    <!-- Font Awesome CDN link for icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.6.0/css/all.min.css" />
 </head>
 
 <body>
-    <div>
-        <h1>Login</h1>
-        <form action="/login-cookies" method="post">
-            Usuario: <input type="text" placeholder="user"  name="user" required /><br>
-            Contraseña: <input type="password" placeholder="password" name="password" required />
-            <input type="submit" value="Validar" />
+    <div class="wrapper">
+        <div class="title"><span>Login</span></div>
+        <form action="/login-cookies" method="POST">
+            <div class="row">
+                <i class="fas fa-user"></i>
+                <input type="text" name="user" placeholder="user" required />
+            </div>
+            <div class="row">
+                <i class="fas fa-lock"></i>
+                <input type="password" name="password" placeholder="Password" required />
+            </div>
+            <div class="row button">
+                <input type="submit" value="Login" />
+            </div>
+            <div class="signup-link">Welcome grader!</div>
         </form>
     </div>
 </body>
 
 </html>
+
+<style>
+    /* Importing Google Fonts - Poppins */
+    @import url("https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap");
+
+    * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+        font-family: "Poppins", sans-serif;
+    }
+
+    body {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        height: 100vh;
+        padding: 15px;
+        background: #000000;
+        overflow: hidden;
+    }
+
+    .wrapper {
+        max-width: 500px;
+        width: 100%;
+        background: #fff;
+        border-radius: 5px;
+        box-shadow: 0px 4px 10px 1px rgba(0, 0, 0, 0.1);
+    }
+
+    .wrapper .title {
+        height: 120px;
+        background: #5a189a;
+        border-radius: 5px 5px 0 0;
+        color: #fff;
+        font-size: 30px;
+        font-weight: 600;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+    }
+
+    .wrapper form {
+        padding: 25px 35px;
+    }
+
+    .wrapper form .row {
+        height: 60px;
+        margin-top: 15px;
+        position: relative;
+    }
+
+    .wrapper form .row input {
+        height: 100%;
+        width: 100%;
+        outline: none;
+        padding-left: 70px;
+        border-radius: 5px;
+        border: 1px solid lightgrey;
+        font-size: 18px;
+        transition: all 0.3s ease;
+    }
+
+    form .row input:focus {
+        border-color: #5a189a;
+    }
+
+    form .row input::placeholder {
+        color: #999;
+    }
+
+    .wrapper form .row i {
+        position: absolute;
+        width: 55px;
+        height: 100%;
+        color: #fff;
+        font-size: 22px;
+        background: #5a189a;
+        border: 1px solid #5a189a;
+        border-radius: 5px 0 0 5px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+    }
+
+    .wrapper form .pass {
+        margin-top: 12px;
+    }
+
+    .wrapper form .pass a {
+        color: #5a189a;
+        font-size: 17px;
+        text-decoration: none;
+    }
+
+    .wrapper form .pass a:hover {
+        text-decoration: underline;
+    }
+
+    .wrapper form .button input {
+        margin-top: 20px;
+        color: #fff;
+        font-size: 20px;
+        font-weight: 500;
+        padding-left: 0px;
+        background: #5a189a;
+        border: 1px solid #5a189a;
+        cursor: pointer;
+    }
+
+    form .button input:hover {
+        background: #2a085f;
+    }
+
+    .wrapper form .signup-link {
+        text-align: center;
+        margin-top: 45px;
+        font-size: 17px;
+    }
+
+    .wrapper form .signup-link a {
+        color: #5a189a;
+        text-decoration: none;
+    }
+
+    form .signup-link a:hover {
+        text-decoration: underline;
+    }
+</style>
