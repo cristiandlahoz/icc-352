@@ -1,31 +1,43 @@
 package org.example.services;
 
 import org.example.models.Article;
+import org.example.models.Comment;
+import org.example.models.Tag;
+import org.example.models.User;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Optional;
-
+import java.util.*;
 public class ArticleService {
 
-    private static final List<Article> articles = new ArrayList<>();
+    private static final Map<Long, Article> articles = new HashMap<>();
+    public ArticleService() {
 
-    static {
-        // Inicialización de datos de prueba
     }
 
-    public List<Article> getAllArticles() {
-        return new ArrayList<>(articles); // Retorna una copia para evitar modificaciones directas
+    static {
+        User user1 = new User("john_doe", "John Doe", "password123", true, false);
+        User user2 = new User("jane_doe", "Jane Doe", "securePass456", false, false);
+
+        articles.put(1L, new Article(1L, "Title 1", "Content 1", user1, new Date()));
+        articles.put(2L, new Article(2L, "Title 2", "Content 2", user2, new Date()));
+        articles.put(3L, new Article(3L, "Title 3", "Content 3", user1, new Date()));
+        articles.put(4L, new Article(4L, "Title 4", "Content 4", user2, new Date()));
+        articles.put(5L, new Article(5L, "Title 5", "Content 5", user1, new Date()));
+        articles.put(6L, new Article(6L, "Title 6", "Content 6", user2, new Date()));
+        articles.put(7L, new Article(7L, "Title 7", "Content 7", user1, new Date()));
+        articles.put(8L, new Article(8L, "Title 8", "Content 8", user2, new Date()));
+    }
+
+    public Collection<Article> getAllArticles() {
+        return articles.values(); // Retorna una copia para evitar modificaciones directas
     }
 
     public void createArticle(Article article) {
-        articles.add(article);
+        articles.put(article.getArticleId(), article);
     }
 
-    public Optional<Article> deleteArticleById(Long id) {
-        Optional<Article> article = articles.stream().filter(a -> a.getArticleId().equals(id)).findFirst();
-        article.ifPresent(articles::remove);
-        return article;
+    public void deleteArticleById(Long id) {
+
+
     }
 }
 

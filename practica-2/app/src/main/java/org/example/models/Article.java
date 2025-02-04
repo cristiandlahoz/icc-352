@@ -1,6 +1,6 @@
 package org.example.models;
 
-import java.sql.Date;
+import java.util.Date;
 import java.util.ArrayList;
 
 public class Article {
@@ -12,14 +12,12 @@ public class Article {
 	private ArrayList<Comment> articleComments;
 	private ArrayList<Tag> articleTags;
 
-	public Article(Long articleId, String articleContent, String articleTitle, User articleAuthor, Date articleDate, ArrayList<Comment> articleComments, ArrayList<Tag> articleTags) {
+	public Article(Long articleId, String articleContent, String articleTitle, User articleAuthor, Date articleDate) {
 		this.articleId = articleId;
 		this.articleContent = articleContent;
 		this.articleTitle = articleTitle;
 		this.articleAuthor = articleAuthor;
 		this.articleDate = articleDate;
-		this.articleComments = articleComments;
-		this.articleTags = articleTags;
 	}
 
 	public Long getArticleId() {
@@ -54,7 +52,7 @@ public class Article {
 		this.articleAuthor = articleAuthor;
 	}
 
-	public Date getArticleDate() {
+	public java.util.Date getArticleDate() {
 		return articleDate;
 	}
 

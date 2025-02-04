@@ -16,7 +16,7 @@ public class App {
 
 		app.get("/articles", ArticleController::getAllArticles);
 		app.post("/articles",ArticleController::createArticle);
-		app.delete("/articles/{id}", ArticleController::deleteArticle);
+	//	app.delete("/articles/{id}", ArticleController::deleteArticle);
 
 
 		app.get("/users", UserController::getAllUsers);
