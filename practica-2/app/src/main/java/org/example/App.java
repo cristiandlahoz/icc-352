@@ -4,12 +4,16 @@
 package org.example;
 
 import io.javalin.Javalin;
+import org.example.controllers.ArticleController;
 
 public class App {
-    public static void main(String[] args) {
+	public static void main(String[] args) {
 
-        var app = Javalin.create(/* config */)
-                .get("/", ctx -> ctx.result("Hello World"))
-                .start(7777);
-    }
+		var app = Javalin.create().start(7777);
+
+		app.get("/articles", ArticleController::getAllArticles);
+		app.post("/articles",ArticleController::createArticle);
+
+
+	}
 }
