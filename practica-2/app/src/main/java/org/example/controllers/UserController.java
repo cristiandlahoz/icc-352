@@ -28,7 +28,7 @@ public class UserController {
     };
 
 
-    public static Handler deleteUser = ctx -> {
+    public static final Handler deleteUser = ctx -> {
         String username = ctx.pathParam("username");
 
         if (users.containsKey(username)) {
@@ -37,5 +37,16 @@ public class UserController {
         } else {
             ctx.status(404).result("Usuario con username " + username + " no encontrado.");
         }
+    };
+
+    public static final Handler updateUser = ctx -> {
+        String username = ctx.pathParam("username");
+
+        if (users.containsKey(username)){
+            User user = ctx.bodyAsClass(User.class);
+            users.put(username, user);
+            ctx.status(200).result("Usuario modificado con exito");
+        } else
+            ctx.status(404).result("Usuario con username " + username + " no encontrado.");
     };
 }
