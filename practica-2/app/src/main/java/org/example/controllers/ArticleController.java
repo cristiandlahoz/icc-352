@@ -3,19 +3,37 @@ package org.example.controllers;
 import io.javalin.http.Context;
 import org.example.models.Article;
 
-import java.util.ArrayList;
-import java.util.List;
+import java.util.*;
 
 public class ArticleController {
-	private static List<Article> articles = new ArrayList<>();
+
+	private static Map<Long, Article> articles = new HashMap<>();
 
 	public static void getAllArticles(Context ctx) {
-		ctx.json(articles);  // Devuelve JSON con los artículos
+		ctx.json(articles);
 	}
 
 	public static void createArticle(Context ctx) {
 		Article article = ctx.bodyAsClass(Article.class);
-		articles.add(article);
+		articles.put(article.getArticleId(), article);
 		ctx.status(201);
 	}
+
+	public static void deleteArticle(Context ctx) {
+		String idParam = ctx.pathParam("id");
+
+		try {
+			Long id = Long.parseLong(idParam);
+
+			if (articles.containsKey(id)) {
+				articles.remove(id);
+				ctx.status(200).result("Artículo con ID " + id + " eliminado correctamente.");
+			} else {
+				ctx.status(404).result("Artículo con ID " + id + " no encontrado.");
+			}
+		} catch (NumberFormatException e) {
+			ctx.status(400).result("ID inválido.");
+		}
+	}
+
 }

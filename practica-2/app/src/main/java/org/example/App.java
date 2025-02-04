@@ -5,6 +5,9 @@ package org.example;
 
 import io.javalin.Javalin;
 import org.example.controllers.ArticleController;
+import org.example.controllers.CommentController;
+import org.example.controllers.TagController;
+import org.example.controllers.UserController;
 
 public class App {
 	public static void main(String[] args) {
@@ -13,7 +16,20 @@ public class App {
 
 		app.get("/articles", ArticleController::getAllArticles);
 		app.post("/articles",ArticleController::createArticle);
+		app.delete("/articles/{id}", ArticleController::deleteArticle);
 
+
+		app.get("/users", UserController::getAllUsers);
+		//app.post("/users",UserController::createUser);
+		app.post("/users", UserController.createUser);
+		app.delete("/users/{username}", UserController.deleteUser);
+
+
+		app.get("/comments", CommentController::getAllComments);
+		app.post("/comments",CommentController::createComment);
+
+		app.get("/tags", TagController::getAllTags);
+		app.post("/tags",TagController::createTag);
 
 	}
 }
