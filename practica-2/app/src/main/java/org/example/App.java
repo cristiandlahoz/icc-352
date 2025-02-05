@@ -3,13 +3,17 @@
  */
 package org.example;
 
-import io.javalin.Javalin;
 import org.example.controllers.ArticleController;
 import org.example.controllers.CommentController;
 import org.example.controllers.TagController;
 import org.example.controllers.UserController;
 
+import io.javalin.Javalin;
+
 public class App {
+	/**
+	 * @param args
+	 */
 	public static void main(String[] args) {
 
 		var app = Javalin.create().start(7777);
