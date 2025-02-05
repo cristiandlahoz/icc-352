@@ -22,9 +22,10 @@ public class App {
 
 
 		app.get("/users", UserController::getAllUsers);
-		//app.post("/users",UserController::createUser);
-		app.post("/users", UserController.createUser);
-		app.delete("/users/{username}", UserController.deleteUser);
+        app.get("/users/{username}", UserController::getUserByUsername);
+		app.post("/users/", UserController::createUser);
+        app.put("/users/{username}", UserController::updateUser);
+		app.delete("/users/{username}", UserController::deleteUser);
 
 
 		app.get("/comments", CommentController::getAllComments);

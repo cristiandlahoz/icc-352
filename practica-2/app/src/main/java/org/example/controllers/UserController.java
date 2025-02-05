@@ -1,52 +1,43 @@
 package org.example.controllers;
 
 import io.javalin.http.Context;
-import io.javalin.http.Handler;
 import org.example.models.User;
+import org.example.services.UserService;
 
-import java.util.HashMap;
-import java.util.Map;
-
+import java.util.Collection;
 
 public class UserController {
-
-    private static final Map<String, User> users = new HashMap<>();
+    private static final UserService userService = new UserService();
 
     public static void getAllUsers(Context ctx) {
-        ctx.json(users);
+        Collection<User> myUsers = userService.getAllUsers();
+        ctx.json(myUsers);
+
     }
 
-    public static final Handler createUser = ctx -> {
-        User usuario = ctx.bodyAsClass(User.class);
-
-        if (users.containsKey(usuario.getUsername())) {
-            ctx.status(400).result("El usuario con username " + usuario.getUsername() + " ya existe.");
-        } else {
-            users.put(usuario.getUsername(), usuario);
-            ctx.status(201).result("Usuario creado exitosamente.");
-        }
-    };
-
-
-    public static final Handler deleteUser = ctx -> {
+    public static void getUserByUsername(Context ctx) {
         String username = ctx.pathParam("username");
+        User myUser = userService.getUserByUsername(username);
+        ctx.json(myUser);
+    }
 
-        if (users.containsKey(username)) {
-            users.remove(username);
-            ctx.status(200).result("Usuario con username " + username + " eliminado correctamente.");
-        } else {
-            ctx.status(404).result("Usuario con username " + username + " no encontrado.");
-        }
-    };
+    public static void createUser(Context ctx) {
+        User myUser = ctx.bodyAsClass(User.class);
+        userService.createUser(myUser);
+        ctx.status(201);
 
-    public static final Handler updateUser = ctx -> {
-        String username = ctx.pathParam("username");
+    }
 
-        if (users.containsKey(username)){
-            User user = ctx.bodyAsClass(User.class);
-            users.put(username, user);
-            ctx.status(200).result("Usuario modificado con exito");
-        } else
-            ctx.status(404).result("Usuario con username " + username + " no encontrado.");
-    };
+    public static void updateUser(Context ctx) {
+        User myUser = ctx.bodyAsClass(User.class);
+        myUser.setUsername(ctx.pathParam("username"));
+        userService.updateUser(myUser);
+        ctx.status(200);
+    }
+
+    public static void deleteUser(Context ctx) {
+        String username = ctx.pathParam("usernme");
+        userService.deleteUserByUsername(username);
+        ctx.status(200);
+    }
 }
