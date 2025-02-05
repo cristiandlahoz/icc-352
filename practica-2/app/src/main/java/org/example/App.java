@@ -15,8 +15,10 @@ public class App {
 		var app = Javalin.create().start(7777);
 
 		app.get("/articles", ArticleController::getAllArticles);
+		app.get("/articles/{id}", ArticleController::getArticleById);
 		app.post("/articles",ArticleController::createArticle);
-	//	app.delete("/articles/{id}", ArticleController::deleteArticle);
+		app.post("/articles/{id}",ArticleController::updateArticle);
+	    app.delete("/articles/{id}", ArticleController::deleteArticle);
 
 
 		app.get("/users", UserController::getAllUsers);
