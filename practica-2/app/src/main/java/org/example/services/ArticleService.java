@@ -1,8 +1,6 @@
 package org.example.services;
 
 import org.example.models.Article;
-import org.example.models.Comment;
-import org.example.models.Tag;
 import org.example.models.User;
 
 import java.util.*;
@@ -38,6 +36,13 @@ public class ArticleService {
     public void deleteArticleById(Long id) {
 
 
+    }
+
+    public Article getArticleById(Long articleId) {
+        if (articleId == null) {
+            throw new IllegalArgumentException("tagId cannot be null");
+        }
+        return articles.get(articleId);
     }
 }
 
