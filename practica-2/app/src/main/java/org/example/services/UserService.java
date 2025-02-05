@@ -1,5 +1,6 @@
 package org.example.services;
 
+import org.example.exceptions.NotFoundException;
 import org.example.models.User;
 import java.util.Collection;
 import java.util.HashMap;
@@ -12,20 +13,14 @@ public class UserService {
 
     }
 
-    static { }
+    static {
+        User administrator = new User("Theprimeagen", "Ignacio", "1234", true, false);
+        users.put(administrator.getUsername(), administrator);
+    }
 
     public Collection<User> getAllUsers() {
         return users.values();
     }
-
-    public void createUser(User user) {
-        users.put(user.getUsername(), user);
-    }
-
-    public void deleteUserByUsername(String username) {
-
-    }
-
 
     public User getUserByUsername(String username) {
         if (username == null) {
@@ -37,6 +32,34 @@ public class UserService {
         return users.get(username);
     }
 
+    public void createUser(User user) {
+        users.put(user.getUsername(), user);
+    }
 
+    public void updateUser(User user){
+        if (user == null) {
+            throw new IllegalArgumentException("User cannot be null");
+        } else if (!users.containsKey(user.getUsername())) {
+            throw new NotFoundException("Username not found");
+        } else {
+            User myUser = users.get(user.getUsername());
+            myUser.setName(user.getName());
+            myUser.setAutor(user.isAutor());
+            myUser.setPassword(user.getPassword());
+            users.put(myUser.getUsername(), myUser);
+        }
+        
+    }
+
+    public void deleteUserByUsername(String username) {
+        if (username == null) {
+            throw new IllegalArgumentException("Username cannot be null");
+        } else if (!users.containsKey(username)) {
+            throw new NotFoundException("Username not found");
+        } else {
+            users.remove(username);
+        }
+
+    }
 
 }
