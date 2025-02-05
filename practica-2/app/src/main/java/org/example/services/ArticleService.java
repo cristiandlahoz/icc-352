@@ -29,20 +29,41 @@ public class ArticleService {
         return articles.values(); // Retorna una copia para evitar modificaciones directas
     }
 
-    public void createArticle(Article article) {
-        articles.put(article.getArticleId(), article);
-    }
-
-    public void deleteArticleById(Long id) {
-
-
-    }
-
     public Article getArticleById(Long articleId) {
         if (articleId == null) {
             throw new IllegalArgumentException("tagId cannot be null");
         }
         return articles.get(articleId);
     }
+
+    public void createArticle(Article article) {
+        articles.put(article.getArticleId(), article);
+    }
+
+    public void updateArticle(Article article) {
+        if (article == null) {
+            throw new IllegalArgumentException("article cannot be null");
+        }
+        else if (!articles.containsKey(article.getArticleId())) {
+            throw new IllegalArgumentException("Article not found");
+        }else{
+            Article myArticle =articles.get(article.getArticleId());
+            myArticle.setArticleTitle(article.getArticleTitle());
+            myArticle.setArticleContent(article.getArticleContent());
+            articles.put(myArticle.getArticleId(), myArticle);
+        }
+    }
+
+    public void deleteArticleById(Long id) {
+        if (id == null) {
+            throw new IllegalArgumentException("Id cannot be null");
+        }
+        else if (!articles.containsKey(id)) {
+            throw new IllegalArgumentException("Article not found");
+        }else{
+            articles.remove(id);
+        }
+    }
+
 }
 
