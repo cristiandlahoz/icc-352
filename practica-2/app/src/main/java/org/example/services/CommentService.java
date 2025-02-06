@@ -7,15 +7,10 @@ import java.util.Map;
 import java.util.stream.Collectors;
 
 import org.example.exceptions.NotFoundException;
-import org.example.models.Article;
 import org.example.models.Comment;
-
-
-
 
 public class CommentService {
     private static final Map<Long, Comment> comments = new HashMap<>();
-
 
     public CommentService() {
     }
@@ -32,7 +27,7 @@ public class CommentService {
             throw new IllegalArgumentException("Argument commentId cannot be null");
         } else if (!comments.containsKey(commentId))
             throw new NotFoundException("User not found");
-        
+
         return comments.get(commentId);
     }
 
@@ -41,7 +36,7 @@ public class CommentService {
     }
 
     public void updateComment(Comment comment) {
-        if (comment== null)
+        if (comment == null)
             throw new IllegalArgumentException("Comment cannot be null");
         else if (!comments.containsKey(comment.getCommentId()))
             throw new NotFoundException("Comment cannot be found");
@@ -64,14 +59,10 @@ public class CommentService {
     public List<Comment> getCommentsByArticleId(Long articleId) {
         if (articleId == null) {
             throw new IllegalArgumentException("Argument articleId cannot be null");
-        }else if (!comments.containsKey(articleId))
-        {
-            throw new NotFoundException("Article not found");
-        }else
-
-        return comments.values().stream()
-                .filter(comment -> comment.getArticle().getArticleId().equals(articleId))
-                .collect(Collectors.toList());
+        } else
+            return comments.values().stream()
+                    .filter(comment -> comment.getArticle().getArticleId().equals(articleId))
+                    .collect(Collectors.toList());
     }
 
     public Comment getCommentByArticleAndCommentId(Long articleId, Long commentId) {
@@ -80,16 +71,15 @@ public class CommentService {
         }
         if (commentId == null) {
             throw new IllegalArgumentException("Argument commentId cannot be null");
+        } else {
+            List<Comment> commentsByArticle = getCommentsByArticleId(articleId);
+
+            return commentsByArticle.stream()
+                    .filter(comment -> comment.getCommentId().equals(commentId))
+                    .findFirst()
+                    .orElseThrow(
+                            () -> new NotFoundException("Comment not found for the specified article and comment ID"));
         }
-
-        List<Comment> commentsByArticle = getCommentsByArticleId(articleId);
-
-        return commentsByArticle.stream()
-                .filter(comment -> comment.getCommentId().equals(commentId))
-                .findFirst()
-                .orElseThrow(() -> new NotFoundException("Comment not found for the specified article and comment ID"));
     }
-
-
 
 }
