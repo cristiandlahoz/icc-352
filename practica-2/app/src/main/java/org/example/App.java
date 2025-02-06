@@ -31,9 +31,13 @@ public class App {
         app.put("/users/{username}", UserController::updateUser);
 		app.delete("/users/{username}", UserController::deleteUser);
 
-
 		app.get("/comments", CommentController::getAllComments);
+		app.get("/comments/{id}", CommentController::getCommentById);
 		app.post("/comments",CommentController::createComment);
+		app.put("/comments/{id}", CommentController::updateComment);
+		app.delete("/comments/{id}", CommentController::deleteComment);
+		app.get("/articles/{articleId}/comments/{commentId}", CommentController::getCommentByArticleAndCommentId);
+
 
 		app.get("/tags", TagController::getAllTags);
 		app.post("/tags",TagController::createTag);
