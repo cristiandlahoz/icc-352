@@ -61,25 +61,22 @@ public class CommentService {
             throw new IllegalArgumentException("Argument articleId cannot be null");
         } else
             return comments.values().stream()
-                    .filter(comment -> comment.getArticle().getArticleId().equals(articleId))
+                    .filter(comment -> comment.getArticleId().equals(articleId))
                     .collect(Collectors.toList());
     }
 
     public Comment getCommentByArticleAndCommentId(Long articleId, Long commentId) {
         if (articleId == null) {
             throw new IllegalArgumentException("Argument articleId cannot be null");
-        }
-        if (commentId == null) {
+        }else if (commentId == null) {
             throw new IllegalArgumentException("Argument commentId cannot be null");
-        } else {
-            List<Comment> commentsByArticle = getCommentsByArticleId(articleId);
-
-            return commentsByArticle.stream()
-                    .filter(comment -> comment.getCommentId().equals(commentId))
-                    .findFirst()
-                    .orElseThrow(
-                            () -> new NotFoundException("Comment not found for the specified article and comment ID"));
-        }
+        }else if(!comments.containsKey(commentId)){
+            throw new NotFoundException("Selected commentId not found exception");
+        } else if(!comments.get(commentId).getArticleId().equals(articleId)){
+            throw new NotFoundException("There is not comment with that articleId and commentId");
+        }else{
+           return comments.get(commentId);
+       }
     }
 
 }

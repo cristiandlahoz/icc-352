@@ -2,7 +2,6 @@ package org.example.controllers;
 
 import io.javalin.http.Context;
 import org.example.models.Comment;
-import org.example.models.Tag;
 import org.example.services.CommentService;
 
 
