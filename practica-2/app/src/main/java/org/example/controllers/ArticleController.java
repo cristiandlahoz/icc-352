@@ -1,14 +1,33 @@
 package org.example.controllers;
 
+import io.javalin.Javalin;
 import io.javalin.http.Context;
 
 import org.example.models.Article;
 import org.example.services.ArticleService;
+import org.example.util.BaseController;
 
 import java.util.*;
 
-public class ArticleController {
+public class ArticleController extends BaseController{
     private static final ArticleService articleService = new ArticleService();
+
+    public ArticleController(Javalin app){
+        super(app);
+    }
+
+    @Override
+    public void applyRoutes(){
+        app.get("/", ctx -> {
+            Collection<Article> articleCollection = articleService.getAllArticles();
+            Map<String, Object> model = new HashMap<>();
+            model.put("title", "Wornux");
+            model.put("articleCollection", model);
+            
+            ctx.render("/index.html", model);
+        });
+
+    };
 
     public static void getAllArticles(Context ctx) {
         Collection<Article> MyArticles = articleService.getAllArticles();
