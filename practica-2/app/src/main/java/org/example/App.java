@@ -9,6 +9,7 @@ import org.example.controllers.TagController;
 import org.example.controllers.UserController;
 
 import io.javalin.Javalin;
+import io.javalin.rendering.template.JavalinThymeleaf;
 
 public class App {
 	/**
@@ -16,7 +17,9 @@ public class App {
 	 */
 	public static void main(String[] args) {
 
-		var app = Javalin.create().start(7777);
+		var app = Javalin.create(config -> {
+            config.fileRenderer(new JavalinThymeleaf());
+        }).start(7777);
 
 		app.get("/articles", ArticleController::getAllArticles);
 		app.get("/articles/{id}", ArticleController::getArticleById);
