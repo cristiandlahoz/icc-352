@@ -31,7 +31,6 @@ public class App {
             config.fileRenderer(new JavalinThymeleaf());
         }).start(7777);
 
-        app.get("/",ctx -> {});
         app.get("/articles", ArticleController::getAllArticles);
         app.get("/articles/{id}", ArticleController::getArticleById);
         app.post("/articles", ArticleController::createArticle);
@@ -53,6 +52,8 @@ public class App {
 
         app.get("/tags", TagController::getAllTags);
         app.post("/tags", TagController::createTag);
+
+        new ArticleController(app).applyRoutes();
 
     }
 }
