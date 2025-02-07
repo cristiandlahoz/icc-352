@@ -12,38 +12,47 @@ import io.javalin.Javalin;
 import io.javalin.rendering.template.JavalinThymeleaf;
 
 public class App {
-	/**
-	 * @param args
-	 */
-	public static void main(String[] args) {
+    /**
+     * @param args
+     */
+    public static void main(String[] args) {
 
-		var app = Javalin.create(config -> {
+        var app = Javalin.create(config -> {
+            config.staticFiles.add(cf -> {
+                cf.hostedPath = "/";
+                cf.directory = "/public";
+
+            });
+            config.staticFiles.add(cf -> {
+                cf.hostedPath = "/assets";
+                cf.directory = "/assets";
+
+            });
             config.fileRenderer(new JavalinThymeleaf());
         }).start(7777);
 
-		app.get("/articles", ArticleController::getAllArticles);
-		app.get("/articles/{id}", ArticleController::getArticleById);
-		app.post("/articles",ArticleController::createArticle);
-		app.post("/articles/{id}",ArticleController::updateArticle);
-	    app.delete("/articles/{id}", ArticleController::deleteArticle);
+        app.get("/",ctx -> {});
+        app.get("/articles", ArticleController::getAllArticles);
+        app.get("/articles/{id}", ArticleController::getArticleById);
+        app.post("/articles", ArticleController::createArticle);
+        app.post("/articles/{id}", ArticleController::updateArticle);
+        app.delete("/articles/{id}", ArticleController::deleteArticle);
 
-
-		app.get("/users", UserController::getAllUsers);
+        app.get("/users", UserController::getAllUsers);
         app.get("/users/{username}", UserController::getUserByUsername);
-		app.post("/users/", UserController::createUser);
+        app.post("/users/", UserController::createUser);
         app.put("/users/{username}", UserController::updateUser);
-		app.delete("/users/{username}", UserController::deleteUser);
+        app.delete("/users/{username}", UserController::deleteUser);
 
-		app.get("/comments", CommentController::getAllComments);
-		app.get("/comments/{id}", CommentController::getCommentById);
-		app.post("/comments",CommentController::createComment);
-		app.put("/comments/{id}", CommentController::updateComment);
-		app.delete("/comments/{id}", CommentController::deleteComment);
-		app.get("/articles/{articleId}/comments/{commentId}", CommentController::getCommentByArticleAndCommentId);
+        app.get("/comments", CommentController::getAllComments);
+        app.get("/comments/{id}", CommentController::getCommentById);
+        app.post("/comments", CommentController::createComment);
+        app.put("/comments/{id}", CommentController::updateComment);
+        app.delete("/comments/{id}", CommentController::deleteComment);
+        app.get("/articles/{articleId}/comments/{commentId}", CommentController::getCommentByArticleAndCommentId);
 
+        app.get("/tags", TagController::getAllTags);
+        app.post("/tags", TagController::createTag);
 
-		app.get("/tags", TagController::getAllTags);
-		app.post("/tags",TagController::createTag);
-
-	}
+    }
 }
