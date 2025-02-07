@@ -8,14 +8,14 @@ public class Comment {
 	private String comment;
 	private User user;
 	private Date date;
-	private Article article;
+	private Long articleId;
 
-	public Comment(Long commentId, String comment, User user, Date date, Article article) {
+	public Comment(Long commentId, String comment, User user, Date date, Long articleId) {
 		this.commentId = commentId;
 		this.comment = comment;
 		this.user = user;
 		this.date = date;
-		this.article = article;
+		this.articleId = articleId;
 	}
 
 	public Long getCommentId() {
@@ -50,11 +50,11 @@ public class Comment {
 		this.date = date;
 	}
 
-	public Article getArticle() {
-		return article;
+	public Long getArticleId() {
+		return articleId;
 	}
 
-	public void setArticle(Article article) {
-		this.article = article;
+	public void setArticleId(Long articleId) {
+		this.articleId = articleId;
 	}
 }
