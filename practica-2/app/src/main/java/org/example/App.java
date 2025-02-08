@@ -28,8 +28,17 @@ public class App {
                 cf.directory = "/assets";
 
             });
+            config.staticFiles.add(cf -> {
+                cf.hostedPath = "/fragments";
+                cf.directory = "/fragments";
+
+            });
+
             config.fileRenderer(new JavalinThymeleaf());
         }).start(7777);
+
+        app.before("/", ctx -> {
+        });
 
         app.get("/articles", ArticleController::getAllArticles);
         app.get("/articles/{id}", ArticleController::getArticleById);
