@@ -5,19 +5,19 @@ import java.util.ArrayList;
 
 public class Article {
     private Long articleId;
-    private String articleTitle;
-    private String articleContent;
-    private User articleAuthor;
-    private Date articleDate;
-    private ArrayList<Comment> articleComments;
-    private ArrayList<Tag> articleTags;
+    private String title;
+    private String content;
+    private User author;
+    private Date date;
+    private ArrayList<Comment> comments;
+    private ArrayList<Tag> tags;
 
-    public Article(Long articleId, String articleTitle, String articleContent, User articleAuthor, Date articleDate) {
+    public Article(Long articleId, String title, String content, User author, Date date) {
         this.articleId = articleId;
-        this.articleTitle = articleTitle;
-        this.articleContent = articleContent;
-        this.articleAuthor = articleAuthor;
-        this.articleDate = articleDate;
+        this.title = title;
+        this.content = content;
+        this.author = author;
+        this.date = date;
     }
 
     public Long getArticleId() {
@@ -28,51 +28,51 @@ public class Article {
         this.articleId = articleId;
     }
 
-    public String getArticleTitle() {
-        return articleTitle;
+    public String getTitle() {
+        return title;
     }
 
-    public void setArticleTitle(String articleTitle) {
-        this.articleTitle = articleTitle;
+    public void setTitle(String title) {
+        this.title = title;
     }
 
-    public String getArticleContent() {
-        return articleContent;
+    public String getContent() {
+        return content;
     }
 
-    public void setArticleContent(String articleContent) {
-        this.articleContent = articleContent;
+    public void setContent(String content) {
+        this.content = content;
     }
 
-    public User getArticleAuthor() {
-        return articleAuthor;
+    public User getAuthor() {
+        return author;
     }
 
-    public void setArticleAuthor(User articleAuthor) {
-        this.articleAuthor = articleAuthor;
+    public void setAuthor(User author) {
+        this.author = author;
     }
 
-    public java.util.Date getArticleDate() {
-        return articleDate;
+    public java.util.Date getDate() {
+        return date;
     }
 
-    public void setArticleDate(Date articleDate) {
-        this.articleDate = articleDate;
+    public void setDate(Date date) {
+        this.date = date;
     }
 
-    public ArrayList<Comment> getArticleComments() {
-        return articleComments;
+    public ArrayList<Comment> getComments() {
+        return comments;
     }
 
-    public void setArticleComments(ArrayList<Comment> articleComments) {
-        this.articleComments = articleComments;
+    public void setComments(ArrayList<Comment> comments) {
+        this.comments = comments;
     }
 
-    public ArrayList<Tag> getArticleTags() {
-        return articleTags;
+    public ArrayList<Tag> getTags() {
+        return tags;
     }
 
-    public void setArticleTags(ArrayList<Tag> articleTags) {
-        this.articleTags = articleTags;
+    public void setTags(ArrayList<Tag> tags) {
+        this.tags = tags;
     }
 }
