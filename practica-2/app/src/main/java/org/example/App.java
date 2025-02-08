@@ -50,7 +50,6 @@ public class App {
         app.delete("/comments/{id}", CommentController::deleteComment);
         app.get("/articles/{articleId}/comments/{commentId}", CommentController::getCommentByArticleAndCommentId);
 
-        app.get("/tags", TagController::getAllTags);
         app.post("/tags", TagController::createTag);
 
         new ArticleController(app).applyRoutes();
