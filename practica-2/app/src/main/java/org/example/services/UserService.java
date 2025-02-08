@@ -18,6 +18,10 @@ public class UserService {
         users.put(administrator.getUsername(), administrator);
     }
 
+    public Map<String, User> getAllUsersAsMap() {
+        return new HashMap<>(users);
+    }
+
     public Collection<User> getAllUsers() {
         return users.values();
     }
