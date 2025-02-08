@@ -4,6 +4,7 @@ import io.javalin.Javalin;
 import io.javalin.http.Context;
 
 import org.example.models.Article;
+import org.example.models.Tag;
 import org.example.services.ArticleService;
 import org.example.util.BaseController;
 
@@ -20,9 +21,11 @@ public class ArticleController extends BaseController{
     public void applyRoutes(){
         app.get("/", ctx -> {
             Collection<Article> articleCollection = articleService.getAllArticles();
+            Collection<Tag> tagCollection = TagController.getAllTags();
             Map<String, Object> model = new HashMap<>();
             model.put("title", "Wornux");
             model.put("articleCollection", articleCollection);
+            model.put("tagCollection", tagCollection);
             
             ctx.render("/public/index.html", model);
         });
