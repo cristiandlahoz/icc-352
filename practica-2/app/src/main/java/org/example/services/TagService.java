@@ -57,7 +57,7 @@ public class TagService {
             throw new NotFoundException("Tag cannot be found");
         else {
             Tag myTag = tags.get(tag.getTagId());
-            myTag.setTagName(tag.getTagName());
+            myTag.setName(tag.getName());
             tags.put(myTag.getTagId(), myTag);
         }
     }
