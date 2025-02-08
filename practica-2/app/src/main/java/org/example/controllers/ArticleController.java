@@ -22,9 +22,9 @@ public class ArticleController extends BaseController{
             Collection<Article> articleCollection = articleService.getAllArticles();
             Map<String, Object> model = new HashMap<>();
             model.put("title", "Wornux");
-            model.put("articleCollection", model);
+            model.put("articleCollection", articleCollection);
             
-            ctx.render("/index.html", model);
+            ctx.render("/public/index.html", model);
         });
 
     };
