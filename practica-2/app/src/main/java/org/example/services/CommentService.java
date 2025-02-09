@@ -19,7 +19,7 @@ public class CommentService {
         Comment comment1 = new Comment(1L,
                 "Great discussion everyone! I'd like to add that this topic has many interesting aspects we could explore further.",
                 "usename1", 7L);
-        Comment comment2 = new Comment(1L,
+        Comment comment2 = new Comment(2L,
                 "Great discussion everyone! I'd like to add that this topic has many interesting aspects we could explore further.",
                 "usename1", 7L);
         comments.put(comment1.getCommentId(), comment1);
