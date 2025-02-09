@@ -7,6 +7,9 @@ import io.javalin.rendering.template.JavalinThymeleaf;
 import org.example.models.User;
 
 public class App {
+    /**
+     * @param args
+     */
     public static void main(String[] args) {
         UserService userService = new UserService();
 
@@ -31,9 +34,6 @@ public class App {
         // Controladores
         new ArticleController(app).applyRoutes();
         new AuthenticationController(userService).applyRoutes(app);
-
-        app.before("/", ctx -> {
-        });
 
         app.get("/articles", ArticleController::getAllArticles);
         app.get("/articles/{id}", ArticleController::getArticleById);
@@ -78,6 +78,14 @@ public class App {
             if (user != null) {
                 ctx.sessionAttribute("USUARIO", user);
             }
+        });
+
+        app.before("/", ctx -> {
+        });
+
+        app.post("/logout", ctx -> {
+            ctx.req().getSession().invalidate(); // Elimina la sesión
+            ctx.redirect("/");
         });
     }
 }
