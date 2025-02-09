@@ -49,7 +49,7 @@ public class CommentController extends BaseController {
             return;
         }
 
-        Comment myComment = new Comment(3L, comment, author, articleId);
+        Comment myComment = new Comment(comment, author, articleId);
         commentService.createComment(myComment);
         ctx.json(myComment);
     }
