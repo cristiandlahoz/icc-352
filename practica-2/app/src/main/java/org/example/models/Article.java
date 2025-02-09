@@ -7,12 +7,12 @@ public class Article {
     private Long articleId;
     private String title;
     private String content;
-    private User author;
+    private String author;
     private Date date;
     private ArrayList<Comment> comments;
     private ArrayList<Tag> tags;
 
-    public Article(Long articleId, String title, String content, User author, Date date) {
+    public Article(Long articleId, String title, String content, String author, Date date) {
         this.articleId = articleId;
         this.title = title;
         this.content = content;
@@ -44,11 +44,11 @@ public class Article {
         this.content = content;
     }
 
-    public User getAuthor() {
+    public String getAuthor() {
         return author;
     }
 
-    public void setAuthor(User author) {
+    public void setAuthor(String author) {
         this.author = author;
     }
 
