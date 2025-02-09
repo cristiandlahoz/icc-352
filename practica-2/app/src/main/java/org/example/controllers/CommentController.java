@@ -24,7 +24,7 @@ public class CommentController extends BaseController {
     }
 
     public static void getAllComments(Context ctx) {
-        ctx.json(commentService);
+        ctx.json(commentService.getAllComments());
     }
 
     public static void getCommentById(Context ctx) {
