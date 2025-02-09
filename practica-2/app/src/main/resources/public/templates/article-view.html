@@ -105,7 +105,8 @@
         }
 
         .comment-box {
-            background: white;
+            background: #262626;
+            color: white;
             border-radius: 10px;
             padding: 20px;
             margin-bottom: 20px;
@@ -174,6 +175,15 @@
             margin-left: 60px;
             border-left: 2px solid #e9ecef;
             padding-left: 20px;
+        }
+
+        .contenido {
+            padding: 20px;
+            width: 100%;
+            max-width: 800px;
+            word-wrap: break-word;
+            overflow-wrap: break-word;
+            white-space: normal;
         }
     </style>
 
@@ -296,7 +306,7 @@
             <nav class="nav nav-underline justify-content-between">
                 <th:block th:each="tag : ${tags}">
                     <a class="nav-item nav-link link-body-emphasis active" th:href="@{'#' + ${tag.name}}"
-                        th:text="${tag.name}">World</a>
+                        th:text="${tag.name}"></a>
                 </th:block>
             </nav>
         </div>
@@ -305,8 +315,7 @@
     <main class="container" th:if=${article}>
         <div class="p-4 p-md-5 mb-4 rounded text-body-emphasis bg-body-secondary">
             <div class="col-lg-6 px-0">
-                <h1 class="display-4 fst-italic" th:text="${article.title}">Title of a longer featured blog
-                    post</h1>
+                <h1 class="display-4 fst-italic" th:text="${article.title}"></h1>
                 <div class="mb-1 text-body-secondary" th:text="${#dates.format(article.date, 'dd MMM yyyy')}">
                     Nov 12</div>
             </div>
@@ -315,17 +324,14 @@
         <div class="row g-5">
             <div class="col-md-8">
                 <article class="blog-post">
-                    <p th:text=${article.content}>This blog post shows a few different types of content that’s supported
-                        and styled with Bootstrap.
-                        Basic
-                        typography, lists, tables, images, code, and more are all supported as expected.</p>
+                    <p class="contenido" th:text=${article.content}></p>
                     <hr>
                     <div class="container">
                         <div class="comment-section">
                             <!-- New Comment Form -->
                             <div class="mb-4">
                                 <div class="d-flex gap-3">
-                                    <img src="https://randomuser.me/api/portraits/women/4.jpg" alt="User Avatar"
+                                    <img src="https://randomuser.me/api/portraits/men/34.jpg" alt="User Avatar"
                                         class="user-avatar">
                                     <form id="commentForm" class="flex-grow-1">
                                         <textarea id="commentBox" class="form-control comment-input" rows="3"
@@ -373,18 +379,14 @@
                                                 <h6 class="mb-0" th:text="${comment.username}">John Doe</h6>
                                                 <span class="comment-time">2 hours ago</span>
                                             </div>
-                                            <p class="mb-2" th:text="${comment.comment}">This is an amazing post! Thanks
-                                                for
-                                                sharing your insights with
-                                                us. I've
-                                                learned a lot from this.</p>
+                                            <p class="mb-2" th:text="${comment.comment}"></p>
                                             <div class="comment-actions">
                                             </div>
                                         </div>
                                     </div>
 
                                     <!-- Reply Section -->
-                                    <div class="reply-section mt-3">
+                                    <!--  <div class="reply-section mt-3">
                                         <div class="comment-box">
                                             <div class="d-flex gap-3">
                                                 <img src="https://randomuser.me/api/portraits/women/64.jpg"
@@ -394,26 +396,17 @@
                                                         <h6 class="mb-0">Jane Smith</h6>
                                                         <span class="comment-time">1 hour ago</span>
                                                     </div>
-                                                    <p class="mb-2">Totally agree with you! The points mentioned are
-                                                        very
-                                                        insightful.
-                                                    </p>
+                                                    <p class="mb-2"></p>
                                                     <div class="comment-actions">
-                                                        <a href="#"><i class="bi bi-heart"></i> Like</a>
                                                     </div>
                                                 </div>
                                             </div>
                                         </div>
-                                    </div>
+                                </div>-->
                                 </div>
 
                             </div>
                 </article>
-
-                <nav class="blog-pagination" aria-label="Pagination">
-                    <a class="btn btn-outline-primary rounded-pill" href="#">Older</a>
-                    <a class="btn btn-outline-secondary rounded-pill disabled" aria-disabled="true">Newer</a>
-                </nav>
 
             </div>
 
