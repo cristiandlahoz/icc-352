@@ -2,6 +2,8 @@ package org.example.services;
 
 import org.example.models.Article;
 import org.example.models.User;
+import org.example.util.AccessStatus;
+import org.example.util.Role;
 
 import java.util.*;
 
@@ -14,8 +16,8 @@ public class ArticleService {
     }
 
     static {
-        User user1 = new User("john_doe", "John Doe", "password123", true, false);
-        User user2 = new User("jane_doe", "Jane Doe", "securePass456", false, false);
+        User user1 = new User("john_doe", "John Doe", "password123", Role.AUTHOR, AccessStatus.UNAUTHENTICATED);
+        User user2 = new User("jane_doe", "Jane Doe", "securePass456", Role.AUTHOR, AccessStatus.UNAUTHENTICATED);
         articles.put(1L, new Article(1L, "Introducción a la Programación en Java",
                 "Java es un lenguaje de programación ampliamente utilizado para el desarrollo de aplicaciones empresariales y móviles. Su sintaxis clara y su fuerte tipado lo hacen ideal para proyectos de gran escala.",
                 user1, new Date(System.currentTimeMillis() - 10L * 24 * 60 * 60 * 1000))); // Hace 10 días
