@@ -15,7 +15,7 @@ public abstract class BaseController {
 
     abstract public void applyRoutes();
 
-    public Map<String, Object> setModel(Object... args) {
+    public static Map<String, Object> setModel(Object... args) {
         Map<String, Object> modelo = new HashMap<>();
         if (args.length % 2 != 0) {
             throw new IllegalArgumentException(
