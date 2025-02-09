@@ -16,7 +16,7 @@ public class AuthenticationController extends BaseController {
 
     public void applyRoutes() {
         app.post("/login", this::login);
-        app.get("/logout", this::logout);
+        app.post("/logout", this::logout);
         app.post("/signup", this::signup);
     }
 
