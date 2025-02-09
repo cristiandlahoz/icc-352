@@ -40,7 +40,7 @@ public class UserService {
         if (users.containsKey(user.getUsername())) {
             throw new IllegalArgumentException("User already exists");
         }
-        users.put(user.getUsername(), user); 
+        users.put(user.getUsername(), user);
         System.out.println("Usuario registrado: " + user.getUsername()); // Debugging
     }
 
