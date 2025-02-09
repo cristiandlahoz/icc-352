@@ -6,6 +6,9 @@ import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
 
+import org.example.util.AccessStatus;
+import org.example.util.Role;
+
 public class UserService {
     private static final Map<String, User> users = new HashMap<>();
 
@@ -14,7 +17,7 @@ public class UserService {
     }
 
     static {
-        User administrator = new User("Theprimeagen", "Ignacio", "1234", true, false);
+        User administrator = new User("Theprimeagen", "Ignacio", "1234",Role.ADMIN, AccessStatus.UNAUTHENTICATED);
         users.put(administrator.getUsername(), administrator);
     }
 
@@ -53,7 +56,7 @@ public class UserService {
         } else {
             User myUser = users.get(user.getUsername());
             myUser.setName(user.getName());
-            myUser.setAutor(user.isAutor());
+            myUser.setAccessStatus(user.isAccessStatus());
             myUser.setPassword(user.getPassword());
             users.put(myUser.getUsername(), myUser);
         }

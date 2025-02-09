@@ -22,7 +22,7 @@ public class App {
             });
 
             config.fileRenderer(new JavalinThymeleaf());
-        }).start(7777);
+        }).start(7789);
 
         // Controladores
         new ArticleController(app).applyRoutes();

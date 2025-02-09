@@ -27,20 +27,23 @@ public class ArticleController extends BaseController {
         app.post("/articles", ArticleController::createArticle);
         app.post("/articles/{id}", ArticleController::updateArticle);
         app.delete("/articles/{id}", ArticleController::deleteArticle);
-
     };
 
     public static void getAllArticles(Context ctx) {
         List<Article> articleCollection = articleService.getAllArticles();
         Collection<Tag> tagCollection = TagController.getAllTags();
         Boolean logged = ctx.sessionAttribute("USUARIO") != null ? true : false;
-        Map<String, Object> model = setModel(
-                "title", "Wornux",
-                "articleCollection", articleCollection,
-                "tagCollection", tagCollection,
-                "logged", logged);
+            User user = ctx.sessionAttribute("USUARIO");
+            String role = (user != null) ? user.getRole().toString() : "GUEST";
+            ctx.sessionAttribute("ROL", role);
+            Map<String, Object> model = setModel(
+                    "title", "Wornux",
+                    "articleCollection", articleCollection,
+                    "tagCollection", tagCollection,
+                    "logged", logged,
+                    "role", role);
 
-        ctx.render("/public/index.html", model);
+            ctx.render("/public/index.html", model);
     }
 
     public static void getArticleById(Context ctx) {

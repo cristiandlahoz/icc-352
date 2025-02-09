@@ -4,7 +4,9 @@ import io.javalin.Javalin;
 import io.javalin.http.Context;
 import org.example.models.User;
 import org.example.services.UserService;
+import org.example.util.AccessStatus;
 import org.example.util.BaseController;
+import org.example.util.Role;
 
 public class AuthenticationController extends BaseController {
 
@@ -70,11 +72,14 @@ public class AuthenticationController extends BaseController {
             // Usuario no encontrado, se puede crear
         }
 
-        User newUser = new User(username, name, password, false, isAuthor);
+        Role role = isAuthor ? Role.AUTHOR : Role.USER;
+        User newUser = new User(username, name, password, role, AccessStatus.UNAUTHENTICATED);
         userService.createUser(newUser);
+
 
         User createdUser = userService.getUserByUsername(username);
         if (createdUser != null) {
+            createdUser.setAccessStatus(AccessStatus.AUTHENTICATED);
             ctx.sessionAttribute("USUARIO", createdUser);
             System.out.println("Usuario registrado: " + username);
             System.out.println("Usuario autenticado tras registro: " + ctx.sessionAttribute("USUARIO"));
