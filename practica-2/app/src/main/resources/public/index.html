@@ -207,12 +207,12 @@
                             <title>Search</title>
                             <circle cx="10.5" cy="10.5" r="7.5" />
                             <path d="M21 21l-5.2-5.2" />
-                        </svg>
+                        </svg>s
 
                     </a>
                         -->
                     <a th:if="${!logged}" class="btn btn-sm btn-outline-secondary"
-                        th:href="@{logIn.html}">Log in</a>
+                        th:href="@{/templates/logIn.html}">Log in</a>
 
                     <form th:if="${logged}" th:action="@{/logout}" method="post">
                         <button type="submit" class="btn btn-sm btn-outline-danger">Log out</button>
