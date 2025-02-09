@@ -1,18 +1,21 @@
 package org.example.models;
 
+import org.example.util.AccessStatus;
+import org.example.util.Role;
+
 public class User {
 	private String username;
 	private String name;
 	private String password;
-	private boolean admin;
-	private boolean autor;
+	private Role role;
+	private AccessStatus accessStatus;
 
-	public User(String username, String name, String password, boolean admin, boolean autor) {
+	public User(String username, String name, String password, Role role, AccessStatus accessStatus) {
 		this.username = username;
 		this.name = name;
 		this.password = password;
-		this.admin = admin;
-		this.autor = autor;
+		this.role = role;
+		this.accessStatus = AccessStatus.UNAUTHENTICATED;
 	}
 
 	public String getUsername() {
@@ -39,19 +42,19 @@ public class User {
 		this.password = password;
 	}
 
-	public boolean isAdmin() {
-		return admin;
+	public Role getRole() {
+		return role;
 	}
 
-	public void setAdmin(boolean admin) {
-		this.admin = admin;
+	public void setRole(Role role) {
+		this.role = role;
 	}
 
-	public boolean isAutor() {
-		return autor;
+	public AccessStatus isAccessStatus() {
+		return accessStatus;
 	}
 
-	public void setAutor(boolean autor) {
-		this.autor = autor;
+	public void setAccessStatus(AccessStatus accessStatus) {
+		this.accessStatus = accessStatus;
 	}
 }
