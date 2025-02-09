@@ -28,11 +28,6 @@ public class App {
         new ArticleController(app).applyRoutes();
         new AuthenticationController(app).applyRoutes();
 
-        app.get("/articles", ArticleController::getAllArticles);
-        app.get("/articles/{id}", ArticleController::getArticleById);
-        app.post("/articles", ArticleController::createArticle);
-        app.post("/articles/{id}", ArticleController::updateArticle);
-        app.delete("/articles/{id}", ArticleController::deleteArticle);
 
         app.get("/users", UserController::getAllUsers);
         app.get("/users/{username}", UserController::getUserByUsername);
