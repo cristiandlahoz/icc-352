@@ -24,10 +24,12 @@ public class ArticleController extends BaseController {
             List<Article> articleCollection = articleService.getAllArticles().stream()
                     .sorted(Comparator.comparing(Article::getDate).reversed()).collect(Collectors.toList());
             Collection<Tag> tagCollection = TagController.getAllTags();
+            Boolean logged = ctx.sessionAttribute("USUARIO") != null ? true : false;
             Map<String, Object> model = setModel(
                     "title", "Wornux",
                     "articleCollection", articleCollection,
-                    "tagCollection", tagCollection);
+                    "tagCollection", tagCollection,
+                    "logged", logged);
 
             ctx.render("/public/index.html", model);
         });
