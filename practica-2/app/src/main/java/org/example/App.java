@@ -51,15 +51,20 @@ public class App {
 
         ///////////////////////////////////////////////
 
+        // Middleware para verificar sesión antes de acceder a ciertas rutas
         app.before(ctx -> {
             String path = ctx.path();
-            if (path.equals("/") || path.equals("/login") || path.equals("/logIn.html") || path.equals("/signUp.html") ||
+
+            if (path.equals("/") || path.equals("/login") || path.equals("/logIn.html") ||
+                    path.equals("/signUp.html") || path.equals("/signup") || // Agregado `/signup`
                     path.startsWith("/assets") || path.startsWith("/public") || path.startsWith("/articles")) {
-                return;
+                return; // Permitir acceso sin autenticación
             }
 
             // Verificar si el usuario está autenticado
             User user = ctx.sessionAttribute("USUARIO");
+            System.out.println("Verificando sesión de usuario en ruta: " + path + " - Usuario en sesión: " + user);
+
             if (user == null) {
                 ctx.redirect("/logIn.html");
             }
@@ -86,6 +91,7 @@ public class App {
 
                 // Guardar usuario en la sesión y redirigir a la página principal
                 ctx.sessionAttribute("USUARIO", user);
+                System.out.println("Usuario autenticado: " + user);
                 ctx.redirect("/");
 
             } catch (IllegalArgumentException e) {
@@ -106,7 +112,6 @@ public class App {
             String password = ctx.formParam("password");
             boolean isAuthor = ctx.formParam("is_author") != null;
 
-            // Validar campos obligatorios
             if (name == null || username == null || password == null) {
                 ctx.redirect("/signUp.html?error=missing_fields");
                 return;
@@ -125,12 +130,24 @@ public class App {
             User newUser = new User(username, name, password, false, isAuthor);
             userService.createUser(newUser);
 
-            // Guardar usuario en la sesión
-            ctx.sessionAttribute("USUARIO", newUser);
-
-            // Redirigir directamente al blog
-            ctx.redirect("/");
+            // Verificar si el usuario realmente se guardó en la base de datos antes de redirigir
+            User createdUser = userService.getUserByUsername(username);
+            if (createdUser != null) {
+                ctx.sessionAttribute("USUARIO", createdUser);
+                System.out.println("Usuario registrado: " + username);
+                System.out.println("Usuario autenticado tras registro: " + ctx.sessionAttribute("USUARIO"));
+                ctx.redirect("/"); // Redirigir al blog
+            } else {
+                ctx.redirect("/signUp.html?error=registration_failed"); // Si falló el registro, regresar al sign-up
+            }
         });
 
+        // Middleware para persistir la sesión después de cada petición
+        app.after(ctx -> {
+            User user = ctx.sessionAttribute("USUARIO");
+            if (user != null) {
+                ctx.sessionAttribute("USUARIO", user);
+            }
+        });
     }
 }
