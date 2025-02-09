@@ -1,12 +1,27 @@
 package org.example.controllers;
 
+import io.javalin.Javalin;
 import io.javalin.http.Context;
 import org.example.models.Comment;
+import org.example.services.ArticleService;
 import org.example.services.CommentService;
+import org.example.util.BaseController;
 
-
-public class CommentController {
+public class CommentController extends BaseController {
     private static final CommentService commentService = new CommentService();
+
+    public CommentController(Javalin app) {
+        super(app);
+
+    }
+
+    @Override
+    public void applyRoutes() {
+        app.post("/comments", ctx -> {
+            createComment(ctx);
+
+        });
+    }
 
     public static void getAllComments(Context ctx) {
         ctx.json(commentService);
@@ -20,11 +35,27 @@ public class CommentController {
     }
 
     public static void createComment(Context ctx) {
-        Comment myComment = ctx.bodyAsClass(Comment.class);
-        commentService.createComment(myComment);
-        ctx.status(201);
-    }
+        Long articleId = Long.parseLong(ctx.pathParam("articleId"));
+        String username = ctx.pathParam("username");
+        String comment = ctx.pathParam("comment");
 
+        if (comment == null || comment.trim().isEmpty()) {
+            ctx.status(400).result("Comment cannot be blanck");
+            return;
+        }
+        if (username == null || username.trim().isEmpty()) {
+            ctx.status(400).result("Username cannot be blanck");
+            return;
+        }
+        if (new ArticleService().getArticleById(articleId) == null) {
+            ctx.status(400).result("articleId cannot be null");
+            return;
+        }
+
+        Comment myComment = new Comment(1L, comment, username, articleId);
+        commentService.createComment(myComment);
+        ctx.json(myComment);
+    }
 
     public static void updateComment(Context ctx) {
         Comment myComment = ctx.bodyAsClass(Comment.class);
