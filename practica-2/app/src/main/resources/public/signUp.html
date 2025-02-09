@@ -10,21 +10,44 @@
     <title>Sign Up</title>
     <style>
         body {
-            background-color: hsl(0, 0%, 96%); /* Gris claro */
+            background-color: #f5f5f5; /* Gris claro */
+            color: #333; /* Gris oscuro para el texto */
         }
         .error-message {
-            color: red;
+            color: #b22222; /* Rojo oscuro */
             text-align: center;
             display: none;
             margin-bottom: 15px;
             font-weight: bold;
         }
         .success-message {
-            color: green;
+            color: #228b22; /* Verde oscuro */
             text-align: center;
             display: none;
             margin-bottom: 15px;
             font-weight: bold;
+        }
+        .card {
+            background-color: #fff; /* Blanco */
+            border: 1px solid #ccc; /* Borde gris claro */
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+        }
+        .btn-primary {
+            background-color: #666; /* Gris medio */
+            border-color: #555;
+        }
+        .btn-primary:hover {
+            background-color: #444;
+            border-color: #333;
+        }
+        .btn-outline-primary {
+            color: #666;
+            border-color: #666;
+        }
+        .btn-outline-primary:hover {
+            background-color: #444;
+            color: #fff;
+            border-color: #444;
         }
     </style>
 </head>
@@ -38,14 +61,12 @@
         <div class="row gx-lg-5 align-items-center">
             <div class="col-lg-6 mb-5 mb-lg-0">
                 <h1 class="my-5 display-3 fw-bold ls-tight">
-                    The best offer <br/>
-                    <span class="text-primary">for your business</span>
+                    Welcome to <br/>
+                    <span class="text-secondary" style="font-size: 2.25em;">Wornux</span>
                 </h1>
-                <p style="color: hsl(217, 10%, 50.8%)">
-                    Lorem ipsum dolor sit amet consectetur adipisicing elit.
-                    Eveniet, itaque accusantium odio, soluta, corrupti aliquam
-                    quibusdam tempora at cupiditate quis eum maiores libero
-                    veritatis? Dicta facilis sint aliquid ipsum atque?
+                <p style="color: #666; font-size: 1.45em;">
+                    An ideal website for writing, reading, and commenting on a
+                    wide variety of articles about current topics in technology.
                 </p>
             </div>
 
