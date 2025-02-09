@@ -1,7 +1,6 @@
 package org.example;
 
 import org.example.controllers.*;
-import org.example.services.UserService;
 import io.javalin.Javalin;
 import io.javalin.rendering.template.JavalinThymeleaf;
 import org.example.models.User;
@@ -11,7 +10,6 @@ public class App {
      * @param args
      */
     public static void main(String[] args) {
-        UserService userService = new UserService();
 
         var app = Javalin.create(config -> {
             config.staticFiles.add(cf -> {
@@ -33,7 +31,7 @@ public class App {
 
         // Controladores
         new ArticleController(app).applyRoutes();
-        new AuthenticationController(userService).applyRoutes(app);
+        new AuthenticationController(app).applyRoutes();
 
         app.get("/articles", ArticleController::getAllArticles);
         app.get("/articles/{id}", ArticleController::getArticleById);
@@ -80,12 +78,5 @@ public class App {
             }
         });
 
-        app.before("/", ctx -> {
-        });
-
-        app.post("/logout", ctx -> {
-            ctx.req().getSession().invalidate(); // Elimina la sesión
-            ctx.redirect("/");
-        });
     }
 }

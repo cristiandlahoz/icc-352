@@ -4,16 +4,17 @@ import io.javalin.Javalin;
 import io.javalin.http.Context;
 import org.example.models.User;
 import org.example.services.UserService;
+import org.example.util.BaseController;
 
-public class AuthenticationController {
+public class AuthenticationController extends BaseController {
 
-    private final UserService userService;
+    private static final UserService userService = new UserService();
 
-    public AuthenticationController(UserService userService) {
-        this.userService = userService;
+    public AuthenticationController(Javalin app) {
+        super(app);
     }
 
-    public void applyRoutes(Javalin app) {
+    public void applyRoutes() {
         app.post("/login", this::login);
         app.get("/logout", this::logout);
         app.post("/signup", this::signup);
@@ -47,7 +48,7 @@ public class AuthenticationController {
 
     private void logout(Context ctx) {
         ctx.req().getSession().invalidate();
-        ctx.redirect("/logIn.html");
+        ctx.redirect("/");
     }
 
     private void signup(Context ctx) {
