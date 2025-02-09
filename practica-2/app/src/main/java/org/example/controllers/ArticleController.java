@@ -4,8 +4,10 @@ import io.javalin.Javalin;
 import io.javalin.http.Context;
 
 import org.example.models.Article;
+import org.example.models.Comment;
 import org.example.models.Tag;
 import org.example.services.ArticleService;
+import org.example.services.CommentService;
 import org.example.util.BaseController;
 
 import java.util.*;
@@ -41,18 +43,20 @@ public class ArticleController extends BaseController {
     }
 
     public static void getArticleById(Context ctx) {
-        long id = Long.parseLong(ctx.pathParam("id"));
-        Article myArticle = articleService.getArticleById(id);
+        long articleId = Long.parseLong(ctx.pathParam("id"));
+        Article myArticle = articleService.getArticleById(articleId);
 
         Collection<Tag> tags = myArticle.getTags();
         List<Article> authorArticles = articleService.getArticleByAuthor(myArticle.getAuthor());
         Boolean logged = ctx.sessionAttribute("USUARIO") != null ? true : false;
+        List<Comment> comments = new CommentService().getCommentsByArticleId(articleId);
         Map<String, Object> model = setModel(
                 "title", "Wornux",
                 "article", myArticle,
                 "tags", tags,
                 "logged", logged,
-                "authorArticles", authorArticles);
+                "authorArticles", authorArticles,
+                "comments", comments);
 
         ctx.render("/public/templates/article-view.html", model);
     }
