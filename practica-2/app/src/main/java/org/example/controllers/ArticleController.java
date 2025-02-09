@@ -9,7 +9,6 @@ import org.example.services.ArticleService;
 import org.example.util.BaseController;
 
 import java.util.*;
-import java.util.stream.Collectors;
 
 public class ArticleController extends BaseController {
     private static final ArticleService articleService = new ArticleService();
