@@ -16,6 +16,14 @@ public class CommentService {
     }
 
     static {
+        Comment comment1 = new Comment(
+                "Great discussion everyone! I'd like to add that this topic has many interesting aspects we could explore further.",
+                "usename1", 7L);
+        Comment comment2 = new Comment(
+                "Great discussion everyone! I'd like to add that this topic has many interesting aspects we could explore further.",
+                "usename1", 7L);
+        comments.put(comment1.getCommentId(), comment1);
+        comments.put(comment2.getCommentId(), comment2);
     }
 
     public Collection<Comment> getAllComments() {
@@ -68,15 +76,15 @@ public class CommentService {
     public Comment getCommentByArticleAndCommentId(Long articleId, Long commentId) {
         if (articleId == null) {
             throw new IllegalArgumentException("Argument articleId cannot be null");
-        }else if (commentId == null) {
+        } else if (commentId == null) {
             throw new IllegalArgumentException("Argument commentId cannot be null");
-        }else if(!comments.containsKey(commentId)){
+        } else if (!comments.containsKey(commentId)) {
             throw new NotFoundException("Selected commentId not found exception");
-        } else if(!comments.get(commentId).getArticleId().equals(articleId)){
+        } else if (!comments.get(commentId).getArticleId().equals(articleId)) {
             throw new NotFoundException("There is not comment with that articleId and commentId");
-        }else{
-           return comments.get(commentId);
-       }
+        } else {
+            return comments.get(commentId);
+        }
     }
 
 }

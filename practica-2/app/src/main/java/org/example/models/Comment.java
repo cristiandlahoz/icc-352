@@ -1,20 +1,22 @@
 package org.example.models;
 
 
-import java.sql.Date;
+import java.util.*;
 
 public class Comment {
+    private static Long size = 0L;
 	private Long commentId;
 	private String comment;
-	private User user;
+	private String username;
 	private Date date;
 	private Long articleId;
 
-	public Comment(Long commentId, String comment, User user, Date date, Long articleId) {
-		this.commentId = commentId;
+	public Comment(String comment, String username, Long articleId) {
+        size++;
+		this.commentId = size;
 		this.comment = comment;
-		this.user = user;
-		this.date = date;
+		this.username = username;
+		this.date = new Date();
 		this.articleId = articleId;
 	}
 
@@ -22,9 +24,6 @@ public class Comment {
 		return commentId;
 	}
 
-	public void setCommentId(Long commentId) {
-		this.commentId = commentId;
-	}
 
 	public String getComment() {
 		return comment;
@@ -34,12 +33,12 @@ public class Comment {
 		this.comment = comment;
 	}
 
-	public User getUser() {
-		return user;
+	public String getUsername() {
+		return username;
 	}
 
-	public void setUser(User user) {
-		this.user = user;
+	public void setUsername(String username) {
+		this.username = username;
 	}
 
 	public Date getDate() {

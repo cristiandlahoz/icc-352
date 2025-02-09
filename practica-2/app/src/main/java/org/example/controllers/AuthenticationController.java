@@ -25,7 +25,7 @@ public class AuthenticationController extends BaseController {
         String password = ctx.formParam("password");
 
         if (username == null || password == null) {
-            ctx.redirect("/logIn.html?error=missing_fields");
+            ctx.redirect("/templates/logIn.html?error=missing_fields");
             return;
         }
 
@@ -33,7 +33,7 @@ public class AuthenticationController extends BaseController {
             User user = userService.getUserByUsername(username);
 
             if (!user.getPassword().equals(password)) {
-                ctx.redirect("/logIn.html?error=invalid_credentials");
+                ctx.redirect("/templates/logIn.html?error=invalid_credentials");
                 return;
             }
 
@@ -42,7 +42,7 @@ public class AuthenticationController extends BaseController {
             ctx.redirect("/");
 
         } catch (IllegalArgumentException e) {
-            ctx.redirect("/logIn.html?error=user_not_found");
+            ctx.redirect("/templates/logIn.html?error=user_not_found");
         }
     }
 
@@ -58,13 +58,13 @@ public class AuthenticationController extends BaseController {
         boolean isAuthor = ctx.formParam("is_author") != null;
 
         if (name == null || username == null || password == null) {
-            ctx.redirect("/signUp.html?error=missing_fields");
+            ctx.redirect("/templates/signUp.html?error=missing_fields");
             return;
         }
 
         try {
             userService.getUserByUsername(username);
-            ctx.redirect("/signUp.html?error=user_exists");
+            ctx.redirect("/templates/signUp.html?error=user_exists");
             return;
         } catch (IllegalArgumentException e) {
             // Usuario no encontrado, se puede crear
@@ -80,7 +80,7 @@ public class AuthenticationController extends BaseController {
             System.out.println("Usuario autenticado tras registro: " + ctx.sessionAttribute("USUARIO"));
             ctx.redirect("/");
         } else {
-            ctx.redirect("/signUp.html?error=registration_failed");
+            ctx.redirect("/templates/signUp.html?error=registration_failed");
         }
     }
 }
