@@ -20,14 +20,9 @@ public class App {
                 cf.hostedPath = "/assets";
                 cf.directory = "/assets";
             });
-            config.staticFiles.add(cf -> {
-                cf.hostedPath = "/fragments";
-                cf.directory = "/fragments";
-
-            });
 
             config.fileRenderer(new JavalinThymeleaf());
-        }).start(7777);
+        }).start(7789);
 
         // Controladores
         new ArticleController(app).applyRoutes();
@@ -58,7 +53,7 @@ public class App {
         app.before(ctx -> {
             String path = ctx.path();
 
-            if (!path.equals("/logIn.html") || !path.equals("/signUp.html")) {
+            if (!path.equals("/templates/logIn.html") || !path.equals("/templates/signUp.html")) {
                 return;
             }
 
@@ -66,7 +61,7 @@ public class App {
             System.out.println("Verificando sesión de usuario en ruta: " + path + " - Usuario en sesión: " + user);
 
             if (user == null) {
-                ctx.redirect("/logIn.html");
+                ctx.redirect("/templates/logIn.html");
             }
         });
 
