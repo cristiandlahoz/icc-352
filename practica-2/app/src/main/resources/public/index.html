@@ -232,6 +232,14 @@
         </div>
     </div>
 
+    <!-- 🔹 SECCIÓN DE MENSAJES DE BIENVENIDA -->
+    <div class="welcome-message text-center my-4">
+        <h2 th:if="${role == 'ADMIN'}">Welcome, Admin! Manage your platform.</h2>
+        <h2 th:if="${role == 'AUTHOR'}">Welcome, Author! Ready to write?</h2>
+        <h2 th:if="${role == 'USER'}">Hello, User! Enjoy our latest articles.</h2>
+        <h2 th:if="${role == 'GUEST'}">Welcome, Guest!</h2>
+    </div>
+    <!----------------------------------------------------->
     <main class="container">
         <div class="p-4 p-md-5 mb-4 rounded text-body-emphasis bg-body-secondary"
             th:if="${not #lists.isEmpty(articleCollection)}">
