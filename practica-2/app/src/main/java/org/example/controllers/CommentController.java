@@ -17,10 +17,7 @@ public class CommentController extends BaseController {
 
     @Override
     public void applyRoutes() {
-        app.post("/comments", ctx -> {
-            createComment(ctx);
-
-        });
+        app.post("/comments", CommentController::createComment);
     }
 
     public static void getAllComments(Context ctx) {
@@ -35,15 +32,15 @@ public class CommentController extends BaseController {
     }
 
     public static void createComment(Context ctx) {
-        Long articleId = Long.parseLong(ctx.pathParam("articleId"));
-        String username = ctx.pathParam("username");
-        String comment = ctx.pathParam("comment");
+        Long articleId = Long.parseLong(ctx.formParam("articleId"));
+        String author = ctx.formParam("author");
+        String comment = ctx.formParam("comment");
 
         if (comment == null || comment.trim().isEmpty()) {
             ctx.status(400).result("Comment cannot be blanck");
             return;
         }
-        if (username == null || username.trim().isEmpty()) {
+        if (author == null || author.trim().isEmpty()) {
             ctx.status(400).result("Username cannot be blanck");
             return;
         }
@@ -52,7 +49,7 @@ public class CommentController extends BaseController {
             return;
         }
 
-        Comment myComment = new Comment(1L, comment, username, articleId);
+        Comment myComment = new Comment(3L, comment, author, articleId);
         commentService.createComment(myComment);
         ctx.json(myComment);
     }
