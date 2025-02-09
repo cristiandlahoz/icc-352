@@ -11,13 +11,13 @@
             justify-content: center;
             align-items: center;
             height: 100vh;
-            background: linear-gradient(135deg, #6a11cb, #2575fc);
+            background: linear-gradient(135deg, #444, #222);
             margin: 0;
             font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-            color: #333;
+            color: #fff;
         }
         .container {
-            background-color: #fff;
+            background-color: #333;
             padding: 2rem;
             border-radius: 12px;
             box-shadow: 0 8px 16px rgba(0, 0, 0, 0.2);
@@ -27,14 +27,17 @@
         h1 {
             font-size: 1.8rem;
             margin-bottom: 1rem;
-            color: #333;
+            color: #fff;
             text-align: center;
         }
         h1::before {
-            content: "🔒";
+            content: "";
+        }
+        h1::after {
+            content: "Iniciar Sesión";
             display: block;
-            font-size: 2rem;
-            margin-bottom: 0.5rem;
+            font-size: 1.2rem;
+            margin-top: 0.5rem;
         }
         form {
             display: flex;
@@ -44,19 +47,20 @@
         label {
             font-size: 0.95rem;
             font-weight: bold;
-            color: #555;
+            color: #ddd;
         }
         input {
             padding: 0.8rem;
             font-size: 1rem;
-            border: 1px solid #ccc;
+            border: 1px solid #555;
             border-radius: 8px;
-            background-color: #f9f9f9;
+            background-color: #222;
+            color: #fff;
             transition: border-color 0.3s ease;
             width: 100%;
         }
         input:focus {
-            border-color: #2575fc;
+            border-color: #bbb;
             outline: none;
         }
         .password-container {
@@ -68,26 +72,27 @@
             top: 50%;
             transform: translateY(-50%);
             cursor: pointer;
+            color: #ccc;
         }
         button {
             padding: 0.8rem;
             font-size: 1rem;
             font-weight: bold;
             color: #fff;
-            background-color: #2575fc;
+            background-color: #555;
             border: none;
             border-radius: 8px;
             cursor: pointer;
             transition: background-color 0.3s ease;
         }
         button:hover {
-            background-color: #1a61d3;
+            background-color: #777;
         }
         a {
             display: block;
             margin-top: 1rem;
             font-size: 0.9rem;
-            color: #2575fc;
+            color: #bbb;
             text-align: center;
             text-decoration: none;
         }
@@ -98,7 +103,7 @@
 </head>
 <body>
 <div class="container">
-    <h1>Iniciar Sesión</h1>
+    <h1>Welcome to Wornux</h1>
     <form action="/login" method="post">
         <label for="username">Usuario:</label>
         <input type="text" id="username" name="username" placeholder="Ingresa tu usuario" required autocomplete="username">
