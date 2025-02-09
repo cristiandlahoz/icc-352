@@ -211,7 +211,12 @@
 
                     </a>
                         -->
-                    <a class="btn btn-sm btn-outline-secondary" href="signUp.html">Sign up</a>
+                    <a th:if="${!logged}" class="btn btn-sm btn-outline-secondary"
+                        th:href="@{logIn.html}">Log in</a>
+
+                    <form th:if="${logged}" th:action="@{/logout}" method="post">
+                        <button type="submit" class="btn btn-sm btn-outline-danger">Log out</button>
+                    </form>
 
                 </div>
             </div>
