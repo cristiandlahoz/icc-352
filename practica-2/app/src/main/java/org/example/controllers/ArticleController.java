@@ -5,6 +5,7 @@ import io.javalin.http.Context;
 
 import org.example.models.Article;
 import org.example.models.Tag;
+import org.example.models.User;
 import org.example.services.ArticleService;
 import org.example.util.BaseController;
 
@@ -25,11 +26,15 @@ public class ArticleController extends BaseController {
                     .sorted(Comparator.comparing(Article::getDate).reversed()).collect(Collectors.toList());
             Collection<Tag> tagCollection = TagController.getAllTags();
             Boolean logged = ctx.sessionAttribute("USUARIO") != null ? true : false;
+            User user = ctx.sessionAttribute("USUARIO");
+            String role = (user != null) ? user.getRole().toString() : "GUEST";
+            ctx.sessionAttribute("ROL", role);
             Map<String, Object> model = setModel(
                     "title", "Wornux",
                     "articleCollection", articleCollection,
                     "tagCollection", tagCollection,
-                    "logged", logged);
+                    "logged", logged,
+                    "role", role);
 
             ctx.render("/public/index.html", model);
         });
