@@ -32,9 +32,18 @@ public class UserService {
         return users.get(username);
     }
 
-    public void createUser(User user) {
+    /*public void createUser(User user) {
         users.put(user.getUsername(), user);
+    }*/
+
+    public void createUser(User user) {
+        if (users.containsKey(user.getUsername())) {
+            throw new IllegalArgumentException("User already exists");
+        }
+        users.put(user.getUsername(), user);
+        System.out.println("Usuario registrado: " + user.getUsername()); // Debugging
     }
+
 
     public void updateUser(User user){
         if (user == null) {
