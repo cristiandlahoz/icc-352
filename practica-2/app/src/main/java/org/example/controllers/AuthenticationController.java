@@ -49,9 +49,7 @@ public class AuthenticationController extends BaseController {
     }
 
     private void logout(Context ctx) {
-        //User user = (User) ctx.req().getSession().getAttribute("currentUser");
         ctx.req().getSession().invalidate();
-        //user.setAccessStatus(AccessStatus.UNAUTHENTICATED);
         ctx.redirect("/");
     }
 
@@ -74,14 +72,9 @@ public class AuthenticationController extends BaseController {
             // Usuario no encontrado, se puede crear
         }
 
-        if (isAuthor == true) {
-            User newUser = new User(username, name, password, Role.AUTHOR, AccessStatus.UNAUTHENTICATED);
-            userService.createUser(newUser);
-
-        } else {
-            User newUser = new User(username, name, password, Role.USER,  AccessStatus.UNAUTHENTICATED);
-            userService.createUser(newUser);
-        }
+        Role role = isAuthor ? Role.AUTHOR : Role.USER;
+        User newUser = new User(username, name, password, role, AccessStatus.UNAUTHENTICATED);
+        userService.createUser(newUser);
 
 
         User createdUser = userService.getUserByUsername(username);
