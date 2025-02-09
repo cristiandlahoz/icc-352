@@ -60,9 +60,7 @@ public class App {
         app.before(ctx -> {
             String path = ctx.path();
 
-            if (path.equals("/") || path.equals("/login") || path.equals("/logIn.html") ||
-                    path.equals("/signUp.html") || path.equals("/signup") ||
-                    path.startsWith("/assets") || path.startsWith("/public") || path.startsWith("/articles")) {
+            if (!path.equals("/logIn.html") || !path.equals("/signUp.html")) {
                 return;
             }
 
