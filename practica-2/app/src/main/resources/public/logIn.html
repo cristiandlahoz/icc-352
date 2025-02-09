@@ -1,10 +1,12 @@
 <!DOCTYPE html>
 <html lang="es">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Iniciar Sesión</title>
     <link rel="stylesheet" href="styles.css">
+    <link href="https://fonts.googleapis.com/css?family=Playfair+Display:700,900&amp;display=swap" rel="stylesheet">
     <style>
         body {
             display: flex;
@@ -13,9 +15,9 @@
             height: 100vh;
             background: linear-gradient(135deg, #444, #222);
             margin: 0;
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
             color: #fff;
         }
+
         .container {
             background-color: #333;
             padding: 2rem;
@@ -24,31 +26,37 @@
             width: 100%;
             max-width: 400px;
         }
+
         h1 {
             font-size: 1.8rem;
             margin-bottom: 1rem;
             color: #fff;
             text-align: center;
         }
+
         h1::before {
             content: "";
         }
+
         h1::after {
             content: "Iniciar Sesión";
             display: block;
             font-size: 1.2rem;
             margin-top: 0.5rem;
         }
+
         form {
             display: flex;
             flex-direction: column;
             gap: 1.5rem;
         }
+
         label {
             font-size: 0.95rem;
             font-weight: bold;
             color: #ddd;
         }
+
         input {
             padding: 0.8rem;
             font-size: 1rem;
@@ -59,13 +67,16 @@
             transition: border-color 0.3s ease;
             width: 100%;
         }
+
         input:focus {
             border-color: #bbb;
             outline: none;
         }
+
         .password-container {
             position: relative;
         }
+
         .password-container span {
             position: absolute;
             right: 10px;
@@ -74,6 +85,7 @@
             cursor: pointer;
             color: #ccc;
         }
+
         button {
             padding: 0.8rem;
             font-size: 1rem;
@@ -85,9 +97,11 @@
             cursor: pointer;
             transition: background-color 0.3s ease;
         }
+
         button:hover {
             background-color: #777;
         }
+
         a {
             display: block;
             margin-top: 1rem;
@@ -96,34 +110,39 @@
             text-align: center;
             text-decoration: none;
         }
+
         a:hover {
             text-decoration: underline;
         }
     </style>
 </head>
+
 <body>
-<div class="container">
-    <h1>Welcome to Wornux</h1>
-    <form action="/login" method="post">
-        <label for="username">Usuario:</label>
-        <input type="text" id="username" name="username" placeholder="Ingresa tu usuario" required autocomplete="username">
+    <div class="container">
+        <h1>Welcome to Wornux</h1>
+        <form action="/login" method="post">
+            <label for="username">Usuario:</label>
+            <input type="text" id="username" name="username" placeholder="Ingresa tu usuario" required
+                autocomplete="username">
 
-        <label for="password">Contraseña:</label>
-        <div class="password-container">
-            <input type="password" id="password" name="password" placeholder="Ingresa tu contraseña" required autocomplete="current-password">
-            <span onclick="togglePassword()">👁</span>
-        </div>
+            <label for="password">Contraseña:</label>
+            <div class="password-container">
+                <input type="password" id="password" name="password" placeholder="Ingresa tu contraseña" required
+                    autocomplete="current-password">
+                <span onclick="togglePassword()">👁</span>
+            </div>
 
-        <button type="submit">Iniciar Sesión</button>
-    </form>
-    <a href="/signUp.html">Crear una cuenta nueva</a>
-</div>
+            <button type="submit">Iniciar Sesión</button>
+        </form>
+        <a href="/signUp.html">Crear una cuenta nueva</a>
+    </div>
 
-<script>
-    function togglePassword() {
-        let passInput = document.getElementById("password");
-        passInput.type = (passInput.type === "password") ? "text" : "password";
-    }
-</script>
+    <script>
+        function togglePassword() {
+            let passInput = document.getElementById("password");
+            passInput.type = (passInput.type === "password") ? "text" : "password";
+        }
+    </script>
 </body>
+
 </html>
