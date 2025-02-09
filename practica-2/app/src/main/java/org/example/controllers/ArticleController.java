@@ -4,26 +4,31 @@ import io.javalin.Javalin;
 import io.javalin.http.Context;
 
 import org.example.models.Article;
+import org.example.models.Tag;
 import org.example.services.ArticleService;
 import org.example.util.BaseController;
 
 import java.util.*;
+import java.util.stream.Collectors;
 
-public class ArticleController extends BaseController{
+public class ArticleController extends BaseController {
     private static final ArticleService articleService = new ArticleService();
 
-    public ArticleController(Javalin app){
+    public ArticleController(Javalin app) {
         super(app);
     }
 
     @Override
-    public void applyRoutes(){
+    public void applyRoutes() {
         app.get("/", ctx -> {
-            Collection<Article> articleCollection = articleService.getAllArticles();
-            Map<String, Object> model = new HashMap<>();
-            model.put("title", "Wornux");
-            model.put("articleCollection", articleCollection);
-            
+            List<Article> articleCollection = articleService.getAllArticles().stream()
+                    .sorted(Comparator.comparing(Article::getDate).reversed()).collect(Collectors.toList());
+            Collection<Tag> tagCollection = TagController.getAllTags();
+            Map<String, Object> model = setModel(
+                    "title", "Wornux",
+                    "articleCollection", articleCollection,
+                    "tagCollection", tagCollection);
+
             ctx.render("/public/index.html", model);
         });
 

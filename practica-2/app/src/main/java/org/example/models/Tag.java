@@ -2,11 +2,11 @@ package org.example.models;
 
 public class Tag {
 	private Long tagId;
-	private String tagName;
+	private String name;
 
-	public Tag(Long tagId, String tagName) {
+	public Tag(Long tagId, String name) {
 		this.tagId = tagId;
-		this.tagName = tagName;
+		this.name = name;
 	}
 
 	public Long getTagId() {
@@ -17,11 +17,11 @@ public class Tag {
 		this.tagId = tagId;
 	}
 
-	public String getTagName() {
-		return tagName;
+	public String getName() {
+		return name;
 	}
 
-	public void setTagName(String tagName) {
-		this.tagName = tagName;
+	public void setName(String name) {
+		this.name = name;
 	}
 }

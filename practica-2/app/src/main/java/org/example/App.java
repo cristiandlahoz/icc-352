@@ -19,12 +19,21 @@ public class App {
                 cf.hostedPath = "/assets";
                 cf.directory = "/assets";
             });
+            config.staticFiles.add(cf -> {
+                cf.hostedPath = "/fragments";
+                cf.directory = "/fragments";
+
+            });
+
             config.fileRenderer(new JavalinThymeleaf());
         }).start(7777);
 
         // Controladores
         new ArticleController(app).applyRoutes();
         new AuthenticationController(userService).applyRoutes(app);
+
+        app.before("/", ctx -> {
+        });
 
         app.get("/articles", ArticleController::getAllArticles);
         app.get("/articles/{id}", ArticleController::getArticleById);
@@ -45,7 +54,6 @@ public class App {
         app.delete("/comments/{id}", CommentController::deleteComment);
         app.get("/articles/{articleId}/comments/{commentId}", CommentController::getCommentByArticleAndCommentId);
 
-        app.get("/tags", TagController::getAllTags);
         app.post("/tags", TagController::createTag);
 
         // Middleware para verificar sesión antes de acceder a ciertas rutas
