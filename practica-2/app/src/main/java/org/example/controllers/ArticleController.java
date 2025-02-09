@@ -24,10 +24,10 @@ public class ArticleController extends BaseController {
             List<Article> articleCollection = articleService.getAllArticles().stream()
                     .sorted(Comparator.comparing(Article::getDate).reversed()).collect(Collectors.toList());
             Collection<Tag> tagCollection = TagController.getAllTags();
-            Map<String, Object> model = new HashMap<>();
-            model.put("title", "Wornux");
-            model.put("articleCollection", articleCollection);
-            model.put("tagCollection", tagCollection);
+            Map<String, Object> model = setModel(
+                    "title", "Wornux",
+                    "articleCollection", articleCollection,
+                    "tagCollection", tagCollection);
 
             ctx.render("/public/index.html", model);
         });
