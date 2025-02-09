@@ -33,17 +33,12 @@ public class ArticleController extends BaseController {
     public static void getAllArticles(Context ctx) {
         List<Article> articleCollection = articleService.getAllArticles();
         Collection<Tag> tagCollection = TagController.getAllTags();
-        User author = ctx.sessionAttribute("USUARIO");
-        Boolean logged = true; 
-        if(author == null)
-           logged = false;
-        
+        Boolean logged = ctx.sessionAttribute("USUARIO") != null ? true : false;
         Map<String, Object> model = setModel(
                 "title", "Wornux",
                 "articleCollection", articleCollection,
                 "tagCollection", tagCollection,
-                "logged", logged,
-                "author", author);
+                "logged", logged);
 
         ctx.render("/public/index.html", model);
     }
@@ -54,7 +49,13 @@ public class ArticleController extends BaseController {
 
         Collection<Tag> tags = myArticle.getTags();
         List<Article> authorArticles = articleService.getArticleByAuthor(myArticle.getAuthor());
-        Boolean logged = ctx.sessionAttribute("USUARIO") != null ? true : false;
+        User author = ctx.sessionAttribute("USUARIO");
+        String username = "";
+        Boolean logged = false;
+        if (author != null) {
+            logged = true;
+            username = author.getUsername();
+        }
         List<Comment> comments = new CommentService().getCommentsByArticleId(articleId);
         Map<String, Object> model = setModel(
                 "title", "Wornux",
@@ -62,7 +63,8 @@ public class ArticleController extends BaseController {
                 "tags", tags,
                 "logged", logged,
                 "authorArticles", authorArticles,
-                "comments", comments);
+                "comments", comments,
+                "author", username);
 
         ctx.render("/public/templates/article-view.html", model);
     }
