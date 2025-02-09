@@ -42,7 +42,7 @@ public class User {
 		this.password = password;
 	}
 
-	public Role isRole() {
+	public Role getRole() {
 		return role;
 	}
 
