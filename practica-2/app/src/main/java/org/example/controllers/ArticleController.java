@@ -20,31 +20,42 @@ public class ArticleController extends BaseController {
 
     @Override
     public void applyRoutes() {
-        app.get("/", ctx -> {
-            List<Article> articleCollection = articleService.getAllArticles().stream()
-                    .sorted(Comparator.comparing(Article::getDate).reversed()).collect(Collectors.toList());
-            Collection<Tag> tagCollection = TagController.getAllTags();
-            Boolean logged = ctx.sessionAttribute("USUARIO") != null ? true : false;
-            Map<String, Object> model = setModel(
-                    "title", "Wornux",
-                    "articleCollection", articleCollection,
-                    "tagCollection", tagCollection,
-                    "logged", logged);
-
-            ctx.render("/public/index.html", model);
-        });
+        app.get("/", ArticleController::getAllArticles);
+        app.get("/articles/{id}", ArticleController::getArticleById);
+        app.post("/articles", ArticleController::createArticle);
+        app.post("/articles/{id}", ArticleController::updateArticle);
+        app.delete("/articles/{id}", ArticleController::deleteArticle);
 
     };
 
     public static void getAllArticles(Context ctx) {
-        Collection<Article> MyArticles = articleService.getAllArticles();
-        ctx.json(MyArticles);
+        List<Article> articleCollection = articleService.getAllArticles();
+        Collection<Tag> tagCollection = TagController.getAllTags();
+        Boolean logged = ctx.sessionAttribute("USUARIO") != null ? true : false;
+        Map<String, Object> model = setModel(
+                "title", "Wornux",
+                "articleCollection", articleCollection,
+                "tagCollection", tagCollection,
+                "logged", logged);
+
+        ctx.render("/public/index.html", model);
     }
 
     public static void getArticleById(Context ctx) {
-        long id = Integer.parseInt(ctx.pathParam("id"));
+        long id = Long.parseLong(ctx.pathParam("id"));
         Article myArticle = articleService.getArticleById(id);
-        ctx.json(myArticle);
+
+        Collection<Tag> tags = myArticle.getTags();
+        List<Article> authorArticles = articleService.getArticleByAuthor(myArticle.getAuthor());
+        Boolean logged = ctx.sessionAttribute("USUARIO") != null ? true : false;
+        Map<String, Object> model = setModel(
+                "title", "Wornux",
+                "article", myArticle,
+                "tags", tags,
+                "logged", logged,
+                "authorArticles", authorArticles);
+
+        ctx.render("/public/templates/article-view.html", model);
     }
 
     public static void createArticle(Context ctx) {
