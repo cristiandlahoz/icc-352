@@ -6,6 +6,7 @@ import io.javalin.http.Context;
 import org.example.models.Article;
 import org.example.models.Comment;
 import org.example.models.Tag;
+import org.example.models.User;
 import org.example.services.ArticleService;
 import org.example.services.CommentService;
 import org.example.util.BaseController;
@@ -32,12 +33,17 @@ public class ArticleController extends BaseController {
     public static void getAllArticles(Context ctx) {
         List<Article> articleCollection = articleService.getAllArticles();
         Collection<Tag> tagCollection = TagController.getAllTags();
-        Boolean logged = ctx.sessionAttribute("USUARIO") != null ? true : false;
+        User author = ctx.sessionAttribute("USUARIO");
+        Boolean logged = true; 
+        if(author == null)
+           logged = false;
+        
         Map<String, Object> model = setModel(
                 "title", "Wornux",
                 "articleCollection", articleCollection,
                 "tagCollection", tagCollection,
-                "logged", logged);
+                "logged", logged,
+                "author", author);
 
         ctx.render("/public/index.html", model);
     }
