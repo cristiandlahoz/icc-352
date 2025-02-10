@@ -1,7 +1,11 @@
 package org.example.controllers;
 
-import io.javalin.Javalin;
-import io.javalin.http.Context;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collection;
+import java.util.Date;
+import java.util.List;
+import java.util.Map;
 
 import org.example.models.Article;
 import org.example.models.Comment;
@@ -12,8 +16,8 @@ import org.example.services.CommentService;
 import org.example.services.TagService;
 import org.example.util.BaseController;
 
-import java.util.*;
-import java.util.stream.Collectors;
+import io.javalin.Javalin;
+import io.javalin.http.Context;
 
 public class ArticleController extends BaseController {
     private static final ArticleService articleService = new ArticleService();
@@ -36,17 +40,17 @@ public class ArticleController extends BaseController {
         List<Article> articleCollection = articleService.getAllArticles();
         Collection<Tag> tagCollection = TagController.getAllTags();
         Boolean logged = ctx.sessionAttribute("USUARIO") != null ? true : false;
-            User user = ctx.sessionAttribute("USUARIO");
-            String role = (user != null) ? user.getRole().toString() : "GUEST";
-            ctx.sessionAttribute("ROL", role);
-            Map<String, Object> model = setModel(
-                    "title", "Wornux",
-                    "articleCollection", articleCollection,
-                    "tagCollection", tagCollection,
-                    "logged", logged,
-                    "role", role);
+        User user = ctx.sessionAttribute("USUARIO");
+        String role = (user != null) ? user.getRole().toString() : "GUEST";
+        ctx.sessionAttribute("ROL", role);
+        Map<String, Object> model = setModel(
+                "title", "Wornux",
+                "articleCollection", articleCollection,
+                "tagCollection", tagCollection,
+                "logged", logged,
+                "role", role);
 
-            ctx.render("/public/index.html", model);
+        ctx.render("/public/index.html", model);
     }
 
     public static void getArticleById(Context ctx) {
@@ -96,18 +100,20 @@ public class ArticleController extends BaseController {
                 return;
             }
 
-
             Article updatedArticle = article_process(ctx, existingArticle);
             if (updatedArticle == null) {
                 ctx.status(400).result("Error processing article");
                 return;
             }
 
-            /*existingArticle.setTitle(updatedArticle.getTitle());
-            existingArticle.setContent(updatedArticle.getContent());
-            existingArticle.setTags(updatedArticle.getTags());
-            existingArticle.setAuthor(existingArticle.getAuthor()); // Mantiene el autor original
-            existingArticle.setDate(new Date()); // Actualiza la fecha de modificación*/
+            /*
+             * existingArticle.setTitle(updatedArticle.getTitle());
+             * existingArticle.setContent(updatedArticle.getContent());
+             * existingArticle.setTags(updatedArticle.getTags());
+             * existingArticle.setAuthor(existingArticle.getAuthor()); // Mantiene el autor
+             * original
+             * existingArticle.setDate(new Date()); // Actualiza la fecha de modificación
+             */
 
             ctx.status(200).result("Updating Done");
         } catch (Exception e) {
@@ -122,8 +128,6 @@ public class ArticleController extends BaseController {
             String content = ctx.formParam("content");
             String tags = ctx.formParam("tags");
 
-            String author = ctx.sessionAttribute("USERNAME");
-
             List<String> selectedTags = new ArrayList<>();
             if (tags != null && !tags.trim().isEmpty()) {
                 selectedTags = Arrays.asList(tags.split(","));
@@ -137,8 +141,8 @@ public class ArticleController extends BaseController {
             }
 
             if (article == null) { // Creo
-               // Article newArticle = new Article(title, content, author, new Date());
-                Article newArticle = new Article(title, content,"Theprimeagen", new Date());
+                // Article newArticle = new Article(title, content, author, new Date());
+                Article newArticle = new Article(title, content, "Theprimeagen", new Date());
                 newArticle.setTags(tagArrayList);
 
                 System.out.println("Verificando valores del nuevo artículo:");
@@ -178,7 +182,6 @@ public class ArticleController extends BaseController {
             System.out.println(" - ID: " + tag.getTagId() + ", Nombre: " + tag.getName());
         }
     }
-
 
     public static void deleteArticle(Context ctx) {
         try {

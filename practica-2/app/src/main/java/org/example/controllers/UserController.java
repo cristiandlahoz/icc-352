@@ -39,9 +39,11 @@ public class UserController extends BaseController {
     }
 
     public static void createUser(Context ctx) {
-       /* User myUser = ctx.bodyAsClass(User.class);
-        userService.createUser(myUser);
-        ctx.status(201);*/
+        /*
+         * User myUser = ctx.bodyAsClass(User.class);
+         * userService.createUser(myUser);
+         * ctx.status(201);
+         */
         String name = ctx.formParam("name");
         String username = ctx.formParam("username");
         String password = ctx.formParam("password");
@@ -57,24 +59,14 @@ public class UserController extends BaseController {
             ctx.redirect("/templates/create_user.html?error=user_exists");
             return;
         } catch (IllegalArgumentException e) {
-            // Usuario no encontrado, se puede crear
         }
 
         Role role = isAuthor ? Role.AUTHOR : Role.USER;
         User newUser = new User(username, name, password, role, AccessStatus.UNAUTHENTICATED);
         userService.createUser(newUser);
 
-
-        if (newUser != null) {
-            ctx.status(201);
-            ctx.redirect("/");
-        } else {
-            ctx.status(400).result("Error creating user");
-        }
-
-
+        ctx.status(201).redirect("/");
     }
-    /**/
 
     public static void updateUser(Context ctx) {
         User myUser = ctx.bodyAsClass(User.class);

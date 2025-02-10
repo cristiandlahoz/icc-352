@@ -11,7 +11,7 @@ public class TagController {
     private static final TagService tagService = new TagService();
 
     public static Collection<Tag> getAllTags() {
-        return tagService.getAllTags();
+        return TagService.getAllTags();
     }
 
     public static Tag getTagById(Context ctx) {

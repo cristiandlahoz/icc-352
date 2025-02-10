@@ -1,9 +1,14 @@
 package org.example;
 
-import org.example.controllers.*;
+import org.example.controllers.ArticleController;
+import org.example.controllers.AuthenticationController;
+import org.example.controllers.CommentController;
+import org.example.controllers.TagController;
+import org.example.controllers.UserController;
+import org.example.models.User;
+
 import io.javalin.Javalin;
 import io.javalin.rendering.template.JavalinThymeleaf;
-import org.example.models.User;
 
 public class App {
     /**
@@ -24,7 +29,6 @@ public class App {
             config.fileRenderer(new JavalinThymeleaf());
         }).start(7789);
 
-        // Controladores
         new ArticleController(app).applyRoutes();
         new AuthenticationController(app).applyRoutes();
         new UserController(app).applyRoutes();
@@ -38,7 +42,6 @@ public class App {
 
         app.post("/tags", TagController::createTag);
 
-        // Middleware para verificar sesión antes de acceder a ciertas rutas
         app.before(ctx -> {
             String path = ctx.path();
 
@@ -54,7 +57,6 @@ public class App {
             }
         });
 
-        // Middleware para persistir la sesión después de cada petición
         app.after(ctx -> {
             User user = ctx.sessionAttribute("USUARIO");
             if (user != null) {

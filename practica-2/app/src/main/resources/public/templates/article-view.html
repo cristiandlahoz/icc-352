@@ -194,6 +194,8 @@
             overflow-wrap: break-word;
             white-space: normal;
         }
+
+        #delete {}
     </style>
 
 
@@ -306,6 +308,9 @@
                     <form th:if="${logged}" th:action="@{/logout}" method="post">
                         <button type="submit" class="btn btn-sm btn-outline-danger">Log out</button>
                     </form>
+                    <br>
+                    <a th:if="${!logged}" id="delete" class="btn btn-sm btn-outline-secondary"
+                        th:href="@{/templates/logIn.html}">Delete</a>
 
                 </div>
             </div>
@@ -466,7 +471,7 @@
     <script>
         const articleId = [[${article.articleId}]]
         const logged = [[${logged}]];
-        const author = '[[${author}]]'
+        const user = '[[${user}]]'
 
         document.getElementById("commentForm").addEventListener("submit", async function (event) {
             event.preventDefault(); // Evitar recarga
@@ -487,7 +492,7 @@
             const response = await fetch("/comments", {
                 method: "POST",
                 headers: {"Content-Type": "application/x-www-form-urlencoded"},
-                body: new URLSearchParams({articleId: articleId, comment: commentText, author: author})
+                body: new URLSearchParams({articleId: articleId, comment: commentText, author: user})
             });
 
             if (response.ok) {
