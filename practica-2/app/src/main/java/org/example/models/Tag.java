@@ -1,20 +1,18 @@
 package org.example.models;
 
 public class Tag {
+	private static Long size = 0L;
 	private Long tagId;
 	private String name;
 
-	public Tag(Long tagId, String name) {
-		this.tagId = tagId;
+	public Tag( String name) {
+		size++;
+		this.tagId = size;
 		this.name = name;
 	}
 
 	public Long getTagId() {
 		return tagId;
-	}
-
-	public void setTagId(Long tagId) {
-		this.tagId = tagId;
 	}
 
 	public String getName() {
@@ -25,3 +23,5 @@ public class Tag {
 		this.name = name;
 	}
 }
+
+

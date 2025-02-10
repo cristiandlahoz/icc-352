@@ -27,13 +27,7 @@ public class App {
         // Controladores
         new ArticleController(app).applyRoutes();
         new AuthenticationController(app).applyRoutes();
-
-
-        app.get("/users", UserController::getAllUsers);
-        app.get("/users/{username}", UserController::getUserByUsername);
-        app.post("/users/", UserController::createUser);
-        app.put("/users/{username}", UserController::updateUser);
-        app.delete("/users/{username}", UserController::deleteUser);
+        new UserController(app).applyRoutes();
 
         app.get("/comments", CommentController::getAllComments);
         app.get("/comments/{id}", CommentController::getCommentById);
