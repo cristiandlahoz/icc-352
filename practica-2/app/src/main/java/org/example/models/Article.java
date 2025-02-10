@@ -4,6 +4,7 @@ import java.util.Date;
 import java.util.ArrayList;
 
 public class Article {
+    private static Long size = 0L;
     private Long articleId;
     private String title;
     private String content;
@@ -12,8 +13,9 @@ public class Article {
     private ArrayList<Comment> comments;
     private ArrayList<Tag> tags;
 
-    public Article(Long articleId, String title, String content, String author, Date date) {
-        this.articleId = articleId;
+    public Article( String title, String content, String author, Date date) {
+        size++;
+        this.articleId = size;
         this.title = title;
         this.content = content;
         this.author = author;
