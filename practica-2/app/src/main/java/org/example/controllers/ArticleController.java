@@ -82,7 +82,7 @@ public class ArticleController extends BaseController {
             ctx.status(201);
             ctx.redirect("/");
         } else {
-            ctx.status(400).result("Error creando el artículo");
+            ctx.status(400).result("Error Creating Article");
         }
     }
 
@@ -92,14 +92,14 @@ public class ArticleController extends BaseController {
 
             Article existingArticle = articleService.getArticleById(articleId);
             if (existingArticle == null) {
-                ctx.status(404).result("Artículo no encontrado");
+                ctx.status(404).result("Article not found");
                 return;
             }
 
 
             Article updatedArticle = article_process(ctx, existingArticle);
             if (updatedArticle == null) {
-                ctx.status(400).result("Error procesando el artículo");
+                ctx.status(400).result("Error processing article");
                 return;
             }
 
@@ -109,10 +109,10 @@ public class ArticleController extends BaseController {
             existingArticle.setAuthor(existingArticle.getAuthor()); // Mantiene el autor original
             existingArticle.setDate(new Date()); // Actualiza la fecha de modificación*/
 
-            ctx.status(200).result("Artículo actualizado exitosamente");
+            ctx.status(200).result("Updating Done");
         } catch (Exception e) {
             e.printStackTrace();
-            ctx.status(500).result("Error actualizando el artículo");
+            ctx.status(500).result("Error Updating Article");
         }
     }
 
@@ -181,9 +181,23 @@ public class ArticleController extends BaseController {
 
 
     public static void deleteArticle(Context ctx) {
-        String id = ctx.pathParam("id");
-        Long articleId = Long.parseLong(id);
-        articleService.deleteArticleById(articleId);
-        ctx.status(200);
+        try {
+            Long articleId = Long.parseLong(ctx.pathParam("id"));
+
+            Article existingArticle = articleService.getArticleById(articleId);
+            if (existingArticle == null) {
+                ctx.status(404).result("Article not found");
+                return;
+            }
+            articleService.deleteArticleById(articleId);
+            ctx.status(200).result("Article deleted");
+
+        } catch (NumberFormatException e) {
+            ctx.status(400).result("Article ID not valid");
+        } catch (Exception e) {
+            e.printStackTrace();
+            ctx.status(500).result("Error deleting article");
+        }
     }
+
 }
