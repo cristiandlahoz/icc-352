@@ -129,6 +129,11 @@ public class ArticleController extends BaseController {
             String title = ctx.formParam("title");
             String content = ctx.formParam("content");
             String tags = ctx.formParam("tags");
+            User author = ctx.sessionAttribute("USUARIO");
+            if(author == null){
+                ctx.status(401).result("You are not logged");
+                return null;
+            }
 
             List<String> selectedTags = new ArrayList<>();
             if (tags != null && !tags.trim().isEmpty()) {
@@ -143,8 +148,7 @@ public class ArticleController extends BaseController {
             }
 
             if (article == null) { // Creo
-                // Article newArticle = new Article(title, content, author, new Date());
-                Article newArticle = new Article(title, content, "Theprimeagen", new Date());
+                Article newArticle = new Article(title, content, author.getUsername(), new Date());
                 newArticle.setTags(tagArrayList);
 
                 System.out.println("Verificando valores del nuevo artículo:");
