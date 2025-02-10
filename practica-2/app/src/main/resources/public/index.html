@@ -211,6 +211,9 @@
 
                     </a>
                         -->
+                    <a th:if="${role == 'ADMIN' || role == 'AUTHOR'}" class="btn btn-sm btn-outline-secondary"
+                        th:href="@{/templates/create_article.html}">Create article</a>
+
                     <a th:if="${!logged}" class="btn btn-sm btn-outline-secondary"
                         th:href="@{/templates/logIn.html}">Log in</a>
 

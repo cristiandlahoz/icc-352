@@ -318,7 +318,7 @@
                     <form th:if="${article.author.equals(user)}" th:action="@{/logout}" method="put">
                         <button type="submit" class="btn btn-sm btn-outline-danger">Update</button>
                     </form>
-                    <button class="btn btn-sm btn-outline-danger" onclick="deleteArticle()">Delete</button>
+                    <button th:if="${article.author.equals(user)}" class="btn btn-sm btn-outline-danger" onclick="deleteArticle()">Delete</button>
 
                 </div>
             </div>
