@@ -56,6 +56,8 @@ public class ArticleController extends BaseController {
     public static void getArticleById(Context ctx) {
         long articleId = Long.parseLong(ctx.pathParam("id"));
         Article myArticle = articleService.getArticleById(articleId);
+        if (myArticle == null)
+            ctx.status(404).result("Article not found");
 
         Collection<Tag> tags = myArticle.getTags();
         List<Article> authorArticles = articleService.getArticleByAuthor(myArticle.getAuthor());
