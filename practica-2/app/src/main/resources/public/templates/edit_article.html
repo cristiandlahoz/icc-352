@@ -1,0 +1,138 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Editar Artículo</title>
+  <link rel="stylesheet" href="styles.css">
+  <link href="https://fonts.googleapis.com/css?family=Playfair+Display:700,900&amp;display=swap" rel="stylesheet">
+  <style>
+    body {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      height: 100vh;
+      background: linear-gradient(135deg, #444, #222);
+      margin: 0;
+      color: #fff;
+      font-family: "Playfair Display", serif;
+    }
+
+    .container {
+      background-color: #333;
+      padding: 2rem;
+      border-radius: 12px;
+      box-shadow: 0 8px 16px rgba(0, 0, 0, 0.2);
+      width: 100%;
+      max-width: 500px;
+    }
+
+    h1 {
+      font-size: 1.8rem;
+      margin-bottom: 1rem;
+      color: #fff;
+      text-align: center;
+    }
+
+    form {
+      display: flex;
+      flex-direction: column;
+      gap: 1.5rem;
+    }
+
+    label {
+      font-size: 0.95rem;
+      font-weight: bold;
+      color: #ddd;
+    }
+
+    input, textarea {
+      padding: 0.8rem;
+      font-size: 1rem;
+      border: 1px solid #555;
+      border-radius: 8px;
+      background-color: #222;
+      color: #fff;
+      transition: border-color 0.3s ease;
+      width: 100%;
+    }
+
+    input:focus, textarea:focus {
+      border-color: #bbb;
+      outline: none;
+    }
+
+    textarea {
+      height: 150px;
+      resize: none;
+    }
+
+    button {
+      padding: 0.8rem;
+      font-size: 1rem;
+      font-weight: bold;
+      color: #fff;
+      background-color: #555;
+      border: none;
+      border-radius: 8px;
+      cursor: pointer;
+      transition: background-color 0.3s ease;
+    }
+
+    button:hover {
+      background-color: #777;
+    }
+
+    .buttons {
+      display: flex;
+      justify-content: space-between;
+    }
+  </style>
+</head>
+<body>
+
+<div class="container">
+  <h1>Editar Artículo</h1>
+  <form id="editArticleForm" method="post">
+    <input type="hidden" id="articleId" name="articleId"> <!-- Campo oculto para el ID -->
+
+    <label for="title">Título:</label>
+    <input type="text" id="title" name="title" placeholder="Ingrese el título del artículo" required>
+
+    <label for="content">Contenido:</label>
+    <textarea id="content" name="content" placeholder="Escriba el contenido del artículo" required></textarea>
+
+    <label for="tags">Etiquetas:</label>
+    <input type="text" id="tags" name="tags" placeholder="Separe las etiquetas con comas" required>
+
+    <div class="buttons">
+      <button type="submit">Actualizar</button>
+      <button type="button" onclick="goBack()">Cancelar</button>
+    </div>
+  </form>
+</div>
+
+<script>
+  // Obtener el artículo a editar
+  const articleId = new URLSearchParams(window.location.search).get("id");
+
+  if (articleId) {
+    fetch(`/articles/${articleId}`) // Obtener los datos del artículo desde el backend
+            .then(response => response.json())
+            .then(article => {
+              document.getElementById("articleId").value = article.articleId;
+              document.getElementById("title").value = article.title;
+              document.getElementById("content").value = article.content;
+              document.getElementById("tags").value = article.tags.map(tag => tag.name).join(", ");
+              document.getElementById("editArticleForm").action = `/articles/update/${article.articleId}`;
+            })
+            .catch(error => console.error("Error cargando el artículo:", error));
+  }
+
+  function goBack() {
+    window.history.back();
+  }
+</script>
+
+</body>
+</html>
