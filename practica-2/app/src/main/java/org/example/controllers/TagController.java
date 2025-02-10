@@ -23,7 +23,7 @@ public class TagController {
 
     public static void createTag(Context ctx) {
         Tag myTag = ctx.bodyAsClass(Tag.class);
-        tagService.createTag(myTag);
+        tagService.createTag(myTag.getName());
         ctx.status(201);
     }
 
