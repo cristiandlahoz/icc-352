@@ -315,10 +315,10 @@
                     </form>
                     <br>
 
-                    <form th:if="${article.author.equals(user)}" th:action="@{/logout}" method="put">
-                        <button type="submit" class="btn btn-sm btn-outline-danger">Update</button>
-                    </form>
-                    <button th:if="${article.author.equals(user)}" class="btn btn-sm btn-outline-danger" onclick="deleteArticle()">Delete</button>
+                    <button th:if="${article.author.equals(user)}" class="btn btn-sm btn-outline-danger"
+                        onclick="updateArticle()">Update</button>
+                    <button th:if="${article.author.equals(user)}" class="btn btn-sm btn-outline-danger"
+                        onclick="deleteArticle()">Delete</button>
 
                 </div>
             </div>
@@ -440,7 +440,7 @@
 
                     <div>
                         <h4 class="fst-italic">Recent posts</h4>
-                        <ul class="list-unstyled" th:each="myArticle : ${authorArticles}">
+                        <ul class="list-unstyled" th:each="myArticle : ${authorArticles}" th:if="${article.articleId != myArticle.articleId}">
                             <li>
                                 <a class="d-flex flex-column flex-lg-row gap-3 align-items-start align-items-lg-center py-3 link-body-emphasis text-decoration-none border-top"
                                     href="#">
@@ -547,6 +547,22 @@
                         window.location.href = "/";
                     } else {
                         alert("Error deleting article");
+                    }
+                });
+            }
+        }
+    </script>
+    <script>
+        function updateArticle() {
+            const articledId = [[${article.articleId}]]
+            if (confirm("Are you sure you want to update this article?")) {
+                fetch(`/articles/${articleId}`, {
+                    method: 'PUT',
+                }).then(response => {
+                    if (response.ok) {
+                        window.location.href = "/";
+                    } else {
+                        alert("Error updating article");
                     }
                 });
             }
