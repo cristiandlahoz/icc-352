@@ -76,31 +76,59 @@ public class ArticleController extends BaseController {
     }
 
     public static void createArticle(Context ctx) {
-        Article article = article_process(ctx); // Recibe el artículo procesado
-        if (article != null) {
+        Article newArticle = article_process(ctx, null);
+
+        if (newArticle != null) {
             ctx.status(201);
             ctx.redirect("/");
         } else {
-            ctx.status(400).result("Error creating article");
+            ctx.status(400).result("Error creando el artículo");
         }
     }
 
-    public static Article article_process(Context ctx) {
+    public static void updateArticle(Context ctx) {
         try {
-            // Obtener datos del formulario
+            Long articleId = Long.parseLong(ctx.pathParam("id"));
+
+            Article existingArticle = articleService.getArticleById(articleId);
+            if (existingArticle == null) {
+                ctx.status(404).result("Artículo no encontrado");
+                return;
+            }
+
+
+            Article updatedArticle = article_process(ctx, existingArticle);
+            if (updatedArticle == null) {
+                ctx.status(400).result("Error procesando el artículo");
+                return;
+            }
+
+            /*existingArticle.setTitle(updatedArticle.getTitle());
+            existingArticle.setContent(updatedArticle.getContent());
+            existingArticle.setTags(updatedArticle.getTags());
+            existingArticle.setAuthor(existingArticle.getAuthor()); // Mantiene el autor original
+            existingArticle.setDate(new Date()); // Actualiza la fecha de modificación*/
+
+            ctx.status(200).result("Artículo actualizado exitosamente");
+        } catch (Exception e) {
+            e.printStackTrace();
+            ctx.status(500).result("Error actualizando el artículo");
+        }
+    }
+
+    public static Article article_process(Context ctx, Article article) {
+        try {
             String title = ctx.formParam("title");
             String content = ctx.formParam("content");
             String tags = ctx.formParam("tags");
 
             String author = ctx.sessionAttribute("USERNAME");
 
-            // Manejar etiquetas
             List<String> selectedTags = new ArrayList<>();
             if (tags != null && !tags.trim().isEmpty()) {
                 selectedTags = Arrays.asList(tags.split(","));
             }
 
-            // Crear la lista de etiquetas
             ArrayList<Tag> tagArrayList = new ArrayList<>();
             for (String tagName : selectedTags) {
                 if (tagName != null && !tagName.trim().isEmpty()) {
@@ -108,45 +136,50 @@ public class ArticleController extends BaseController {
                 }
             }
 
-            //Article myArticle = ctx.bodyAsClass(Article.class);
+            if (article == null) { // Creo
+               // Article newArticle = new Article(title, content, author, new Date());
+                Article newArticle = new Article(title, content,"Theprimeagen", new Date());
+                newArticle.setTags(tagArrayList);
 
-            //Article myArticle = new Article(title, content, author, new Date());
-            //tuve que poner esta así porque lo estoy probando fuera de sesion y me daba error
-            Article myArticle = new Article(title, content, "Theprimeagen", new Date());
-            myArticle.setTags(tagArrayList);
+                System.out.println("Verificando valores del nuevo artículo:");
+                printArticleDetails(newArticle);
 
-            // 🔹 Verificar los valores antes de guardar
-            System.out.println("🔍 Verificando valores del artículo:");
-            System.out.println("Título: " + myArticle.getTitle());
-            System.out.println("Contenido: " + myArticle.getContent());
-            System.out.println("Autor: " + myArticle.getAuthor());
-            System.out.println("Fecha: " + myArticle.getDate());
-            System.out.println("Tags:");
-            for (Tag tag : myArticle.getTags()) {
-                System.out.println(" - ID: " + tag.getTagId() + ", Nombre: " + tag.getName());
+                articleService.createArticle(newArticle);
+                return newArticle;
+            } else {
+                article.setTitle(title);
+                article.setContent(content);
+                article.setTags(tagArrayList);
+
+                articleService.updateArticle(article);// Actualizar
+
+                System.out.println("Verificando valores del artículo actualizado:");
+                printArticleDetails(article);
+
+                getArticleById(ctx);
+
+                return article;
             }
 
-
-            // Guardar artículo en la base de datos
-            articleService.createArticle(myArticle);
-
-            return myArticle; // Devolver el artículo creado
         } catch (Exception e) {
             e.printStackTrace();
             return null;
         }
     }
 
-    public static void updateArticle(Context ctx) {
-
-        Article myArticle = ctx.bodyAsClass(Article.class);
-        String id = ctx.pathParam("id");
-        Long articleId = Long.parseLong(id);
-        myArticle.setArticleId(articleId);
-        articleService.updateArticle(myArticle);
-        ctx.status(200);
+    private static void printArticleDetails(Article article) {
+        System.out.println("ID: " + article.getArticleId());
+        System.out.println("Titulo: " + article.getTitle());
+        System.out.println("Contenido: " + article.getContent());
+        System.out.println("Autor: " + article.getAuthor());
+        System.out.println("Fecha: " + article.getDate());
+        System.out.println("Tags:");
+        for (Tag tag : article.getTags()) {
+            System.out.println(" - ID: " + tag.getTagId() + ", Nombre: " + tag.getName());
+        }
     }
-    
+
+
     public static void deleteArticle(Context ctx) {
         String id = ctx.pathParam("id");
         Long articleId = Long.parseLong(id);
