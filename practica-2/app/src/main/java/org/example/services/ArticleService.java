@@ -80,6 +80,7 @@ public class ArticleService {
             Article myArticle = articles.get(article.getArticleId());
             myArticle.setTitle(article.getTitle());
             myArticle.setContent(article.getContent());
+            myArticle.setTags(article.getTags());
             articles.put(myArticle.getArticleId(), myArticle);
         }
     }
