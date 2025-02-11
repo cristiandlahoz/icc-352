@@ -63,6 +63,7 @@ public class ArticleController extends BaseController {
         Collection<Tag> tags = myArticle.getTags();
         List<Article> authorArticles = articleService.getArticleByAuthor(myArticle.getAuthor());
         User user = ctx.sessionAttribute("USUARIO");
+        String role = (user != null) ? user.getRole().toString() : "GUEST";
         String username = "";
         Boolean logged = false;
         if (user != null) {
@@ -75,6 +76,7 @@ public class ArticleController extends BaseController {
                 "article", myArticle,
                 "tags", tags,
                 "logged", logged,
+                "role", role,
                 "authorArticles", authorArticles,
                 "comments", comments,
                 "user", username);

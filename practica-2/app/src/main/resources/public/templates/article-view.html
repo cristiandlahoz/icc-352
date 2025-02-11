@@ -315,12 +315,12 @@
                     </form>
                     <br>
 
-                    <form th:if="${article.author.equals(user)}" th:action="@{'/articles/' + ${article.articleId}}"
+                    <form th:if="${article.author.equals(user) || role == 'ADMIN'}" th:action="@{'/articles/' + ${article.articleId}}"
                         method="post">
                         <button type="submit" class="btn btn-sm btn-outline-danger">Update</button>
                     </form>
 
-                    <button th:if="${article.author.equals(user)}" class="btn btn-sm btn-outline-danger"
+                    <button th:if="${article.author.equals(user) || role == 'ADMIN'}" class="btn btn-sm btn-outline-danger"
                         onclick="deleteArticle()">Delete</button>
 
                 </div>
