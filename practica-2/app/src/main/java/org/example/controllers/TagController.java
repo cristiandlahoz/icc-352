@@ -11,7 +11,7 @@ public class TagController {
     private static final TagService tagService = new TagService();
 
     public static Collection<Tag> getAllTags() {
-        return tagService.getAllTags();
+        return TagService.getAllTags();
     }
 
     public static Tag getTagById(Context ctx) {
@@ -23,7 +23,7 @@ public class TagController {
 
     public static void createTag(Context ctx) {
         Tag myTag = ctx.bodyAsClass(Tag.class);
-        tagService.createTag(myTag);
+        tagService.createTag(myTag.getName());
         ctx.status(201);
     }
 
