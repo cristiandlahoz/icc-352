@@ -143,23 +143,6 @@ public class ArticleController extends BaseController {
             Map<String, Object> model = setModel("article", existingArticle);
             ctx.render("/public/templates/edit_article.html", model);
 
-            /*
-             * Article updatedArticle = article_process(ctx, existingArticle);
-             * if (updatedArticle == null) {
-             * ctx.status(400).result("Error processing article");
-             * return;
-             * }
-             */
-
-            /*
-             * existingArticle.setTitle(updatedArticle.getTitle());
-             * existingArticle.setContent(updatedArticle.getContent());
-             * existingArticle.setTags(updatedArticle.getTags());
-             * existingArticle.setAuthor(existingArticle.getAuthor()); // Mantiene el autor
-             * original
-             * existingArticle.setDate(new Date()); // Actualiza la fecha de modificación
-             */
-
         } catch (Exception e) {
             e.printStackTrace();
             ctx.status(500).result("Error Updating Article");
@@ -193,9 +176,6 @@ public class ArticleController extends BaseController {
                 Article newArticle = new Article(title, content, author.getUsername(), new Date());
                 newArticle.setTags(tagArrayList);
 
-                System.out.println("Verificando valores del nuevo artículo:");
-                printArticleDetails(newArticle);
-
                 articleService.createArticle(newArticle);
                 return newArticle;
             } else {
@@ -203,10 +183,7 @@ public class ArticleController extends BaseController {
                 article.setContent(content);
                 article.setTags(tagArrayList);
 
-                articleService.updateArticle(article);// Actualizar
-
-                System.out.println("Verificando valores del artículo actualizado:");
-                printArticleDetails(article);
+                articleService.updateArticle(article);
 
                 getArticleById(ctx);
 
@@ -216,18 +193,6 @@ public class ArticleController extends BaseController {
         } catch (Exception e) {
             e.printStackTrace();
             return null;
-        }
-    }
-
-    private static void printArticleDetails(Article article) {
-        System.out.println("ID: " + article.getArticleId());
-        System.out.println("Titulo: " + article.getTitle());
-        System.out.println("Contenido: " + article.getContent());
-        System.out.println("Autor: " + article.getAuthor());
-        System.out.println("Fecha: " + article.getDate());
-        System.out.println("Tags:");
-        for (Tag tag : article.getTags()) {
-            System.out.println(" - ID: " + tag.getTagId() + ", Nombre: " + tag.getName());
         }
     }
 
