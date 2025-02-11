@@ -268,7 +268,9 @@
                     th:each="article, iterStat : ${articleCollection}"
                     th:if="${iterStat.index > 0 && iterStat.index % 2 == 1}">
                     <div class="col p-4 d-flex flex-column position-static">
-                        <strong class="d-inline-block mb-2 text-primary-emphasis">World</strong>
+                        <strong class="d-inline-block mb-2 text-primary-emphasis"
+                            th:if="${article.tags != null and article.tags.size() > 0}"
+                            th:text="${article.tags[0].name + '...'}"></strong>
                         <h3 class="mb-0" th:text="${article.title}">Featured post</h3>
                         <div class="mb-1 text-body-secondary" th:text="${#dates.format(article.date, 'dd MMM yyyy')}">
                             Nov 12</div>
@@ -301,7 +303,9 @@
                     th:each="article, iterStat : ${articleCollection}"
                     th:if="${iterStat.index > 0 && iterStat.index % 2 == 0}">
                     <div class="col p-4 d-flex flex-column position-static">
-                        <strong class="d-inline-block mb-2 text-primary-emphasis">World</strong>
+                        <strong class="d-inline-block mb-2 text-primary-emphasis"
+                            th:if="${article.tags != null and article.tags.size() > 0}"
+                            th:text="${article.tags[0] + '...'}"></strong>
                         <h3 class="mb-0" th:text="${article.title}">Featured post</h3>
                         <div class="mb-1 text-body-secondary" th:text="${#dates.format(article.date, 'dd MMM yyyy')}">
                             Nov 12</div>
