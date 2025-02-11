@@ -33,6 +33,7 @@ public class ArticleController extends BaseController {
         app.get("/articles/{id}", ArticleController::getArticleById);
         app.post("/articles", ArticleController::createArticle);
         app.post("/articles/{id}", ArticleController::updateArticle);
+        app.post("/articles/form/{id}", ArticleController::formHandler);
         app.delete("/articles/{id}", ArticleController::deleteArticle);
     }
 
@@ -92,6 +93,44 @@ public class ArticleController extends BaseController {
         }
     }
 
+    public static void formHandler(Context ctx) {
+        Long articleId = Long.parseLong(ctx.pathParam("id"));
+        String title = ctx.formParam("title");
+        String content = ctx.formParam("content");
+        String tags = ctx.formParam("tags");
+        User author = ctx.sessionAttribute("USUARIO");
+        if (author == null) {
+            ctx.status(401).result("You are not logged");
+            return;
+        }
+
+        List<String> selectedTags = new ArrayList<>();
+        if (tags != null && !tags.trim().isEmpty()) {
+            selectedTags = Arrays.asList(tags.split(","));
+        }
+
+        ArrayList<Tag> tagArrayList = new ArrayList<>();
+        for (String tagName : selectedTags) {
+            if (tagName != null && !tagName.trim().isEmpty()) {
+                tagArrayList.add(tagService.createTag(tagName.trim()));
+            }
+        }
+
+        Article article = articleService.getArticleById(articleId);
+        if (article == null) {
+            ctx.status(404).result("Article not found");
+            return;
+        }
+        article.setTitle(title);
+        article.setContent(content);
+        article.setTags(tagArrayList);
+
+        articleService.updateArticle(article);// Actualizar
+        ctx.status(200).redirect("/articles/" + articleId);
+
+        return;
+    }
+
     public static void updateArticle(Context ctx) {
         try {
             Long articleId = Long.parseLong(ctx.pathParam("id"));
@@ -101,12 +140,16 @@ public class ArticleController extends BaseController {
                 ctx.status(404).result("Article not found");
                 return;
             }
+            Map<String, Object> model = setModel("article", existingArticle);
+            ctx.render("/public/templates/edit_article.html", model);
 
-            Article updatedArticle = article_process(ctx, existingArticle);
-            if (updatedArticle == null) {
-                ctx.status(400).result("Error processing article");
-                return;
-            }
+            /*
+             * Article updatedArticle = article_process(ctx, existingArticle);
+             * if (updatedArticle == null) {
+             * ctx.status(400).result("Error processing article");
+             * return;
+             * }
+             */
 
             /*
              * existingArticle.setTitle(updatedArticle.getTitle());
@@ -117,7 +160,6 @@ public class ArticleController extends BaseController {
              * existingArticle.setDate(new Date()); // Actualiza la fecha de modificación
              */
 
-            ctx.status(200).result("Updating Done");
         } catch (Exception e) {
             e.printStackTrace();
             ctx.status(500).result("Error Updating Article");
@@ -130,7 +172,7 @@ public class ArticleController extends BaseController {
             String content = ctx.formParam("content");
             String tags = ctx.formParam("tags");
             User author = ctx.sessionAttribute("USUARIO");
-            if(author == null){
+            if (author == null) {
                 ctx.status(401).result("You are not logged");
                 return null;
             }
