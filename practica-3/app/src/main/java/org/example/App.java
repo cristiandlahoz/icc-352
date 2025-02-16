@@ -2,6 +2,7 @@ package org.example;
 
 import java.util.List;
 
+import org.example.config.EnvConfig;
 import org.example.controllers.ArticleController;
 import org.example.controllers.AuthenticationController;
 import org.example.controllers.CommentController;
@@ -17,14 +18,14 @@ public class App {
      * @param args
      */
     public static void main(String[] args) {
-
-        var app = Javalin.create(config -> {
+        int port = EnvConfig.getInt("PORT", 8080);
+        Javalin app = Javalin.create(config -> {
             config.staticFiles.add(cf -> {
                 cf.hostedPath = "/";
                 cf.directory = "/public";
             });
             config.fileRenderer(new JavalinThymeleaf());
-        }).start(7789);
+        }).start(port);
 
         List.of(
                 new ArticleController(app),
