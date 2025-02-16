@@ -1,0 +1,82 @@
+body {
+	display: flex;
+	justify-content: center;
+	align-items: center;
+	height: 100vh;
+	background: linear-gradient(135deg, #444, #222);
+	margin: 0;
+	color: #fff;
+	font-family: "Playfair Display", serif;
+}
+
+.container {
+	background-color: #333;
+	padding: 2rem;
+	border-radius: 12px;
+	box-shadow: 0 8px 16px rgba(0, 0, 0, 0.2);
+	width: 100%;
+	max-width: 500px;
+}
+
+h1 {
+	font-size: 1.8rem;
+	margin-bottom: 1rem;
+	color: #fff;
+	text-align: center;
+}
+
+form {
+	display: flex;
+	flex-direction: column;
+	gap: 1.5rem;
+}
+
+label {
+	font-size: 0.95rem;
+	font-weight: bold;
+	color: #ddd;
+}
+
+input,
+textarea {
+	padding: 0.8rem;
+	font-size: 1rem;
+	border: 1px solid #555;
+	border-radius: 8px;
+	background-color: #222;
+	color: #fff;
+	transition: border-color 0.3s ease;
+	width: 100%;
+}
+
+input:focus,
+textarea:focus {
+	border-color: #bbb;
+	outline: none;
+}
+
+textarea {
+	height: 150px;
+	resize: none;
+}
+
+button {
+	padding: 0.8rem;
+	font-size: 1rem;
+	font-weight: bold;
+	color: #fff;
+	background-color: #555;
+	border: none;
+	border-radius: 8px;
+	cursor: pointer;
+	transition: background-color 0.3s ease;
+}
+
+button:hover {
+	background-color: #777;
+}
+
+.buttons {
+	display: flex;
+	justify-content: space-between;
+}

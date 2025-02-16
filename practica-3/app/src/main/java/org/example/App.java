@@ -1,5 +1,7 @@
 package org.example;
 
+import java.util.List;
+
 import org.example.controllers.ArticleController;
 import org.example.controllers.AuthenticationController;
 import org.example.controllers.CommentController;
@@ -21,26 +23,15 @@ public class App {
                 cf.hostedPath = "/";
                 cf.directory = "/public";
             });
-            config.staticFiles.add(cf -> {
-                cf.hostedPath = "/assets";
-                cf.directory = "/assets";
-            });
-
             config.fileRenderer(new JavalinThymeleaf());
         }).start(7789);
 
-        new ArticleController(app).applyRoutes();
-        new AuthenticationController(app).applyRoutes();
-        new UserController(app).applyRoutes();
-
-        app.get("/comments", CommentController::getAllComments);
-        app.get("/comments/{id}", CommentController::getCommentById);
-        app.post("/comments", CommentController::createComment);
-        app.put("/comments/{id}", CommentController::updateComment);
-        app.delete("/comments/{id}", CommentController::deleteComment);
-        app.get("/articles/{articleId}/comments/{commentId}", CommentController::getCommentByArticleAndCommentId);
-
-        app.post("/tags", TagController::createTag);
+        List.of(
+                new ArticleController(app),
+                new AuthenticationController(app),
+                new UserController(app),
+                new CommentController(app),
+                new TagController(app)).forEach(controller -> controller.applyRoutes());
 
         app.before(ctx -> {
             String path = ctx.path();

@@ -1,0 +1,53 @@
+@import url("https://fonts.googleapis.com/css?family=Playfair+Display:700,900&display=swap");
+body {
+	background-color: #f5f5f5;
+	color: #333;
+}
+
+.error-message {
+	color: #b22222;
+	/* Rojo oscuro */
+	text-align: center;
+	display: none;
+	margin-bottom: 15px;
+	font-weight: bold;
+}
+
+.success-message {
+	color: #228b22;
+	/* Verde oscuro */
+	text-align: center;
+	display: none;
+	margin-bottom: 15px;
+	font-weight: bold;
+}
+
+.card {
+	background-color: #fff;
+	/* Blanco */
+	border: 1px solid #ccc;
+	/* Borde gris claro */
+	box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+}
+
+.btn-primary {
+	background-color: #666;
+	/* Gris medio */
+	border-color: #555;
+}
+
+.btn-primary:hover {
+	background-color: #444;
+	border-color: #333;
+}
+
+.btn-outline-primary {
+	color: #666;
+	border-color: #666;
+}
+
+.btn-outline-primary:hover {
+	background-color: #444;
+	color: #fff;
+	border-color: #444;
+}

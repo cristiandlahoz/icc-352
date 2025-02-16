@@ -18,6 +18,11 @@ public class CommentController extends BaseController {
     @Override
     public void applyRoutes() {
         app.post("/comments", CommentController::createComment);
+        app.get("/comments", CommentController::getAllComments);
+        app.get("/comments/{id}", CommentController::getCommentById);
+        app.put("/comments/{id}", CommentController::updateComment);
+        app.delete("/comments/{id}", CommentController::deleteComment);
+        app.get("/articles/{articleId}/comments/{commentId}", CommentController::getCommentByArticleAndCommentId);
     }
 
     public static void getAllComments(Context ctx) {
