@@ -216,13 +216,13 @@
                     </a>
                         -->
                     <a th:if="${role == 'ADMIN' || role == 'AUTHOR'}" class="btn btn-sm btn-outline-secondary"
-                        th:href="@{/templates/create_article.html}">Create article</a>
+                        th:href="@{/templates/pages/create_article.html}">Create article</a>
 
                     <a th:if="${role == 'ADMIN'}" class="btn btn-sm btn-outline-secondary"
-                        th:href="@{/templates/create_user.html}">Create user</a>
+                        th:href="@{/templates/pages/create_user.html}">Create user</a>
 
                     <a th:if="${!logged}" class="btn btn-sm btn-outline-secondary"
-                        th:href="@{/templates/logIn.html}">Log in</a>
+                        th:href="@{/templates/auth/logIn.html}">Log in</a>
 
                     <form th:if="${logged}" th:action="@{/logout}" method="post">
                         <button type="submit" class="btn btn-sm btn-outline-danger">Log out</button>
@@ -341,13 +341,19 @@
 
     </main>
 
-    <footer class="py-5 text-center text-body-secondary bg-body-tertiary">
+    <!--<footer class="py-5 text-center text-body-secondary bg-body-tertiary">
         <p>Blog template built for <a href="https://getbootstrap.com/">Bootstrap</a> by <a
                 href="https://twitter.com/mdo">@mdo</a>.</p>
         <p class="mb-0">
             <a href="#">Back to top</a>
         </p>
-    </footer>
+    </footer>-->
+
+    <div th:replace="/public/templates/layouts/footer.html :: footer"></div>
+
+
+    <!--<div th:replace="templates/layouts/footer :: footer"></div>-->
+
     <script src="/assets/js/bootstrap.bundle.min.js"></script>
 
 </body>
