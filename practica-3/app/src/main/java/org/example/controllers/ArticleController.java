@@ -81,7 +81,7 @@ public class ArticleController extends BaseController {
                 "comments", comments,
                 "user", username);
 
-        ctx.render("/public/templates/article-view.html", model);
+        ctx.render("/public/templates/pages/article-view.html", model);
     }
 
     public static void createArticle(Context ctx) {
@@ -143,7 +143,7 @@ public class ArticleController extends BaseController {
                 return;
             }
             Map<String, Object> model = setModel("article", existingArticle);
-            ctx.render("/public/templates/edit_article.html", model);
+            ctx.render("/public/templates/pages/edit_article.html", model);
 
         } catch (Exception e) {
             e.printStackTrace();
