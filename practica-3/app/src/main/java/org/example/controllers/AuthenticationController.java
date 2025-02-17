@@ -17,17 +17,17 @@ public class AuthenticationController extends BaseController {
     }
 
     public void applyRoutes() {
-        app.post("/login", this::login);
-        app.post("/logout", this::logout);
-        app.post("/signup", this::signup);
+        app.post("/login", AuthenticationController::login);
+        app.post("/logout", AuthenticationController::logout);
+        app.post("/signup", AuthenticationController::signup);
     }
 
-    private void login(Context ctx) {
+    private static void login(Context ctx) {
         String username = ctx.formParam("username");
         String password = ctx.formParam("password");
 
         if (username == null || password == null) {
-            ctx.redirect("/templates/auth/logIn.html?error=missing_fields");
+            ctx.render("/templates/auth/logIn.html");
             return;
         }
 
@@ -48,12 +48,12 @@ public class AuthenticationController extends BaseController {
         }
     }
 
-    private void logout(Context ctx) {
+    private static void logout(Context ctx) {
         ctx.req().getSession().invalidate();
         ctx.redirect("/");
     }
 
-    private void signup(Context ctx) {
+    private static void signup(Context ctx) {
         String name = ctx.formParam("name");
         String username = ctx.formParam("username");
         String password = ctx.formParam("password");
@@ -75,7 +75,6 @@ public class AuthenticationController extends BaseController {
         Role role = isAuthor ? Role.AUTHOR : Role.USER;
         User newUser = new User(username, name, password, role, AccessStatus.UNAUTHENTICATED);
         userService.createUser(newUser);
-
 
         User createdUser = userService.getUserByUsername(username);
         if (createdUser != null) {

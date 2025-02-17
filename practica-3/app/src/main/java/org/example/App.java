@@ -9,6 +9,7 @@ import org.example.controllers.AuthenticationController;
 import org.example.controllers.CommentController;
 import org.example.controllers.TagController;
 import org.example.controllers.UserController;
+import org.example.util.Routes;
 
 import io.javalin.Javalin;
 
@@ -26,6 +27,9 @@ public class App {
                 new UserController(app),
                 new CommentController(app),
                 new TagController(app)).forEach(controller -> controller.applyRoutes());
-
+         
+        app.get(Routes.HOME.getPath(), ctx -> {
+            ctx.redirect(Routes.ARTICLES.getPath());
+        });
     }
 }

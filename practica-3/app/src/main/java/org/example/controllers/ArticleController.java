@@ -15,6 +15,7 @@ import org.example.services.ArticleService;
 import org.example.services.CommentService;
 import org.example.services.TagService;
 import org.example.util.BaseController;
+import org.example.util.Routes;
 
 import io.javalin.Javalin;
 import io.javalin.http.Context;
@@ -29,12 +30,12 @@ public class ArticleController extends BaseController {
 
     @Override
     public void applyRoutes() {
-        app.get("/", ArticleController::getAllArticles);
-        app.get("/articles/{id}", ArticleController::getArticleById);
-        app.post("/articles", ArticleController::createArticle);
-        app.post("/articles/{id}", ArticleController::updateArticle);
+        app.get(Routes.ARTICLES.getPath(), ArticleController::getAllArticles);
+        app.get(Routes.ARTICLE.getPath(), ArticleController::getArticleById);
+        app.post(Routes.ARTICLES.getPath(), ArticleController::createArticle);
+        app.post(Routes.ARTICLE.getPath(), ArticleController::updateArticle);
         app.post("/articles/form/{id}", ArticleController::formHandler);
-        app.delete("/articles/{id}", ArticleController::deleteArticle);
+        app.delete(Routes.ARTICLE.getPath(), ArticleController::deleteArticle);
     }
 
     public static void getAllArticles(Context ctx) {
