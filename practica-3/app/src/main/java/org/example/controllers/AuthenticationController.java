@@ -2,6 +2,7 @@ package org.example.controllers;
 
 import io.javalin.Javalin;
 import io.javalin.http.Context;
+
 import org.example.models.User;
 import org.example.services.UserService;
 import org.example.util.AccessStatus;
@@ -17,6 +18,9 @@ public class AuthenticationController extends BaseController {
     }
 
     public void applyRoutes() {
+        app.get("/login", ctx -> {
+            ctx.render("/public/templates/auth/logIn.html");
+        });
         app.post("/login", AuthenticationController::login);
         app.post("/logout", AuthenticationController::logout);
         app.post("/signup", AuthenticationController::signup);

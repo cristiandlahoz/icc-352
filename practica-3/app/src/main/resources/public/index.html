@@ -110,7 +110,7 @@
                         th:href="@{/templates/pages/create_user.html}">Create user</a>
 
                     <a th:if="${!logged}" class="btn btn-sm btn-outline-secondary"
-                        th:href="@{/templates/auth/logIn.html}">Log in</a>
+                        th:href="@{/login}">Log in</a>
 
                     <form th:if="${logged}" th:action="@{/logout}" method="post">
                         <button type="submit" class="btn btn-sm btn-outline-danger">Log out</button>
