@@ -1,0 +1,30 @@
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="/assets/css/create.article.css">
+    <link href="https://fonts.googleapis.com/css?family=Playfair+Display:700,900&amp;display=swap" rel="stylesheet">
+    <title>Crear Artículo</title>
+</head>
+
+<body>
+    <div class="container">
+        <h1>Crear Artículo</h1>
+        <form action="/articles" method="post">
+            <label for="title">Título:</label>
+            <input type="text" id="title" name="title" placeholder="Ingrese el título del artículo" required>
+
+            <label for="content">Contenido:</label>
+            <textarea id="content" name="content" placeholder="Escriba el contenido del artículo" required></textarea>
+
+            <label for="tags">Etiquetas:</label>
+            <input type="text" id="tags" name="tags" placeholder="Separe las etiquetas con comas" required>
+
+            <button type="submit">Publicar</button>
+        </form>
+    </div>
+</body>
+
+</html>
