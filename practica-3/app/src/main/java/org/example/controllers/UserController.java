@@ -50,13 +50,13 @@ public class UserController extends BaseController {
         boolean isAuthor = ctx.formParam("is_author") != null;
 
         if (name == null || username == null || password == null) {
-            ctx.redirect("/templates/create_user.html?error=missing_fields");
+            ctx.redirect("/templates/auth/create_user.html?error=missing_fields");
             return;
         }
 
         try {
             userService.getUserByUsername(username);
-            ctx.redirect("/templates/create_user.html?error=user_exists");
+            ctx.redirect("/templates/auth/create_user.html?error=user_exists");
             return;
         } catch (IllegalArgumentException e) {
         }

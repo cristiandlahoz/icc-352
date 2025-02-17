@@ -16,7 +16,7 @@ public class AppConfig {
         }).before(ctx -> {
             String path = ctx.path();
 
-            if (!path.equals("/templates/logIn.html") || !path.equals("/templates/signUp.html")) {
+            if (!path.equals("/templates/auth/logIn.html") || !path.equals("/templates/auth/signUp.html")) {
                 return;
             }
 
@@ -24,7 +24,7 @@ public class AppConfig {
             System.out.println("Verificando sesión de usuario en ruta: " + path + " - Usuario en sesión: " + user);
 
             if (user == null) {
-                ctx.redirect("/templates/logIn.html");
+                ctx.redirect("/templates/auth/logIn.html");
             }
             System.out.println("Request: " + ctx.method() + " " + ctx.path());
         }).after(ctx -> {

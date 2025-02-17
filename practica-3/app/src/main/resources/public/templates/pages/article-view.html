@@ -86,11 +86,11 @@
                     <a class="link-secondary" href=""> </a>
                 </div>
                 <div class="col-4 text-center">
-                    <a class="blog-header-logo text-body-emphasis text-decoration-none" href="/">Wornux</a>
+                    <a class="blog-header-logo text-body-emphasis text-decoration-none" href="/public">Wornux</a>
                 </div>
                 <div class="col-4 d-flex justify-content-end align-items-center">
                     <a th:if="${!logged}" class="btn btn-sm btn-outline-secondary"
-                        th:href="@{/templates/logIn.html}">Log in</a>
+                        th:href="@{/templates/auth/logIn.html}">Log in</a>
 
                     <form th:if="${logged}" th:action="@{/logout}" method="post">
                         <button type="submit" class="btn btn-sm btn-outline-danger">Log out</button>
@@ -169,7 +169,7 @@
                                         <div class="modal-footer">
                                             <button type="button" class="btn btn-secondary"
                                                 data-bs-dismiss="modal">Skip</button>
-                                            <a th:href="@{/templates/logIn.html}" class="btn btn-primary">Login</a>
+                                            <a th:href="@{/templates/auth/logIn.html}" class="btn btn-primary">Login</a>
                                         </div>
                                     </div>
                                 </div>
@@ -236,14 +236,8 @@
         </div>
 
     </main>
-
-    <footer class="py-5 text-center text-body-secondary bg-body-tertiary">
-        <p>Blog template built for <a href="https://getbootstrap.com/">Bootstrap</a> by <a
-                href="https://twitter.com/mdo">@mdo</a>.</p>
-        <p class="mb-0">
-            <a href="#">Back to top</a>
-        </p>
-    </footer>
+        
+    <div th:replace="~{/public/templates/layouts/footer.html :: footer}"></div>
     <script src="/assets/js/bootstrap.bundle.min.js"></script>
     <script src="/assets/js/add-comments.js"></script>
     <script src="/assets/js/delete-article.js"></script>
