@@ -44,36 +44,13 @@ public class UserController extends BaseController {
         ctx.json(myUser);
     }
 
+
     public static void createUser(Context ctx) {
-        /*
-         * User myUser = ctx.bodyAsClass(User.class);
-         * userService.createUser(myUser);
-         * ctx.status(201);
-         */
-        String name = ctx.formParam("name");
-        String username = ctx.formParam("username");
-        String password = ctx.formParam("password");
-        boolean isAuthor = ctx.formParam("is_author") != null;
-
-        if (name == null || username == null || password == null) {
-            ctx.redirect(Routes.CREATEUSER.getPath());
-            return;
+        User newUser = AuthenticationController.processUserForm(ctx, Routes.CREATEUSER.getPath());
+        if (newUser != null) {
+            ctx.redirect("/");
         }
-
-        try {
-            userService.getUserByUsername(username);
-            ctx.redirect(Routes.CREATEUSER.getPath());
-            return;
-        } catch (IllegalArgumentException e) {
-        }
-
-        Role role = isAuthor ? Role.AUTHOR : Role.USER;
-        User newUser = new User(username, name, password, role, AccessStatus.UNAUTHENTICATED);
-        userService.createUser(newUser);
-
-        ctx.status(201).redirect("/");
     }
-
     public static void updateUser(Context ctx) {
         User myUser = ctx.bodyAsClass(User.class);
         myUser.setUsername(ctx.pathParam("username"));
