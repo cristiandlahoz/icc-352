@@ -104,10 +104,11 @@
                     </a>
                         -->
                     <a th:if="${role == 'ADMIN' || role == 'AUTHOR'}" class="btn btn-sm btn-outline-secondary"
-                        th:href="@{/templates/pages/create_article.html}">Create article</a>
+                        th:href="@{/createarticle}">Create article</a>
+
 
                     <a th:if="${role == 'ADMIN'}" class="btn btn-sm btn-outline-secondary"
-                        th:href="@{/templates/pages/create_user.html}">Create user</a>
+                        th:href="@{/createuser}">Create user</a>
 
                     <a th:if="${!logged}" class="btn btn-sm btn-outline-secondary"
                         th:href="@{/login}">Log in</a>
