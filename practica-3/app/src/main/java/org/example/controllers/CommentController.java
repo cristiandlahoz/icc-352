@@ -6,6 +6,7 @@ import org.example.models.Comment;
 import org.example.services.ArticleService;
 import org.example.services.CommentService;
 import org.example.util.BaseController;
+import org.example.util.Routes;
 
 public class CommentController extends BaseController {
     private static final CommentService commentService = new CommentService();
@@ -17,12 +18,12 @@ public class CommentController extends BaseController {
 
     @Override
     public void applyRoutes() {
-        app.post("/comments", CommentController::createComment);
-        app.get("/comments", CommentController::getAllComments);
-        app.get("/comments/{id}", CommentController::getCommentById);
-        app.put("/comments/{id}", CommentController::updateComment);
-        app.delete("/comments/{id}", CommentController::deleteComment);
-        app.get("/articles/{articleId}/comments/{commentId}", CommentController::getCommentByArticleAndCommentId);
+        app.post(Routes.COMMENTS.getPath(), CommentController::createComment);
+        app.get(Routes.COMMENTS.getPath(), CommentController::getAllComments);
+        app.get(Routes.COMMENT.getPath(), CommentController::getCommentById);
+        app.put(Routes.COMMENT.getPath(), CommentController::updateComment);
+        app.delete(Routes.COMMENT.getPath(), CommentController::deleteComment);
+        app.get(Routes.COMMENTBYARTICLE.getPath(), CommentController::getCommentByArticleAndCommentId);
     }
 
     public static void getAllComments(Context ctx) {
