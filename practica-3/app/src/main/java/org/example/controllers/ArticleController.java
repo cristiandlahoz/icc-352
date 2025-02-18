@@ -30,9 +30,7 @@ public class ArticleController extends BaseController {
 
     @Override
     public void applyRoutes() {
-        app.get(Routes.CREATEARTICLE.getPath(), ctx -> {
-            ctx.render("/public/templates/pages/create_article.html");
-        });
+        app.get(Routes.CREATEARTICLE.getPath(), this::renderCreateArticlePage);
 
         app.get(Routes.ARTICLES.getPath(), ArticleController::getAllArticles);
         app.get(Routes.ARTICLE.getPath(), ArticleController::getArticleById);
@@ -40,6 +38,10 @@ public class ArticleController extends BaseController {
         app.post(Routes.ARTICLE.getPath(), ArticleController::updateArticle);
         app.post("/articles/form/{id}", ArticleController::formHandler);
         app.delete(Routes.ARTICLE.getPath(), ArticleController::deleteArticle);
+    }
+
+    private void renderCreateArticlePage(Context ctx) {
+        ctx.render("/public/templates/pages/create_article.html");
     }
 
     public static void getAllArticles(Context ctx) {
