@@ -30,6 +30,10 @@ public class ArticleController extends BaseController {
 
     @Override
     public void applyRoutes() {
+        app.get(Routes.CREATEARTICLE.getPath(), ctx -> {
+            ctx.render("/public/templates/pages/create_article.html");
+        });
+
         app.get(Routes.ARTICLES.getPath(), ArticleController::getAllArticles);
         app.get(Routes.ARTICLE.getPath(), ArticleController::getArticleById);
         app.post(Routes.ARTICLES.getPath(), ArticleController::createArticle);
