@@ -41,7 +41,7 @@ public class ArticleController extends BaseController {
     }
 
     private void renderCreateArticlePage(Context ctx) {
-        ctx.render("/public/templates/pages/create_article.html");
+        ctx.render("/pages/create_article.html");
     }
 
     public static void getAllArticles(Context ctx) {
@@ -58,7 +58,7 @@ public class ArticleController extends BaseController {
                 "logged", logged,
                 "role", role);
 
-        ctx.render("/public/index.html", model);
+        ctx.render("index.html", model);
     }
 
     public static void getArticleById(Context ctx) {
@@ -88,7 +88,7 @@ public class ArticleController extends BaseController {
                 "comments", comments,
                 "user", username);
 
-        ctx.render("/public/templates/pages/article-view.html", model);
+        ctx.render("/pages/article-view.html", model);
     }
 
     public static void createArticle(Context ctx) {
@@ -150,7 +150,7 @@ public class ArticleController extends BaseController {
                 return;
             }
             Map<String, Object> model = setModel("article", existingArticle);
-            ctx.render("/public/templates/pages/edit_article.html", model);
+            ctx.render("/pages/edit_article.html", model);
 
         } catch (Exception e) {
             e.printStackTrace();
