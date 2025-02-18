@@ -3,11 +3,17 @@ package org.example.util;
 public enum Routes {
     HOME("/"),
     LOGIN("/login"),
+    LOGOUT("/logout"),
     SIGNUP("/signup"),
     CREATEARTICLE("/createarticle"),
     ARTICLES("/articles"),
     ARTICLE("/articles/{id}"),
-    CREATEUSER("/createuser");
+    USERS("/users"),
+    USER("/users/{username}"),
+    CREATEUSER("/createuser"),
+    COMMENTS("/comments"),
+    COMMENT("/comments/{id}"),
+    COMMENTBYARTICLE("/articles/{articleId}/comments/{commentId}");
 
     private final String path;
 
