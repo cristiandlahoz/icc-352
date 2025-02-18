@@ -19,16 +19,20 @@ public class AuthenticationController extends BaseController {
     }
 
     public void applyRoutes() {
-        app.get(Routes.LOGIN.getPath(),ctx -> {
-            ctx.render("/public/templates/auth/logIn.html");
-        });
-        app.get(Routes.SIGNUP.getPath(), ctx -> {
-            ctx.render("/public/templates/auth/signUp.html");
-        });
+        app.get(Routes.LOGIN.getPath(), this::renderLoginPage);
+        app.get(Routes.SIGNUP.getPath(), this::renderSignupPage);
 
         app.post(Routes.LOGIN.getPath(), AuthenticationController::login);
         app.post(Routes.LOGOUT.getPath(), AuthenticationController::logout);
         app.post(Routes.SIGNUP.getPath(), AuthenticationController::signup);
+    }
+
+    private void renderLoginPage(Context ctx) {
+        ctx.render("/public/templates/auth/logIn.html");
+    }
+
+    private void renderSignupPage(Context ctx) {
+        ctx.render("/public/templates/auth/signUp.html");
     }
 
     private static void login(Context ctx) {
