@@ -8,6 +8,7 @@ import org.example.services.UserService;
 import org.example.util.AccessStatus;
 import org.example.util.BaseController;
 import org.example.util.Role;
+import org.example.util.Routes;
 
 public class AuthenticationController extends BaseController {
 
@@ -18,10 +19,14 @@ public class AuthenticationController extends BaseController {
     }
 
     public void applyRoutes() {
-        app.get("/login", ctx -> {
+        app.get(Routes.LOGIN.getPath(),ctx -> {
             ctx.render("/public/templates/auth/logIn.html");
         });
-        app.post("/login", AuthenticationController::login);
+        app.get(Routes.SIGNUP.getPath(), ctx -> {
+            ctx.render("/public/templates/auth/signUp.html");
+        });
+
+        app.post(Routes.LOGIN.getPath(), AuthenticationController::login);
         app.post("/logout", AuthenticationController::logout);
         app.post("/signup", AuthenticationController::signup);
     }
