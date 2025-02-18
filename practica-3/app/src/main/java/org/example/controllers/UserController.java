@@ -7,6 +7,7 @@ import org.example.services.UserService;
 import org.example.util.AccessStatus;
 import org.example.util.BaseController;
 import org.example.util.Role;
+import org.example.util.Routes;
 
 import java.util.Collection;
 
@@ -19,6 +20,9 @@ public class UserController extends BaseController {
     }
 
     public void applyRoutes() {
+        app.get(Routes.CREATEUSER.getPath(), ctx -> {
+            ctx.render("/public/templates/pages/create_user.html");
+        });
         app.get("/users", UserController::getAllUsers);
         app.get("/users/{username}", UserController::getUserByUsername);
         app.post("/users/", UserController::createUser);
