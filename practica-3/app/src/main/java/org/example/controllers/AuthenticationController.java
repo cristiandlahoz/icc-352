@@ -27,8 +27,8 @@ public class AuthenticationController extends BaseController {
         });
 
         app.post(Routes.LOGIN.getPath(), AuthenticationController::login);
-        app.post("/logout", AuthenticationController::logout);
-        app.post("/signup", AuthenticationController::signup);
+        app.post(Routes.LOGOUT.getPath(), AuthenticationController::logout);
+        app.post(Routes.SIGNUP.getPath(), AuthenticationController::signup);
     }
 
     private static void login(Context ctx) {
@@ -36,7 +36,7 @@ public class AuthenticationController extends BaseController {
         String password = ctx.formParam("password");
 
         if (username == null || password == null) {
-            ctx.render("/templates/auth/logIn.html");
+            ctx.redirect(Routes.LOGIN.getPath());
             return;
         }
 
@@ -44,7 +44,7 @@ public class AuthenticationController extends BaseController {
             User user = userService.getUserByUsername(username);
 
             if (!user.getPassword().equals(password)) {
-                ctx.redirect("/templates/auth/logIn.html?error=invalid_credentials");
+                ctx.redirect(Routes.LOGIN.getPath());
                 return;
             }
 
@@ -53,7 +53,7 @@ public class AuthenticationController extends BaseController {
             ctx.redirect("/");
 
         } catch (IllegalArgumentException e) {
-            ctx.redirect("/templates/auth/logIn.html?error=user_not_found");
+            ctx.redirect(Routes.LOGIN.getPath());
         }
     }
 
@@ -69,13 +69,13 @@ public class AuthenticationController extends BaseController {
         boolean isAuthor = ctx.formParam("is_author") != null;
 
         if (name == null || username == null || password == null) {
-            ctx.redirect("/templates/auth/signUp.html?error=missing_fields");
+            ctx.redirect(Routes.SIGNUP.getPath());
             return;
         }
 
         try {
             userService.getUserByUsername(username);
-            ctx.redirect("/templates/auth/signUp.html?error=user_exists");
+            ctx.redirect(Routes.SIGNUP.getPath());
             return;
         } catch (IllegalArgumentException e) {
             // Usuario no encontrado, se puede crear
@@ -93,7 +93,7 @@ public class AuthenticationController extends BaseController {
             System.out.println("Usuario autenticado tras registro: " + ctx.sessionAttribute("USUARIO"));
             ctx.redirect("/");
         } else {
-            ctx.redirect("/templates/auth/signUp.html?error=registration_failed");
+            ctx.redirect(Routes.SIGNUP.getPath());
         }
     }
 }
