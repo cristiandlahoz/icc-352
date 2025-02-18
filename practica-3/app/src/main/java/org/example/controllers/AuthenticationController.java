@@ -66,21 +66,32 @@ public class AuthenticationController extends BaseController {
         ctx.redirect("/");
     }
 
-    private static void signup(Context ctx) {
+    public static void signup(Context ctx) {
+        User newUser = processUserForm(ctx, Routes.SIGNUP.getPath());
+        if (newUser != null) {
+            newUser.setAccessStatus(AccessStatus.AUTHENTICATED);
+            ctx.sessionAttribute("USUARIO", newUser);
+            System.out.println("Usuario registrado: " + newUser.getUsername());
+            System.out.println("Usuario autenticado tras registro: " + ctx.sessionAttribute("USUARIO"));
+            ctx.redirect("/");
+        }
+    }
+
+    protected static User processUserForm(Context ctx, String redirectRoute) {
         String name = ctx.formParam("name");
         String username = ctx.formParam("username");
         String password = ctx.formParam("password");
         boolean isAuthor = ctx.formParam("is_author") != null;
 
         if (name == null || username == null || password == null) {
-            ctx.redirect(Routes.SIGNUP.getPath());
-            return;
+            ctx.redirect(redirectRoute);
+            return null;
         }
 
         try {
             userService.getUserByUsername(username);
-            ctx.redirect(Routes.SIGNUP.getPath());
-            return;
+            ctx.redirect(redirectRoute);
+            return null;
         } catch (IllegalArgumentException e) {
             // Usuario no encontrado, se puede crear
         }
@@ -89,15 +100,7 @@ public class AuthenticationController extends BaseController {
         User newUser = new User(username, name, password, role, AccessStatus.UNAUTHENTICATED);
         userService.createUser(newUser);
 
-        User createdUser = userService.getUserByUsername(username);
-        if (createdUser != null) {
-            createdUser.setAccessStatus(AccessStatus.AUTHENTICATED);
-            ctx.sessionAttribute("USUARIO", createdUser);
-            System.out.println("Usuario registrado: " + username);
-            System.out.println("Usuario autenticado tras registro: " + ctx.sessionAttribute("USUARIO"));
-            ctx.redirect("/");
-        } else {
-            ctx.redirect(Routes.SIGNUP.getPath());
-        }
+        return userService.getUserByUsername(username);
     }
+
 }
