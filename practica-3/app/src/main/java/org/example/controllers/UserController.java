@@ -20,14 +20,16 @@ public class UserController extends BaseController {
     }
 
     public void applyRoutes() {
-        app.get(Routes.CREATEUSER.getPath(), ctx -> {
-            ctx.render("/public/templates/pages/create_user.html");
-        });
+        app.get(Routes.CREATEUSER.getPath(), this::renderCreateUserPage);
         app.get(Routes.USERS.getPath(), UserController::getAllUsers);
         app.get(Routes.USER.getPath(), UserController::getUserByUsername);
         app.post(Routes.USERS.getPath(), UserController::createUser);
         app.put(Routes.USER.getPath(), UserController::updateUser);
         app.delete(Routes.USER.getPath(), UserController::deleteUser);
+    }
+
+    private void renderCreateUserPage(Context ctx) {
+        ctx.render("/public/templates/pages/create_user.html");
     }
 
     public static void getAllUsers(Context ctx) {
