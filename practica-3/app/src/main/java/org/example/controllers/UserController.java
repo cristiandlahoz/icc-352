@@ -23,11 +23,11 @@ public class UserController extends BaseController {
         app.get(Routes.CREATEUSER.getPath(), ctx -> {
             ctx.render("/public/templates/pages/create_user.html");
         });
-        app.get("/users", UserController::getAllUsers);
-        app.get("/users/{username}", UserController::getUserByUsername);
-        app.post("/users/", UserController::createUser);
-        app.put("/users/{username}", UserController::updateUser);
-        app.delete("/users/{username}", UserController::deleteUser);
+        app.get(Routes.USERS.getPath(), UserController::getAllUsers);
+        app.get(Routes.USER.getPath(), UserController::getUserByUsername);
+        app.post(Routes.USERS.getPath(), UserController::createUser);
+        app.put(Routes.USER.getPath(), UserController::updateUser);
+        app.delete(Routes.USER.getPath(), UserController::deleteUser);
     }
 
     public static void getAllUsers(Context ctx) {
@@ -54,13 +54,13 @@ public class UserController extends BaseController {
         boolean isAuthor = ctx.formParam("is_author") != null;
 
         if (name == null || username == null || password == null) {
-            ctx.redirect("/templates/auth/create_user.html?error=missing_fields");
+            ctx.redirect(Routes.CREATEUSER.getPath());
             return;
         }
 
         try {
             userService.getUserByUsername(username);
-            ctx.redirect("/templates/auth/create_user.html?error=user_exists");
+            ctx.redirect(Routes.CREATEUSER.getPath());
             return;
         } catch (IllegalArgumentException e) {
         }
