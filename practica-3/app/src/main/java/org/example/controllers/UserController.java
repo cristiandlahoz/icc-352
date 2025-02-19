@@ -29,7 +29,7 @@ public class UserController extends BaseController {
     }
 
     private void renderCreateUserPage(Context ctx) {
-        ctx.render("/public/templates/pages/create_user.html");
+        ctx.render("/pages/create_user.html");
     }
 
     public static void getAllUsers(Context ctx) {

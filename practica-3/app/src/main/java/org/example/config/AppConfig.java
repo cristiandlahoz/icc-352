@@ -1,10 +1,9 @@
 package org.example.config;
 
 import org.example.models.User;
-import org.example.util.Routes;
+import org.example.util.*;
 import org.thymeleaf.TemplateEngine;
 import org.thymeleaf.templateresolver.ClassLoaderTemplateResolver;
-
 import io.javalin.Javalin;
 import io.javalin.rendering.template.JavalinThymeleaf;
 
@@ -26,11 +25,11 @@ public class AppConfig {
         }).before(ctx -> {
             String path = ctx.path();
 
-            if (!path.equals(Routes.LOGIN.getPath()) && !path.equals(Routes.SIGNUP.getPath())) {
+            if (!path.equals(Routes.LOGIN.getPath()) || !path.equals(Routes.SIGNUP.getPath())) {
                 return;
             }
 
-            User user = ctx.sessionAttribute("USUARIO");
+            User user = ctx.sessionAttribute(SessionKeys.USER.getKey());
             System.out.println("Verificando sesión de usuario en ruta: " + path + " - Usuario en sesión: " + user);
 
             if (user == null) {
@@ -38,9 +37,9 @@ public class AppConfig {
             }
             System.out.println("Request: " + ctx.method() + " " + ctx.path());
         }).after(ctx -> {
-            User user = ctx.sessionAttribute("USUARIO");
+            User user = ctx.sessionAttribute(SessionKeys.USER.getKey());
             if (user != null) {
-                ctx.sessionAttribute("USUARIO", user);
+                ctx.sessionAttribute(SessionKeys.USER.getKey(), user);
             }
         }).exception(Exception.class, (e, ctx) -> {
             ctx.status(500);

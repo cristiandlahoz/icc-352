@@ -16,7 +16,7 @@ public abstract class BaseController {
     abstract public void applyRoutes();
 
     public static Map<String, Object> setModel(Object... args) {
-        Map<String, Object> modelo = new HashMap<>();
+        Map<String, Object> model = new HashMap<>();
         if (args.length % 2 != 0) {
             throw new IllegalArgumentException(
                     "Invalid number of arguments. Arguments should be in pairs (key, value).");
@@ -26,9 +26,9 @@ public abstract class BaseController {
                 throw new IllegalArgumentException(
                         "Argument at position " + i + " is not a String. Keys should be Strings.");
             }
-            modelo.put((String) args[i], args[i + 1]);
+            model.put((String) args[i], args[i + 1]);
         }
-        return modelo;
+        return model;
     }
 
 }
