@@ -5,11 +5,7 @@ import io.javalin.http.Context;
 
 import org.example.models.User;
 import org.example.services.UserService;
-import org.example.util.AccessStatus;
-import org.example.util.BaseController;
-import org.example.util.Role;
-import org.example.util.Routes;
-import org.example.util.SessionKeys;
+import org.example.util.*;
 
 public class AuthenticationController extends BaseController {
 
@@ -29,11 +25,11 @@ public class AuthenticationController extends BaseController {
     }
 
     private void renderLoginPage(Context ctx) {
-        ctx.render("/auth/logIn.html");
+        ctx.render("/auth/login.html");
     }
 
     private void renderSignupPage(Context ctx) {
-        ctx.render("/auth/signUp.html");
+        ctx.render("/auth/signup.html");
     }
 
     private static void login(Context ctx) {
@@ -55,7 +51,7 @@ public class AuthenticationController extends BaseController {
 
             ctx.sessionAttribute(SessionKeys.USER.getKey(), user);
             System.out.println("Usuario autenticado: " + user);
-            ctx.redirect("/");
+            ctx.redirect(Routes.HOME.getPath());
 
         } catch (IllegalArgumentException e) {
             ctx.redirect(Routes.LOGIN.getPath());
@@ -64,24 +60,35 @@ public class AuthenticationController extends BaseController {
 
     private static void logout(Context ctx) {
         ctx.req().getSession().invalidate();
-        ctx.redirect("/");
+        ctx.redirect(Routes.HOME.getPath());
     }
 
-    private static void signup(Context ctx) {
+    public static void signup(Context ctx) {
+        User newUser = processUserForm(ctx, Routes.SIGNUP.getPath());
+        if (newUser != null) {
+            newUser.setAccessStatus(AccessStatus.AUTHENTICATED);
+            ctx.sessionAttribute(SessionKeys.USER.getKey(), newUser);
+            System.out.println("Usuario registrado: " + newUser.getUsername());
+            System.out.println("Usuario autenticado tras registro: " + ctx.sessionAttribute(SessionKeys.USER.getKey()));
+            ctx.redirect(Routes.HOME.getPath());
+        }
+    }
+
+    protected static User processUserForm(Context ctx, String redirectRoute) {
         String name = ctx.formParam("name");
         String username = ctx.formParam("username");
         String password = ctx.formParam("password");
         boolean isAuthor = ctx.formParam("is_author") != null;
 
         if (name == null || username == null || password == null) {
-            ctx.redirect(Routes.SIGNUP.getPath());
-            return;
+            ctx.redirect(redirectRoute);
+            return null;
         }
 
         try {
             userService.getUserByUsername(username);
-            ctx.redirect(Routes.SIGNUP.getPath());
-            return;
+            ctx.redirect(redirectRoute);
+            return null;
         } catch (IllegalArgumentException e) {
             // Usuario no encontrado, se puede crear
         }
@@ -90,15 +97,7 @@ public class AuthenticationController extends BaseController {
         User newUser = new User(username, name, password, role, AccessStatus.UNAUTHENTICATED);
         userService.createUser(newUser);
 
-        User createdUser = userService.getUserByUsername(username);
-        if (createdUser != null) {
-            createdUser.setAccessStatus(AccessStatus.AUTHENTICATED);
-            ctx.sessionAttribute(SessionKeys.USER.getKey(), createdUser);
-            System.out.println("Usuario registrado: " + username);
-            System.out.println("Usuario autenticado tras registro: " + ctx.sessionAttribute(SessionKeys.USER.getKey()));
-            ctx.redirect("/");
-        } else {
-            ctx.redirect(Routes.SIGNUP.getPath());
-        }
+        return userService.getUserByUsername(username);
     }
+
 }
