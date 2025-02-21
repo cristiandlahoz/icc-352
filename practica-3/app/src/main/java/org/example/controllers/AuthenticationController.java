@@ -2,11 +2,10 @@ package org.example.controllers;
 
 import io.javalin.Javalin;
 import io.javalin.http.Context;
+
 import org.example.models.User;
 import org.example.services.UserService;
-import org.example.util.AccessStatus;
-import org.example.util.BaseController;
-import org.example.util.Role;
+import org.example.util.*;
 
 public class AuthenticationController extends BaseController {
 
@@ -17,17 +16,28 @@ public class AuthenticationController extends BaseController {
     }
 
     public void applyRoutes() {
-        app.post("/login", this::login);
-        app.post("/logout", this::logout);
-        app.post("/signup", this::signup);
+        app.get(Routes.LOGIN.getPath(), this::renderLoginPage);
+        app.get(Routes.SIGNUP.getPath(), this::renderSignupPage);
+
+        app.post(Routes.LOGIN.getPath(), AuthenticationController::login);
+        app.post(Routes.LOGOUT.getPath(), AuthenticationController::logout);
+        app.post(Routes.SIGNUP.getPath(), AuthenticationController::signup);
     }
 
-    private void login(Context ctx) {
+    private void renderLoginPage(Context ctx) {
+        ctx.render("/auth/login.html");
+    }
+
+    private void renderSignupPage(Context ctx) {
+        ctx.render("/auth/signup.html");
+    }
+
+    private static void login(Context ctx) {
         String username = ctx.formParam("username");
         String password = ctx.formParam("password");
 
         if (username == null || password == null) {
-            ctx.redirect("/templates/logIn.html?error=missing_fields");
+            ctx.redirect(Routes.LOGIN.getPath());
             return;
         }
 
@@ -35,39 +45,50 @@ public class AuthenticationController extends BaseController {
             User user = userService.getUserByUsername(username);
 
             if (!user.getPassword().equals(password)) {
-                ctx.redirect("/templates/logIn.html?error=invalid_credentials");
+                ctx.redirect(Routes.LOGIN.getPath());
                 return;
             }
 
-            ctx.sessionAttribute("USUARIO", user);
+            ctx.sessionAttribute(SessionKeys.USER.getKey(), user);
             System.out.println("Usuario autenticado: " + user);
-            ctx.redirect("/");
+            ctx.redirect(Routes.HOME.getPath());
 
         } catch (IllegalArgumentException e) {
-            ctx.redirect("/templates/logIn.html?error=user_not_found");
+            ctx.redirect(Routes.LOGIN.getPath());
         }
     }
 
-    private void logout(Context ctx) {
+    private static void logout(Context ctx) {
         ctx.req().getSession().invalidate();
-        ctx.redirect("/");
+        ctx.redirect(Routes.HOME.getPath());
     }
 
-    private void signup(Context ctx) {
+    public static void signup(Context ctx) {
+        User newUser = processUserForm(ctx, Routes.SIGNUP.getPath());
+        if (newUser != null) {
+            newUser.setAccessStatus(AccessStatus.AUTHENTICATED);
+            ctx.sessionAttribute(SessionKeys.USER.getKey(), newUser);
+            System.out.println("Usuario registrado: " + newUser.getUsername());
+            System.out.println("Usuario autenticado tras registro: " + ctx.sessionAttribute(SessionKeys.USER.getKey()));
+            ctx.redirect(Routes.HOME.getPath());
+        }
+    }
+
+    protected static User processUserForm(Context ctx, String redirectRoute) {
         String name = ctx.formParam("name");
         String username = ctx.formParam("username");
         String password = ctx.formParam("password");
         boolean isAuthor = ctx.formParam("is_author") != null;
 
         if (name == null || username == null || password == null) {
-            ctx.redirect("/templates/signUp.html?error=missing_fields");
-            return;
+            ctx.redirect(redirectRoute);
+            return null;
         }
 
         try {
             userService.getUserByUsername(username);
-            ctx.redirect("/templates/signUp.html?error=user_exists");
-            return;
+            ctx.redirect(redirectRoute);
+            return null;
         } catch (IllegalArgumentException e) {
             // Usuario no encontrado, se puede crear
         }
@@ -76,16 +97,7 @@ public class AuthenticationController extends BaseController {
         User newUser = new User(username, name, password, role, AccessStatus.UNAUTHENTICATED);
         userService.createUser(newUser);
 
-
-        User createdUser = userService.getUserByUsername(username);
-        if (createdUser != null) {
-            createdUser.setAccessStatus(AccessStatus.AUTHENTICATED);
-            ctx.sessionAttribute("USUARIO", createdUser);
-            System.out.println("Usuario registrado: " + username);
-            System.out.println("Usuario autenticado tras registro: " + ctx.sessionAttribute("USUARIO"));
-            ctx.redirect("/");
-        } else {
-            ctx.redirect("/templates/signUp.html?error=registration_failed");
-        }
+        return userService.getUserByUsername(username);
     }
+
 }

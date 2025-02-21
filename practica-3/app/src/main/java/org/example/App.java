@@ -1,15 +1,10 @@
 package org.example;
 
 import java.util.List;
-
-import org.example.config.AppConfig;
-import org.example.config.EnvConfig;
-import org.example.controllers.ArticleController;
-import org.example.controllers.AuthenticationController;
-import org.example.controllers.CommentController;
-import org.example.controllers.TagController;
-import org.example.controllers.UserController;
-
+import org.example.config.*;
+import org.example.controllers.*;
+import org.example.util.*;
+import org.example.util.Routes;
 import io.javalin.Javalin;
 
 public class App {
@@ -25,7 +20,10 @@ public class App {
                 new AuthenticationController(app),
                 new UserController(app),
                 new CommentController(app),
-                new TagController(app)).forEach(controller -> controller.applyRoutes());
+                new TagController(app)).forEach(BaseController::applyRoutes);
 
+        app.get(Routes.HOME.getPath(), ctx -> {
+            ctx.redirect(Routes.ARTICLES.getPath());
+        });
     }
 }

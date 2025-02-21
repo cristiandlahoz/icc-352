@@ -15,6 +15,8 @@ import org.example.services.ArticleService;
 import org.example.services.CommentService;
 import org.example.services.TagService;
 import org.example.util.BaseController;
+import org.example.util.Routes;
+import org.example.util.SessionKeys;
 
 import io.javalin.Javalin;
 import io.javalin.http.Context;
@@ -29,19 +31,25 @@ public class ArticleController extends BaseController {
 
     @Override
     public void applyRoutes() {
-        app.get("/", ArticleController::getAllArticles);
-        app.get("/articles/{id}", ArticleController::getArticleById);
-        app.post("/articles", ArticleController::createArticle);
-        app.post("/articles/{id}", ArticleController::updateArticle);
+        app.get(Routes.CREATEARTICLE.getPath(), this::renderCreateArticlePage);
+
+        app.get(Routes.ARTICLES.getPath(), ArticleController::getAllArticles);
+        app.get(Routes.ARTICLE.getPath(), ArticleController::getArticleById);
+        app.post(Routes.ARTICLES.getPath(), ArticleController::createArticle);
+        app.post(Routes.ARTICLE.getPath(), ArticleController::updateArticle);
         app.post("/articles/form/{id}", ArticleController::formHandler);
-        app.delete("/articles/{id}", ArticleController::deleteArticle);
+        app.delete(Routes.ARTICLE.getPath(), ArticleController::deleteArticle);
+    }
+
+    private void renderCreateArticlePage(Context ctx) {
+        ctx.render("/pages/create_article.html");
     }
 
     public static void getAllArticles(Context ctx) {
         List<Article> articleCollection = articleService.getAllArticles();
         Collection<Tag> tagCollection = TagController.getAllTags();
-        Boolean logged = ctx.sessionAttribute("USUARIO") != null ? true : false;
-        User user = ctx.sessionAttribute("USUARIO");
+        Boolean logged = ctx.sessionAttribute(SessionKeys.USER.getKey()) != null;
+        User user = ctx.sessionAttribute(SessionKeys.USER.getKey());
         String role = (user != null) ? user.getRole().toString() : "GUEST";
         ctx.sessionAttribute("ROL", role);
         Map<String, Object> model = setModel(
@@ -51,7 +59,7 @@ public class ArticleController extends BaseController {
                 "logged", logged,
                 "role", role);
 
-        ctx.render("/public/index.html", model);
+        ctx.render("index.html", model);
     }
 
     public static void getArticleById(Context ctx) {
@@ -60,9 +68,10 @@ public class ArticleController extends BaseController {
         if (myArticle == null)
             ctx.status(404).result("Article not found");
 
-        Collection<Tag> tags = myArticle.getTags();
+	    assert myArticle != null;
+	    Collection<Tag> tags = myArticle.getTags();
         List<Article> authorArticles = articleService.getArticleByAuthor(myArticle.getAuthor());
-        User user = ctx.sessionAttribute("USUARIO");
+        User user = ctx.sessionAttribute(SessionKeys.USER.getKey());
         String role = (user != null) ? user.getRole().toString() : "GUEST";
         String username = "";
         Boolean logged = false;
@@ -81,7 +90,7 @@ public class ArticleController extends BaseController {
                 "comments", comments,
                 "user", username);
 
-        ctx.render("/public/templates/article-view.html", model);
+        ctx.render("/pages/article-view.html", model);
     }
 
     public static void createArticle(Context ctx) {
@@ -100,7 +109,7 @@ public class ArticleController extends BaseController {
         String title = ctx.formParam("title");
         String content = ctx.formParam("content");
         String tags = ctx.formParam("tags");
-        User author = ctx.sessionAttribute("USUARIO");
+        User author = ctx.sessionAttribute(SessionKeys.USER.getKey());
         if (author == null) {
             ctx.status(401).result("You are not logged");
             return;
@@ -143,7 +152,7 @@ public class ArticleController extends BaseController {
                 return;
             }
             Map<String, Object> model = setModel("article", existingArticle);
-            ctx.render("/public/templates/edit_article.html", model);
+            ctx.render("/pages/edit_article.html", model);
 
         } catch (Exception e) {
             e.printStackTrace();
@@ -156,7 +165,7 @@ public class ArticleController extends BaseController {
             String title = ctx.formParam("title");
             String content = ctx.formParam("content");
             String tags = ctx.formParam("tags");
-            User author = ctx.sessionAttribute("USUARIO");
+            User author = ctx.sessionAttribute(SessionKeys.USER.getKey());
             if (author == null) {
                 ctx.status(401).result("You are not logged");
                 return null;
@@ -213,7 +222,6 @@ public class ArticleController extends BaseController {
         } catch (NumberFormatException e) {
             ctx.status(400).result("Article ID not valid");
         } catch (Exception e) {
-            e.printStackTrace();
             ctx.status(500).result("Error deleting article");
         }
     }

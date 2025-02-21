@@ -7,6 +7,7 @@ import org.example.services.UserService;
 import org.example.util.AccessStatus;
 import org.example.util.BaseController;
 import org.example.util.Role;
+import org.example.util.Routes;
 
 import java.util.Collection;
 
@@ -19,11 +20,16 @@ public class UserController extends BaseController {
     }
 
     public void applyRoutes() {
-        app.get("/users", UserController::getAllUsers);
-        app.get("/users/{username}", UserController::getUserByUsername);
-        app.post("/users/", UserController::createUser);
-        app.put("/users/{username}", UserController::updateUser);
-        app.delete("/users/{username}", UserController::deleteUser);
+        app.get(Routes.CREATEUSER.getPath(), this::renderCreateUserPage);
+        app.get(Routes.USERS.getPath(), UserController::getAllUsers);
+        app.get(Routes.USER.getPath(), UserController::getUserByUsername);
+        app.post(Routes.USERS.getPath(), UserController::createUser);
+        app.put(Routes.USER.getPath(), UserController::updateUser);
+        app.delete(Routes.USER.getPath(), UserController::deleteUser);
+    }
+
+    private void renderCreateUserPage(Context ctx) {
+        ctx.render("/pages/create_user.html");
     }
 
     public static void getAllUsers(Context ctx) {
@@ -38,36 +44,13 @@ public class UserController extends BaseController {
         ctx.json(myUser);
     }
 
+
     public static void createUser(Context ctx) {
-        /*
-         * User myUser = ctx.bodyAsClass(User.class);
-         * userService.createUser(myUser);
-         * ctx.status(201);
-         */
-        String name = ctx.formParam("name");
-        String username = ctx.formParam("username");
-        String password = ctx.formParam("password");
-        boolean isAuthor = ctx.formParam("is_author") != null;
-
-        if (name == null || username == null || password == null) {
-            ctx.redirect("/templates/create_user.html?error=missing_fields");
-            return;
+        User newUser = AuthenticationController.processUserForm(ctx, Routes.CREATEUSER.getPath());
+        if (newUser != null) {
+            ctx.redirect("/");
         }
-
-        try {
-            userService.getUserByUsername(username);
-            ctx.redirect("/templates/create_user.html?error=user_exists");
-            return;
-        } catch (IllegalArgumentException e) {
-        }
-
-        Role role = isAuthor ? Role.AUTHOR : Role.USER;
-        User newUser = new User(username, name, password, role, AccessStatus.UNAUTHENTICATED);
-        userService.createUser(newUser);
-
-        ctx.status(201).redirect("/");
     }
-
     public static void updateUser(Context ctx) {
         User myUser = ctx.bodyAsClass(User.class);
         myUser.setUsername(ctx.pathParam("username"));

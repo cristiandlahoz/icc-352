@@ -14,7 +14,7 @@ import org.example.models.User;
 import org.example.services.ArticleService;
 import org.example.services.CommentService;
 import org.example.services.TagService;
-import org.example.util.BaseController;
+import org.example.util.*;
 
 import io.javalin.Javalin;
 import io.javalin.http.Context;
@@ -40,7 +40,7 @@ public class ArticleController extends BaseController {
     public static void getAllArticles(Context ctx) {
         List<Article> articleCollection = articleService.getAllArticles();
         Collection<Tag> tagCollection = TagController.getAllTags();
-        Boolean logged = ctx.sessionAttribute("USUARIO") != null ? true : false;
+        Boolean logged = ctx.sessionAttribute() != null ? true : false;
         User user = ctx.sessionAttribute("USUARIO");
         String role = (user != null) ? user.getRole().toString() : "GUEST";
         ctx.sessionAttribute("ROL", role);
@@ -62,7 +62,7 @@ public class ArticleController extends BaseController {
 
         Collection<Tag> tags = myArticle.getTags();
         List<Article> authorArticles = articleService.getArticleByAuthor(myArticle.getAuthor());
-        User user = ctx.sessionAttribute("USUARIO");
+        User user = ctx.sessionAttribute(SessionKey);
         String role = (user != null) ? user.getRole().toString() : "GUEST";
         String username = "";
         Boolean logged = false;

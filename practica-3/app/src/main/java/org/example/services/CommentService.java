@@ -1,6 +1,7 @@
 package org.example.services;
 
 import java.util.Collection;
+import java.util.Comparator;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -26,8 +27,9 @@ public class CommentService {
         comments.put(comment2.getCommentId(), comment2);
     }
 
-    public Collection<Comment> getAllComments() {
-        return comments.values();
+    public List<Comment> getAllComments() {
+        return comments.values().stream().sorted(Comparator.comparing(Comment::getDate).reversed())
+                .collect(Collectors.toList());
     }
 
     public Comment getCommentById(Long commentId) {
@@ -37,6 +39,16 @@ public class CommentService {
             throw new NotFoundException("User not found");
 
         return comments.get(commentId);
+    }
+
+    public List<Comment> getCommentsByArticleId(Long articleId) {
+        if (articleId == null) {
+            throw new IllegalArgumentException("Argument articleId cannot be null");
+        } else
+            return comments.values().stream()
+                    .filter(comment -> comment.getArticleId().equals(articleId))
+                    .sorted(Comparator.comparing(Comment::getDate).reversed())
+                    .collect(Collectors.toList());
     }
 
     public void createComment(Comment comment) {
@@ -62,15 +74,6 @@ public class CommentService {
             throw new NotFoundException("Comment cannot be found");
         } else
             comments.remove(id);
-    }
-
-    public List<Comment> getCommentsByArticleId(Long articleId) {
-        if (articleId == null) {
-            throw new IllegalArgumentException("Argument articleId cannot be null");
-        } else
-            return comments.values().stream()
-                    .filter(comment -> comment.getArticleId().equals(articleId))
-                    .collect(Collectors.toList());
     }
 
     public Comment getCommentByArticleAndCommentId(Long articleId, Long commentId) {
