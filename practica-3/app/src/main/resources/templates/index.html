@@ -98,6 +98,9 @@
                     <form th:if="${logged}" th:action="@{/logout}" method="post">
                         <button type="submit" class="btn btn-sm btn-outline-danger">Log out</button>
                     </form>
+                    <form th:if="${role == 'USER' || role == 'AUTHOR'}" th:action="@{'/users/' + ${user.username}}" method="post">
+                        <button type="submit" class="btn btn-sm btn-outline-danger">Update account</button>
+                    </form>
 
                 </div>
             </div>

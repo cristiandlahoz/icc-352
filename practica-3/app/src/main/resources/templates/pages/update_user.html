@@ -3,7 +3,8 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link rel="stylesheet" href="/assets/css/update.user.css">
+    <link rel="stylesheet" href="/assets/css/singup.css">
+
     <title>Editar Usuario</title>
 </head>
 <body>
@@ -28,7 +29,7 @@
         <input type="password" id="password" name="password" placeholder="Ingrese la nueva contraseña">
 
         <label for="is_author">¿Asignar rol de autor?</label>
-        <input type="checkbox" id="is_author" name="is_author" th:checked="${user.role == 'AUTHOR'}">
+        <input type="checkbox" id="is_author" name="is_author" th:checked="${role == 'AUTHOR'}">
 
         <div class="buttons">
             <button type="submit">Actualizar</button>
