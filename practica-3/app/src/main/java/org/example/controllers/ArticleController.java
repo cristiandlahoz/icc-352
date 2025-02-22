@@ -50,7 +50,7 @@ public class ArticleController extends BaseController {
 
     public void getAllArticles(Context ctx) {
         List<Article> articleCollection = articleService.getAllArticles();
-        Collection<Tag> tagCollection = TagController.getAllTags();
+        Collection<Tag> tagCollection = tagService.getAllTags();
         Boolean logged = ctx.sessionAttribute(SessionKeys.USER.getKey()) != null;
         User user = ctx.sessionAttribute(SessionKeys.USER.getKey());
         String role = (user != null) ? user.getRole().toString() : "GUEST";
