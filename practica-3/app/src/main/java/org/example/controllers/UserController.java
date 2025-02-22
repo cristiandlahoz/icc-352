@@ -3,15 +3,12 @@ package org.example.controllers;
 import io.javalin.Javalin;
 import io.javalin.http.Context;
 import org.example.models.Article;
+import org.example.models.Tag;
 import org.example.models.User;
 import org.example.services.UserService;
-import org.example.util.AccessStatus;
-import org.example.util.BaseController;
-import org.example.util.Role;
-import org.example.util.Routes;
+import org.example.util.*;
 
-import java.util.Collection;
-import java.util.Map;
+import java.util.*;
 
 public class UserController extends BaseController {
     private final UserService userService;
@@ -27,6 +24,7 @@ public class UserController extends BaseController {
         app.post(Routes.USERS.getPath(), this::createUser);
         app.put(Routes.USER.getPath(), this::updateUser);
         app.delete(Routes.USER.getPath(), this::deleteUser);
+        app.post("/users/form/{id}", this::formHandler);
     }
 
     private void renderCreateUserPage(Context ctx) {
@@ -69,6 +67,32 @@ public class UserController extends BaseController {
             ctx.status(500).result("Error Updating User");
         }
     }
+
+    public  void formHandler(Context ctx) {
+        Long userId = Long.parseLong(ctx.pathParam("id"));
+        String name = ctx.formParam("name");
+        String username = ctx.formParam("username");
+        String password = ctx.formParam("password");
+        boolean isAuthor = ctx.formParam("is_author") != null;
+        Role role = isAuthor ? Role.AUTHOR : Role.USER;
+
+
+        User user = userService.getUserByUserId(userId);
+        if (user == null) {
+            ctx.status(404).result("User not found");
+            return;
+        }
+        user.setUsername(username);
+        user.setName(name);
+        user.setRole(Role.USER);
+        user.setPassword(password);
+        user.setRole(role);
+
+        userService.updateUser(user);
+        ctx.status(200).redirect("/users/" + userId);
+        return;
+    }
+
 
     public void deleteUser(Context ctx) {
         String username = ctx.pathParam("username");
