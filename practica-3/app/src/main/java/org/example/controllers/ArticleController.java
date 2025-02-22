@@ -1,11 +1,6 @@
 package org.example.controllers;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collection;
-import java.util.Date;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 import org.example.models.Article;
 import org.example.models.Comment;
@@ -123,7 +118,7 @@ public class ArticleController extends BaseController {
             selectedTags = Arrays.asList(tags.split(","));
         }
 
-        ArrayList<Tag> tagArrayList = new ArrayList<>();
+        Set<Tag> tagArrayList = new HashSet<>();
         for (String tagName : selectedTags) {
             if (tagName != null && !tagName.trim().isEmpty()) {
                 tagArrayList.add(tagService.createTag(tagName.trim()));
@@ -178,7 +173,7 @@ public class ArticleController extends BaseController {
                 selectedTags = Arrays.asList(tags.split(","));
             }
 
-            ArrayList<Tag> tagArrayList = new ArrayList<>();
+            Set<Tag> tagArrayList = new HashSet<>() ;
             for (String tagName : selectedTags) {
                 if (tagName != null && !tagName.trim().isEmpty()) {
                     tagArrayList.add(tagService.createTag(tagName.trim()));
@@ -193,7 +188,7 @@ public class ArticleController extends BaseController {
             } else {
                 article.setTitle(title);
                 article.setContent(content);
-                article.setTags(tagArrayList);
+                //article.setTags(tagArrayList);
 
                 articleService.updateArticle(article);
 
