@@ -1,6 +1,7 @@
 package org.example.services;
 
 import org.example.exceptions.NotFoundException;
+import org.example.models.Article;
 import org.example.models.User;
 import java.util.Collection;
 import java.util.HashMap;
@@ -34,17 +35,14 @@ public class UserService {
         return userRepository.findById(username);
     }
 
-    /*public void createUser(User user) {
-        users.put(user.getUsername(), user);
-    }*/
 
-    public User createUser(User user) {
-        if (userRepository.findById(user.getUsername()).isPresent()) {
-            throw new IllegalArgumentException("User already exists");
+    public User createUser(String username, String name, String password, Role role, AccessStatus accessStatus) {
+        if (username == null || name == null || password == null || role == null || accessStatus == null) {
+            throw new IllegalArgumentException("Username and name cannot be null");
         }
-        return userRepository.save(user);
+        User newUser = new User(username, name, password, role, accessStatus);
+        return userRepository.save(newUser);
     }
-
 
     public User updateUser(User user) {
         if (user == null || user.getUsername() == null) {

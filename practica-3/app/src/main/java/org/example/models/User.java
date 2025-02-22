@@ -9,7 +9,6 @@ import org.example.util.Role;
 @Getter
 @Setter
 @NoArgsConstructor
-@AllArgsConstructor
 public class User {
 
 	@Id
@@ -24,4 +23,12 @@ public class User {
 
 	@Enumerated(EnumType.STRING)
 	private AccessStatus accessStatus;
+
+	public User(String username, String name, String password, Role role, AccessStatus accessStatus) {
+		this.username = username;
+		this.name = name;
+		this.password = password;
+		this.role = role;
+		this.accessStatus = accessStatus;
+	}
 }

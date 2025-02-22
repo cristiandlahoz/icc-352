@@ -3,6 +3,7 @@ package org.example.services;
 import java.util.*;
 import java.util.stream.Collectors;
 
+import org.example.exceptions.NotFoundException;
 import org.example.models.Article;
 import org.example.models.Tag;
 import org.example.repository.ArticleRepository;
@@ -25,7 +26,7 @@ public class ArticleService {
             throw new IllegalArgumentException("Article ID cannot be null");
         }
         return articleRepository.findById(articleId)
-                .orElseThrow(() -> new IllegalArgumentException("Article not found"));
+                .orElseThrow(() -> new NotFoundException("Article not found"));
     }
 
 
@@ -34,11 +35,12 @@ public class ArticleService {
                 .sorted(Comparator.comparing(Article::getDate).reversed()).collect(Collectors.toList());
     }
 
-    public Article createArticle(Article article) {
-        if (article == null) {
-            throw new IllegalArgumentException("Article cannot be null");
+    public Article createArticle(String title, String content, String authorUsername) {
+        if (title == null || content == null || authorUsername == null) {
+            throw new IllegalArgumentException("Title, content, and author username cannot be null");
         }
-        return articleRepository.save(article);
+        Article newArticle = new Article(title, content, authorUsername);
+        return articleRepository.save(newArticle);
     }
 
     public Article updateArticle(Article article) {

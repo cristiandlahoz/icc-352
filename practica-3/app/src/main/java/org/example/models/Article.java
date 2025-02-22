@@ -2,13 +2,14 @@ package org.example.models;
 
 import jakarta.persistence.*;
 import lombok.*;
+
+import java.time.LocalDateTime;
 import java.util.*;
 
 @Entity
 @Getter
 @Setter
 @NoArgsConstructor
-@AllArgsConstructor
 public class Article {
 
     @Id
@@ -17,8 +18,12 @@ public class Article {
     private String title;
     private String content;
     private String author;
-    private Date date;
+    private LocalDateTime date;
 
+    @PrePersist
+    protected void onCreate() {
+        this.date = LocalDateTime.now();
+    }
     @OneToMany(mappedBy = "article", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<Comment> comments;
 
@@ -29,4 +34,10 @@ public class Article {
             inverseJoinColumns = @JoinColumn(name = "tag_id")
     )
     private List<Tag> tags;
+
+    public Article(String title, String content, String author) {
+        this.title = title;
+        this.content = content;
+        this.author = author;
+    }
 }

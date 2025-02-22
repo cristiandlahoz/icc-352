@@ -17,7 +17,6 @@ public class CommentService {
         this.articleService = articleService;
     }
 
-
     public List<Comment> getAllComments() {
         return commentRepository.findAll().stream().sorted(Comparator.comparing(Comment::getDate).reversed())
                 .collect(Collectors.toList());
@@ -64,21 +63,6 @@ public class CommentService {
             throw new IllegalArgumentException("Comment ID cannot be null");
         }
         commentRepository.deleteById(id);
-    }
-
-    public Comment getCommentByArticleAndCommentId(Long articleId, Long commentId) {
-        if (articleId == null) {
-            throw new IllegalArgumentException("Article ID cannot be null");
-        }
-        if (commentId == null) {
-            throw new IllegalArgumentException("Comment ID cannot be null");
-        }
-        Comment comment = commentRepository.findById(commentId)
-                .orElseThrow(() -> new NotFoundException("Comment not found with ID " + commentId));
-        if (!comment.getArticle().getArticleId().equals(articleId)) {
-            throw new NotFoundException("No comment found with the specified article ID and comment ID");
-        }
-        return comment;
     }
 
 }
