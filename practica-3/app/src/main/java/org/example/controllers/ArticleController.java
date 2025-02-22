@@ -136,9 +136,8 @@ public class ArticleController extends BaseController {
         article.setContent(content);
         article.setTags(tagArrayList);
 
-        articleService.updateArticle(article);// Actualizar
+        articleService.updateArticle(article);
         ctx.status(200).redirect("/articles/" + articleId);
-
         return;
     }
 
