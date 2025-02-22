@@ -8,24 +8,19 @@ import java.util.Map;
 import java.util.stream.Collectors;
 
 import org.example.exceptions.NotFoundException;
+import org.example.models.Article;
 import org.example.models.Comment;
+import org.example.repository.CommentRepository;
 
 public class CommentService {
-    private static final Map<Long, Comment> comments = new HashMap<>();
+    private final CommentRepository commentRepository;
+    private final ArticleService articleService;
 
-    public CommentService() {
+    public CommentService(CommentRepository commentRepository, ArticleService articleService) {
+        this.commentRepository = commentRepository;
+        this.articleService = articleService;
     }
 
-    static {
-        Comment comment1 = new Comment(
-                "Great discussion everyone! I'd like to add that this topic has many interesting aspects we could explore further.",
-                "usename1", 7L);
-        Comment comment2 = new Comment(
-                "Great discussion everyone! I'd like to add that this topic has many interesting aspects we could explore further.",
-                "usename1", 7L);
-        comments.put(comment1.getCommentId(), comment1);
-        comments.put(comment2.getCommentId(), comment2);
-    }
 
     public List<Comment> getAllComments() {
         return comments.values().stream().sorted(Comparator.comparing(Comment::getDate).reversed())
@@ -51,8 +46,12 @@ public class CommentService {
                     .collect(Collectors.toList());
     }
 
-    public void createComment(Comment comment) {
-        comments.put(comment.getCommentId(), comment);
+    public Comment createComment(String author, String comment, Long articleId) {
+        Article article = articleService.getArticleById(articleId);
+        if (article == null) {
+            throw new NotFoundException("Article not found with ID " + articleId);
+        }
+	    return new Comment(comment, author, article);
     }
 
     public void updateComment(Comment comment) {
