@@ -13,12 +13,12 @@ public class AuthService {
 	}
 
 	public Optional<User> authenticate(String username, String password) {
-		return userRepository.findById(username)
+		return userRepository.findByUsername(username)
 				.filter(user -> user.getPassword().equals(password));
 	}
 
 	public User register(User user) {
-		if (userRepository.findById(user.getUsername()).isPresent()) {
+		if (userRepository.findByUsername(user.getUsername()).isPresent()) {
 			throw new IllegalArgumentException("User already exists");
 		}
 		return userRepository.save(user);
