@@ -25,7 +25,7 @@ public class Article {
 		this.date = new Date();
 	}
 
-	@OneToMany(mappedBy = "article", cascade = CascadeType.ALL, orphanRemoval = true)
+	@OneToMany(mappedBy = "article")
 	private List<Comment> comments;
 
 	@ManyToMany
@@ -34,7 +34,7 @@ public class Article {
 			joinColumns = @JoinColumn(name = "article_id"),
 			inverseJoinColumns = @JoinColumn(name = "tag_id")
 	)
-	private List<Tag> tags;
+	private Set<Tag> tags;
 
 	public Article(String title, String content, String author) {
 		this.title = title;
