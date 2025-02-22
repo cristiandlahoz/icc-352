@@ -13,7 +13,6 @@ public class CommentController extends BaseController {
 
     public CommentController(Javalin app) {
         super(app);
-
     }
 
     @Override
@@ -55,8 +54,7 @@ public class CommentController extends BaseController {
             return;
         }
 
-        Comment myComment = new Comment(comment, author, articleId);
-        commentService.createComment(myComment);
+        Comment myComment = commentService.createComment(comment, author, articleId);
         ctx.json(myComment);
     }
 
