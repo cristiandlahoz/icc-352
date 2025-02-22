@@ -22,7 +22,7 @@ public class UserController extends BaseController {
         app.get(Routes.USERS.getPath(), this::getAllUsers);
         app.get(Routes.USER.getPath(), this::getUserByUsername);
         app.post(Routes.USERS.getPath(), this::createUser);
-        app.put(Routes.USER.getPath(), this::updateUser);
+        app.post(Routes.USER.getPath(), this::updateUser);
         app.delete(Routes.USER.getPath(), this::deleteUser);
         app.post("/users/form/{id}", this::formHandler);
     }
