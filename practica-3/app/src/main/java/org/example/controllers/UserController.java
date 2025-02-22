@@ -2,6 +2,7 @@ package org.example.controllers;
 
 import io.javalin.Javalin;
 import io.javalin.http.Context;
+import org.example.models.Article;
 import org.example.models.User;
 import org.example.services.UserService;
 import org.example.util.AccessStatus;
@@ -10,6 +11,7 @@ import org.example.util.Role;
 import org.example.util.Routes;
 
 import java.util.Collection;
+import java.util.Map;
 
 public class UserController extends BaseController {
     private final UserService userService;
@@ -48,14 +50,27 @@ public class UserController extends BaseController {
         User newUser = processUserForm(ctx, Routes.CREATEUSER.getPath());
         if (newUser != null) {
             ctx.redirect("/");
+        }else {
+            ctx.status(400).result("Error Creating User");
         }
     }
     public void updateUser(Context ctx) {
-        User myUser = ctx.bodyAsClass(User.class);
-        myUser.setUsername(ctx.pathParam("username"));
-        userService.updateUser(myUser);
-        ctx.status(200);
+        try {
+            String username = ctx.pathParam("username");
+            User existingUser = userService.getUserByUsername(username).orElse(null);
+            if (existingUser == null) {
+                ctx.status(400).result("Error Updating User");
+                return;
+            }
+            Map<String, Object> model = setModel("user", existingUser);
+            ctx.render("/pages/update_user.html", model);
+        }catch (Exception e) {
+            e.printStackTrace();
+            ctx.status(500).result("Error Updating User");
+        }
     }
+
+
 
     public void deleteUser(Context ctx) {
         String username = ctx.pathParam("usernme");
