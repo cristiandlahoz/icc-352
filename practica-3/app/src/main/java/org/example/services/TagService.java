@@ -2,21 +2,23 @@ package org.example.services;
 
 import org.example.exceptions.NotFoundException;
 import org.example.models.Tag;
-import java.util.Collection;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+
+import java.util.*;
 import java.util.stream.Collectors;
+
+import org.example.repository.ArticleRepository;
+import org.example.repository.TagRepository;
 
 public class TagService {
 
-    private static final Map<Long, Tag> tags = new HashMap<>();
+    private final TagRepository tagRepository;
 
-    public TagService() {
+    public TagService(TagRepository tagRepository) {
 
+        this.tagRepository = tagRepository;
     }
 
-    static {
+    /*static {
 
 
         tags.put(1L, new Tag( "Java"));
@@ -33,58 +35,59 @@ public class TagService {
         tags.put(13L, new Tag( "Python"));
         tags.put(14L, new Tag( "API REST"));
         tags.put(15L, new Tag( "TensorFlow"));
-    }
+    }*/
 
     /*public  <Tag> getAllTags() {
         return tags.values();
     }*/
 
-    public static Collection<Tag> getAllTags() {
-        return tags.values();
+    public Collection<Tag> getAllTags() {
+        return tagRepository.findAll();
     }
 
 
-    public Tag getTagById(Long tagId) {
+    public Optional<Tag> getTagById(Long tagId) {
         if (tagId == null) {
-            throw new IllegalArgumentException("The argument 'tagId' cannot be null.");
+            throw new IllegalArgumentException("Tag ID cannot be null");
         }
-        if (!tags.containsKey(tagId)) {
-            throw new IllegalArgumentException("Tag not found for the provided ID.");
-        }
-        return tags.get(tagId);
+        return tagRepository.findById(tagId);
     }
 
     public Tag createTag(String name) {
-        Tag tag = new Tag(name);
-        tags.put(tag.getTagId(), tag);
-        return tag;
-    }
-
-
-    public void updateTag(Tag tag) {
-        if (tag == null)
-            throw new IllegalArgumentException("Tag cannot be null");
-        else if (!tags.containsKey(tag.getTagId()))
-            throw new NotFoundException("Tag cannot be found");
-        else {
-            Tag myTag = tags.get(tag.getTagId());
-            myTag.setName(tag.getName());
-            tags.put(myTag.getTagId(), myTag);
+        if (name == null || name.isBlank()) {
+            throw new IllegalArgumentException("Tag name cannot be null or empty");
         }
+        Tag tag = new Tag(null, name);
+        return tagRepository.save(tag);
     }
+
+
+    public Tag updateTag(Tag tag) {
+        if (tag == null || tag.getTagId() == null) {
+            throw new IllegalArgumentException("Tag and ID cannot be null");
+        }
+        Optional<Tag> existingTag = tagRepository.findById(tag.getTagId());
+        if (existingTag.isEmpty()) {
+            throw new NotFoundException("Tag not found");
+        }
+        return tagRepository.update(tag);
+    }
+
 
 
     public void deleteTagById(Long id) {
         if (id == null) {
-            throw new IllegalArgumentException("Id cannot be null");
-        } else if (!tags.containsKey(id)) {
-            throw new NotFoundException("Tag cannot be found");
-        } else
-            tags.remove(id);
+            throw new IllegalArgumentException("Tag ID cannot be null");
+        }
+        tagRepository.deleteById(id);
     }
 
-    public static List<Tag> getTagsByIds(List<Long> tagIds) {
-        return getAllTags().stream()
+
+    public List<Tag> getTagsByIds(List<Long> tagIds) {
+        if (tagIds == null || tagIds.isEmpty()) {
+            throw new IllegalArgumentException("Tag ID list cannot be null or empty");
+        }
+        return tagRepository.findAll().stream()
                 .filter(tag -> tagIds.contains(tag.getTagId()))
                 .collect(Collectors.toList());
     }
