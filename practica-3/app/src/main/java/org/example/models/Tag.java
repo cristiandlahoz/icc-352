@@ -14,4 +14,12 @@ public class Tag {
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private Long tagId;
 	private String name;
+
+	public Tag(String name) {
+		this.name = name;
+	}
+	@Override
+	public String toString() {
+		return this.name;
+	}
 }
