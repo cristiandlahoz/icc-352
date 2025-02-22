@@ -20,7 +20,7 @@ public class App {
                 new ArticleController(app, DependencyConfig.getArticleService(), DependencyConfig.getTagService(), DependencyConfig.getCommentService()),
                 new AuthController(app, DependencyConfig.getAuthService()),
                 new UserController(app, DependencyConfig.getUserService()),
-                new CommentController(app, DependencyConfig.getCommentService()),
+                new CommentController(app, DependencyConfig.getCommentService(), DependencyConfig.getArticleService()),
                 new TagController(app, DependencyConfig.getTagService())).forEach(BaseController::applyRoutes);
 
         app.get(Routes.HOME.getPath(), ctx -> {

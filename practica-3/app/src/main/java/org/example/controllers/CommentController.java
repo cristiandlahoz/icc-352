@@ -8,12 +8,16 @@ import org.example.services.CommentService;
 import org.example.util.BaseController;
 import org.example.util.Routes;
 
+import java.util.Objects;
+
 public class CommentController extends BaseController {
     private final CommentService commentService;
+    private final ArticleService articleService;
 
-    public CommentController(Javalin app, CommentService commentService) {
+    public CommentController(Javalin app, CommentService commentService, ArticleService articleService) {
         super(app);
         this.commentService = commentService;
+        this.articleService = articleService;
     }
 
     @Override
@@ -37,7 +41,7 @@ public class CommentController extends BaseController {
     }
 
     public void createComment(Context ctx) {
-        Long articleId = Long.parseLong(ctx.formParam("articleId"));
+        Long articleId = Long.parseLong(Objects.requireNonNull(ctx.formParam("articleId")));
         String author = ctx.formParam("author");
         String comment = ctx.formParam("comment");
 
@@ -49,7 +53,7 @@ public class CommentController extends BaseController {
             ctx.status(400).result("Username cannot be blanck");
             return;
         }
-        if (new ArticleService().getArticleById(articleId) == null) {
+        if (articleService.getArticleById(articleId) == null) {
             ctx.status(400).result("articleId cannot be null");
             return;
         }
