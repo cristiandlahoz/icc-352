@@ -1,12 +1,6 @@
 package org.example.services;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Comparator;
-import java.util.Date;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 import java.util.stream.Collectors;
 
 import org.example.models.Article;
@@ -22,48 +16,47 @@ public class ArticleService {
 
 
     public List<Article> getAllArticles() {
-        return articles.values().stream().sorted(Comparator.comparing(Article::getDate).reversed())
+        return articleRepository.findAll().stream().sorted(Comparator.comparing(Article::getDate).reversed())
                 .collect(Collectors.toList());
     }
 
     public Article getArticleById(Long articleId) {
         if (articleId == null) {
-            throw new IllegalArgumentException("tagId cannot be null");
-        } else
-            return articles.get(articleId);
+            throw new IllegalArgumentException("Article ID cannot be null");
+        }
+        return articleRepository.findById(articleId)
+                .orElseThrow(() -> new IllegalArgumentException("Article not found"));
     }
 
+
     public List<Article> getArticleByAuthor(String author) {
-        return articles.values().stream().filter(article -> article.getAuthor().equals(author))
+        return articleRepository.findAll().stream().filter(article -> article.getAuthor().equals(author))
                 .sorted(Comparator.comparing(Article::getDate).reversed()).collect(Collectors.toList());
     }
 
-    public void createArticle(Article article) {
-        articles.put(article.getArticleId(), article);
+    public Article createArticle(Article article) {
+        if (article == null) {
+            throw new IllegalArgumentException("Article cannot be null");
+        }
+        return articleRepository.save(article);
     }
 
-    public void updateArticle(Article article) {
-        if (article == null) {
-            throw new IllegalArgumentException("article cannot be null");
-        } else if (!articles.containsKey(article.getArticleId())) {
-            throw new IllegalArgumentException("Article not found");
-        } else {
-            Article myArticle = articles.get(article.getArticleId());
-            myArticle.setTitle(article.getTitle());
-            myArticle.setContent(article.getContent());
-            myArticle.setTags(article.getTags());
-            articles.put(myArticle.getArticleId(), myArticle);
+    public Article updateArticle(Article article) {
+        if (article == null || article.getArticleId() == null) {
+            throw new IllegalArgumentException("Article and ID cannot be null");
         }
+        Optional<Article> existingArticle = articleRepository.findById(article.getArticleId());
+        if (existingArticle.isEmpty()) {
+            throw new IllegalArgumentException("Article not found");
+        }
+        return articleRepository.update(article);
     }
 
     public void deleteArticleById(Long id) {
         if (id == null) {
-            throw new IllegalArgumentException("Id cannot be null");
-        } else if (!articles.containsKey(id)) {
-            throw new IllegalArgumentException("Article not found");
-        } else {
-            articles.remove(id);
+            throw new IllegalArgumentException("ID cannot be null");
         }
+        articleRepository.deleteById(id);
     }
 
 }
