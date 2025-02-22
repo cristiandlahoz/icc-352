@@ -52,6 +52,7 @@ public class ArticleController extends BaseController {
         ctx.sessionAttribute("ROL", role);
         Map<String, Object> model = setModel(
                 "title", "Wornux",
+                "user", user,
                 "articleCollection", articleCollection,
                 "tagCollection", tagCollection,
                 "logged", logged,
@@ -152,8 +153,7 @@ public class ArticleController extends BaseController {
             ctx.render("/pages/edit_article.html", model);
 
         } catch (Exception e) {
-            e.printStackTrace();
-            ctx.status(500).result("Error Updating Article");
+            ctx.status(500).result("Error Updating Article" + e.getMessage());
         }
     }
 
