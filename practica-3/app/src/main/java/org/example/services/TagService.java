@@ -33,9 +33,12 @@ public class TagService {
     public Tag createTag(String name) {
         if (name == null || name.isBlank()) {
             throw new IllegalArgumentException("Tag name cannot be null or empty");
+        }else if(tagRepository.findByName(name) != null) {
+            return tagRepository.findByName(name);
+        }else {
+            Tag tag = new Tag(name);
+            return tagRepository.save(tag);
         }
-        Tag tag = new Tag(name);
-        return tagRepository.save(tag);
     }
 
 
