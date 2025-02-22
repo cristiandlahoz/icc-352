@@ -55,19 +55,18 @@ public class UserController extends BaseController {
     public void updateUser(Context ctx) {
         try {
             String username = ctx.pathParam("username");
-            User existingUser = userService.getUserByUsername(username).orElse(null);
-            if (existingUser == null) {
-                ctx.status(400).result("Error Updating User");
-                return;
-            }
-            Map<String, Object> model = setModel("user", existingUser);
-            ctx.render("/pages/update_user.html", model);
-        }catch (Exception e) {
-            e.printStackTrace();
-            ctx.status(500).result("Error Updating User");
+            userService.getUserByUsername(username).ifPresentOrElse(
+                    existingUser -> {
+                        String role = existingUser.getRole().toString();
+                        Map<String, Object> model = setModel("user", existingUser, "role", role);
+                        ctx.render("/pages/update_user.html", model);
+                    },
+                    () -> ctx.status(400).result("Error Updating User")
+            );
+        } catch (Exception e) {
+            ctx.status(500).result("Error Updating User" + e.getMessage());
         }
     }
-
     public  void formHandler(Context ctx) {
         Long userId = Long.parseLong(ctx.pathParam("id"));
         String name = ctx.formParam("name");
@@ -84,12 +83,11 @@ public class UserController extends BaseController {
         }
         user.setUsername(username);
         user.setName(name);
-        user.setRole(Role.USER);
         user.setPassword(password);
         user.setRole(role);
 
         userService.updateUser(user);
-        ctx.status(200).redirect("/users/" + userId);
+        ctx.status(200).redirect(Routes.HOME.getPath());
         return;
     }
 
