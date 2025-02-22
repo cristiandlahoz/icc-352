@@ -32,7 +32,7 @@ public class BaseRepository<T, ID> {
             return entity;
         } catch (Exception e) {
             transaction.rollback();
-	        throw new RuntimeException("Error saving comment", e);
+	        throw new RuntimeException("Error saving entity: " + entityClass.getName(), e);
         }
     }
 
