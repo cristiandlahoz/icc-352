@@ -35,11 +35,12 @@ public class UserService {
         return userRepository.findByUsername(username);
     }
 
-    public Optional<User> getUserByUserId(Long userId) {
+    public User getUserByUserId(Long userId) {
         if (userId == null) {
-            throw new IllegalArgumentException("UserId cannot be null");
+            throw new IllegalArgumentException("User ID cannot be null");
         }
-        return userRepository.findById(userId);
+        return userRepository.findById(userId)
+                .orElseThrow(() -> new NotFoundException("User not found"));
     }
 
     public User createUser(String username, String name, String password, Role role, AccessStatus accessStatus) {
