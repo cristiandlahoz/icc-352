@@ -15,6 +15,7 @@ public class App {
         int port = EnvConfig.getInt("PORT", 8080);
         Javalin app = AppConfig.createApp().start(port);
 
+        StartDatabase.getInstance().initDatabase();
         DependencyConfig.init();
         List.of(
                 new ArticleController(app, DependencyConfig.getArticleService(), DependencyConfig.getTagService(), DependencyConfig.getCommentService()),
