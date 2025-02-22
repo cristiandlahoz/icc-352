@@ -18,29 +18,6 @@ public class TagService {
         this.tagRepository = tagRepository;
     }
 
-    /*static {
-
-
-        tags.put(1L, new Tag( "Java"));
-        tags.put(2L, new Tag( "SQL"));
-        tags.put(3L, new Tag( "Spring Boot"));
-        tags.put(4L, new Tag( "JavaScript"));
-        tags.put(5L, new Tag("Seguridad"));
-        tags.put(7L, new Tag( "Web Development"));
-        tags.put(8L, new Tag( "Diseño de Software"));
-        tags.put(9L, new Tag( "SOLID"));
-        tags.put(10L, new Tag( "Docker"));
-        tags.put(11L, new Tag( "DevOps"));
-        tags.put(12L, new Tag( "Machine Learning"));
-        tags.put(13L, new Tag( "Python"));
-        tags.put(14L, new Tag( "API REST"));
-        tags.put(15L, new Tag( "TensorFlow"));
-    }*/
-
-    /*public  <Tag> getAllTags() {
-        return tags.values();
-    }*/
-
     public Collection<Tag> getAllTags() {
         return tagRepository.findAll();
     }
@@ -57,7 +34,7 @@ public class TagService {
         if (name == null || name.isBlank()) {
             throw new IllegalArgumentException("Tag name cannot be null or empty");
         }
-        Tag tag = new Tag(null, name);
+        Tag tag = new Tag(name);
         return tagRepository.save(tag);
     }
 
