@@ -70,10 +70,8 @@ public class UserController extends BaseController {
         }
     }
 
-
-
     public void deleteUser(Context ctx) {
-        String username = ctx.pathParam("usernme");
+        String username = ctx.pathParam("username");
         userService.deleteUserByUsername(username);
         ctx.status(200);
     }
