@@ -1,9 +1,8 @@
 package org.example.models;
 
 import jakarta.persistence.*;
+import java.util.Date;
 import lombok.*;
-
-import java.time.LocalDateTime;
 
 
 @Entity
@@ -16,14 +15,14 @@ public class Comment {
 	private Long commentId;
 	private String comment;
 	private String authorUsername;
-	private LocalDateTime date;
+	private Date date;
 	@ManyToOne
 	@JoinColumn(name = "article_id", nullable = false)
 	private Article article;
 
 	@PrePersist
 	protected void onCreate() {
-		this.date = LocalDateTime.now();
+		this.date = new Date();
 	}
 
 	public Comment(String comment, String authorUsername, Article article) {
