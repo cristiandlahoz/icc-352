@@ -118,7 +118,7 @@ public class ArticleController extends BaseController {
             selectedTags = Arrays.asList(tags.split(","));
         }
 
-        Set<Tag> tagArrayList = new HashSet<>();
+        ArrayList<Tag> tagArrayList = new ArrayList<>();
         for (String tagName : selectedTags) {
             if (tagName != null && !tagName.trim().isEmpty()) {
                 tagArrayList.add(tagService.createTag(tagName.trim()));
@@ -135,7 +135,7 @@ public class ArticleController extends BaseController {
         article.setTags(tagArrayList);
 
         articleService.updateArticle(article);
-        ctx.status(200).redirect("/articles/" + articleId);
+        ctx.status(200).redirect(Routes.ARTICLES.getPath() + "/" + articleId);
         return;
     }
 
@@ -173,7 +173,7 @@ public class ArticleController extends BaseController {
                 selectedTags = Arrays.asList(tags.split(","));
             }
 
-            Set<Tag> tagArrayList = new HashSet<>() ;
+            ArrayList<Tag> tagArrayList = new ArrayList<>() ;
             for (String tagName : selectedTags) {
                 if (tagName != null && !tagName.trim().isEmpty()) {
                     tagArrayList.add(tagService.createTag(tagName.trim()));

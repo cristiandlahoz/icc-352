@@ -34,7 +34,7 @@ public class Article {
 			joinColumns = @JoinColumn(name = "article_id"),
 			inverseJoinColumns = @JoinColumn(name = "tag_id")
 	)
-	private Set<Tag> tags;
+	private List<Tag> tags;
 
 	public Article(String title, String content, String author) {
 		this.title = title;
