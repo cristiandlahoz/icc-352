@@ -59,6 +59,7 @@ public class AuthController extends BaseController {
 
         try {
             authService.register(newUser);
+            ctx.sessionAttribute(SessionKeys.USER.getKey(), newUser);
             ctx.redirect(Routes.HOME.getPath());
         } catch (IllegalArgumentException e) {
             ctx.redirect(Routes.SIGNUP.getPath());
