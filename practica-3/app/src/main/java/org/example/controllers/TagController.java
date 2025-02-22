@@ -6,45 +6,50 @@ import io.javalin.http.Context;
 import java.util.Collection;
 
 import org.example.models.Tag;
+import org.example.services.ArticleService;
+import org.example.services.CommentService;
 import org.example.services.TagService;
 import org.example.util.BaseController;
+import org.example.util.Routes;
 
 public class TagController extends BaseController {
-    private static final TagService tagService = new TagService();
+    private final TagService tagService;
 
-    public TagController(Javalin app) {
+    public TagController(Javalin app, TagService tagService) {
         super(app);
+        this.tagService = tagService;
     }
 
     @Override
     public void applyRoutes() {
-        app.post("/tags", TagController::createTag);
+        app.post(Routes.TAGS.getPath(), this::createTag);
     }
 
-    public static Collection<Tag> getAllTags() {
-        return TagService.getAllTags();
+    public Collection<Tag> getAllTags() {
+        return tagService.getAllTags();
     }
 
-    public static Tag getTagById(Context ctx) {
+
+    public Tag getTagById(Context ctx) {
         String stringId = ctx.pathParam("id");
         Long id = Long.parseLong(stringId);
-        return tagService.getTagById(id);
+        return tagService.getTagById(id).orElse(null);
 
     }
 
-    public static void createTag(Context ctx) {
+    public void createTag(Context ctx) {
         Tag myTag = ctx.bodyAsClass(Tag.class);
         tagService.createTag(myTag.getName());
         ctx.status(201);
     }
 
-    public static void updateTag(Context ctx) {
+    public void updateTag(Context ctx) {
         Tag myTag = ctx.bodyAsClass(Tag.class);
         tagService.updateTag(myTag);
         ctx.status(200);
     }
 
-    public static void deleteTag(Context ctx) {
+    public void deleteTag(Context ctx) {
         String stringId = ctx.pathParam("id");
         Long id = Long.parseLong(stringId);
         tagService.deleteTagById(id);
