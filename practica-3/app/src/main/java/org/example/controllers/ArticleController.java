@@ -1,11 +1,6 @@
 package org.example.controllers;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collection;
-import java.util.Date;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 import org.example.models.Article;
 import org.example.models.Comment;
@@ -15,6 +10,7 @@ import org.example.services.ArticleService;
 import org.example.services.CommentService;
 import org.example.services.TagService;
 import org.example.util.BaseController;
+import org.example.util.PageSize;
 import org.example.util.Routes;
 import org.example.util.SessionKeys;
 
@@ -22,47 +18,57 @@ import io.javalin.Javalin;
 import io.javalin.http.Context;
 
 public class ArticleController extends BaseController {
-    private static final ArticleService articleService = new ArticleService();
-    private static final TagService tagService = new TagService();
+    private final ArticleService articleService;
+    private final TagService tagService;
+    private final CommentService commentService;
 
-    public ArticleController(Javalin app) {
+    public ArticleController(Javalin app, ArticleService articleService, TagService tagService, CommentService commentService) {
         super(app);
+        this.articleService = articleService;
+        this.tagService = tagService;
+        this.commentService = commentService;
     }
 
     @Override
     public void applyRoutes() {
         app.get(Routes.CREATEARTICLE.getPath(), this::renderCreateArticlePage);
-
-        app.get(Routes.ARTICLES.getPath(), ArticleController::getAllArticles);
-        app.get(Routes.ARTICLE.getPath(), ArticleController::getArticleById);
-        app.post(Routes.ARTICLES.getPath(), ArticleController::createArticle);
-        app.post(Routes.ARTICLE.getPath(), ArticleController::updateArticle);
-        app.post("/articles/form/{id}", ArticleController::formHandler);
-        app.delete(Routes.ARTICLE.getPath(), ArticleController::deleteArticle);
+        app.get(Routes.ARTICLES.getPath(), this::getAllArticles);
+        app.get(Routes.ARTICLE.getPath(), this::getArticleById);
+        app.post(Routes.ARTICLES.getPath(), this::createArticle);
+        app.post(Routes.ARTICLE.getPath(), this::updateArticle);
+        app.post("/articles/form/{id}", this::formHandler);
+        app.delete(Routes.ARTICLE.getPath(), this::deleteArticle);
     }
 
     private void renderCreateArticlePage(Context ctx) {
         ctx.render("/pages/create_article.html");
     }
 
-    public static void getAllArticles(Context ctx) {
-        List<Article> articleCollection = articleService.getAllArticles();
-        Collection<Tag> tagCollection = TagController.getAllTags();
+    public void getAllArticles(Context ctx) {
+       int page = ctx.queryParam("page") != null ? Integer.parseInt(ctx.queryParam("page")) : 1;
+       int pageSize = ctx.queryParam("size") != null ? Integer.parseInt(ctx.queryParam("size")) : PageSize.DEFAULT.getSize();
+       Long countPages = articleService.countAllArticles();
+
+        List<Article> articleCollection = articleService.getAllArticles(page, pageSize);
+        Collection<Tag> tagCollection = tagService.getAllTags();
         Boolean logged = ctx.sessionAttribute(SessionKeys.USER.getKey()) != null;
         User user = ctx.sessionAttribute(SessionKeys.USER.getKey());
         String role = (user != null) ? user.getRole().toString() : "GUEST";
         ctx.sessionAttribute("ROL", role);
         Map<String, Object> model = setModel(
                 "title", "Wornux",
+                "user", user,
                 "articleCollection", articleCollection,
                 "tagCollection", tagCollection,
                 "logged", logged,
-                "role", role);
+                "role", role,
+                "currentPage", page,
+                "countPages", (int) Math.ceil((double) countPages / pageSize));
 
         ctx.render("index.html", model);
     }
 
-    public static void getArticleById(Context ctx) {
+    public void getArticleById(Context ctx) {
         long articleId = Long.parseLong(ctx.pathParam("id"));
         Article myArticle = articleService.getArticleById(articleId);
         if (myArticle == null)
@@ -79,7 +85,7 @@ public class ArticleController extends BaseController {
             logged = true;
             username = user.getUsername();
         }
-        List<Comment> comments = new CommentService().getCommentsByArticleId(articleId);
+        List<Comment> comments = commentService.getCommentsByArticleId(articleId);
         Map<String, Object> model = setModel(
                 "title", "Wornux",
                 "article", myArticle,
@@ -93,7 +99,7 @@ public class ArticleController extends BaseController {
         ctx.render("/pages/article-view.html", model);
     }
 
-    public static void createArticle(Context ctx) {
+    public  void createArticle(Context ctx) {
         Article newArticle = article_process(ctx, null);
 
         if (newArticle != null) {
@@ -104,7 +110,7 @@ public class ArticleController extends BaseController {
         }
     }
 
-    public static void formHandler(Context ctx) {
+    public  void formHandler(Context ctx) {
         Long articleId = Long.parseLong(ctx.pathParam("id"));
         String title = ctx.formParam("title");
         String content = ctx.formParam("content");
@@ -136,13 +142,12 @@ public class ArticleController extends BaseController {
         article.setContent(content);
         article.setTags(tagArrayList);
 
-        articleService.updateArticle(article);// Actualizar
-        ctx.status(200).redirect("/articles/" + articleId);
-
+        articleService.updateArticle(article);
+        ctx.status(200).redirect(Routes.ARTICLES.getPath() + "/" + articleId);
         return;
     }
 
-    public static void updateArticle(Context ctx) {
+    public void updateArticle(Context ctx) {
         try {
             Long articleId = Long.parseLong(ctx.pathParam("id"));
 
@@ -155,12 +160,11 @@ public class ArticleController extends BaseController {
             ctx.render("/pages/edit_article.html", model);
 
         } catch (Exception e) {
-            e.printStackTrace();
-            ctx.status(500).result("Error Updating Article");
+            ctx.status(500).result("Error Updating Article" + e.getMessage());
         }
     }
 
-    public static Article article_process(Context ctx, Article article) {
+    public Article article_process(Context ctx, Article article) {
         try {
             String title = ctx.formParam("title");
             String content = ctx.formParam("content");
@@ -176,23 +180,22 @@ public class ArticleController extends BaseController {
                 selectedTags = Arrays.asList(tags.split(","));
             }
 
-            ArrayList<Tag> tagArrayList = new ArrayList<>();
+            ArrayList<Tag> tagArrayList = new ArrayList<>() ;
             for (String tagName : selectedTags) {
                 if (tagName != null && !tagName.trim().isEmpty()) {
                     tagArrayList.add(tagService.createTag(tagName.trim()));
                 }
             }
 
-            if (article == null) { // Creo
-                Article newArticle = new Article(title, content, author.getUsername(), new Date());
+            if (article == null) {
+                Article newArticle = articleService.createArticle(title, content, author.getUsername());
                 newArticle.setTags(tagArrayList);
 
-                articleService.createArticle(newArticle);
                 return newArticle;
             } else {
                 article.setTitle(title);
                 article.setContent(content);
-                article.setTags(tagArrayList);
+                //article.setTags(tagArrayList);
 
                 articleService.updateArticle(article);
 
@@ -207,7 +210,7 @@ public class ArticleController extends BaseController {
         }
     }
 
-    public static void deleteArticle(Context ctx) {
+    public  void deleteArticle(Context ctx) {
         try {
             Long articleId = Long.parseLong(ctx.pathParam("id"));
 

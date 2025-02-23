@@ -8,37 +8,40 @@ import org.example.services.CommentService;
 import org.example.util.BaseController;
 import org.example.util.Routes;
 
+import java.util.Objects;
+
 public class CommentController extends BaseController {
-    private static final CommentService commentService = new CommentService();
+    private final CommentService commentService;
+    private final ArticleService articleService;
 
-    public CommentController(Javalin app) {
+    public CommentController(Javalin app, CommentService commentService, ArticleService articleService) {
         super(app);
-
+        this.commentService = commentService;
+        this.articleService = articleService;
     }
 
     @Override
     public void applyRoutes() {
-        app.post(Routes.COMMENTS.getPath(), CommentController::createComment);
-        app.get(Routes.COMMENTS.getPath(), CommentController::getAllComments);
-        app.get(Routes.COMMENT.getPath(), CommentController::getCommentById);
-        app.put(Routes.COMMENT.getPath(), CommentController::updateComment);
-        app.delete(Routes.COMMENT.getPath(), CommentController::deleteComment);
-        app.get(Routes.COMMENTBYARTICLE.getPath(), CommentController::getCommentByArticleAndCommentId);
+        app.post(Routes.COMMENTS.getPath(), this::createComment);
+        app.get(Routes.COMMENTS.getPath(), this::getAllComments);
+        app.get(Routes.COMMENT.getPath(), this::getCommentById);
+        app.put(Routes.COMMENT.getPath(), this::updateComment);
+        app.delete(Routes.COMMENT.getPath(), this::deleteComment);
     }
 
-    public static void getAllComments(Context ctx) {
+    public void getAllComments(Context ctx) {
         ctx.json(commentService.getAllComments());
     }
 
-    public static void getCommentById(Context ctx) {
+    public void getCommentById(Context ctx) {
         String stringId = ctx.pathParam("id");
         Long id = Long.parseLong(stringId);
-        Comment myComment = commentService.getCommentById(id);
+        Comment myComment = commentService.getCommentById(id).orElseGet(Comment::new);
         ctx.status(200).json(myComment);
     }
 
-    public static void createComment(Context ctx) {
-        Long articleId = Long.parseLong(ctx.formParam("articleId"));
+    public void createComment(Context ctx) {
+        Long articleId = Long.parseLong(Objects.requireNonNull(ctx.formParam("articleId")));
         String author = ctx.formParam("author");
         String comment = ctx.formParam("comment");
 
@@ -50,42 +53,26 @@ public class CommentController extends BaseController {
             ctx.status(400).result("Username cannot be blanck");
             return;
         }
-        if (new ArticleService().getArticleById(articleId) == null) {
+        if (articleService.getArticleById(articleId) == null) {
             ctx.status(400).result("articleId cannot be null");
             return;
         }
 
-        Comment myComment = new Comment(comment, author, articleId);
-        commentService.createComment(myComment);
+        Comment myComment = commentService.createComment(comment, author, articleId);
         ctx.json(myComment);
     }
 
-    public static void updateComment(Context ctx) {
+    public void updateComment(Context ctx) {
         Comment myComment = ctx.bodyAsClass(Comment.class);
         commentService.updateComment(myComment);
         ctx.status(200);
     }
 
-    public static void deleteComment(Context ctx) {
+    public void deleteComment(Context ctx) {
         String stringId = ctx.pathParam("id");
         Long id = Long.parseLong(stringId);
         commentService.deleteCommentById(id);
         ctx.status(200);
-    }
-
-    public static void getCommentByArticleAndCommentId(Context ctx) {
-        try {
-            Long articleId = Long.parseLong(ctx.pathParam("articleId"));
-            Long commentId = Long.parseLong(ctx.pathParam("commentId"));
-
-            Comment comment = commentService.getCommentByArticleAndCommentId(articleId, commentId);
-
-            ctx.status(200).json(comment);
-        } catch (IllegalArgumentException e) {
-            ctx.status(400).json(e.getMessage());
-        } catch (Exception e) {
-            ctx.status(404).json(e.getMessage());
-        }
     }
 
 }

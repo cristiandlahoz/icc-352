@@ -1,27 +1,26 @@
 package org.example.models;
 
+import jakarta.persistence.*;
+import lombok.*;
+
+@Entity
+@Getter
+@Setter
+@NoArgsConstructor
+@AllArgsConstructor
 public class Tag {
-	private static Long size = 0L;
+
+	@Id
+	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private Long tagId;
+	@Column(unique = true, nullable = false)
 	private String name;
 
-	public Tag( String name) {
-		size++;
-		this.tagId = size;
+	public Tag(String name) {
 		this.name = name;
 	}
-
-	public Long getTagId() {
-		return tagId;
-	}
-
-	public String getName() {
-		return name;
-	}
-
-	public void setName(String name) {
-		this.name = name;
+	@Override
+	public String toString() {
+		return this.name;
 	}
 }
-
-

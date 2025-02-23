@@ -13,7 +13,7 @@ public enum Routes {
     CREATEUSER("/createuser"),
     COMMENTS("/comments"),
     COMMENT("/comments/{id}"),
-    COMMENTBYARTICLE("/articles/{articleId}/comments/{commentId}");
+    TAGS("/tags");
 
     private final String path;
 

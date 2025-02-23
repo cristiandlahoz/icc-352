@@ -1,13 +1,30 @@
 package org.example.models;
 
+import jakarta.persistence.*;
+import lombok.*;
 import org.example.util.AccessStatus;
 import org.example.util.Role;
 
+@Entity
+@Getter
+@Setter
+@NoArgsConstructor
+@Table(name = "users")
 public class User {
+
+	@Id
+	@GeneratedValue(strategy = GenerationType.IDENTITY)
+	private Long userId;
+
+	@Column(unique = true)
 	private String username;
 	private String name;
 	private String password;
+
+	@Enumerated(EnumType.STRING)
 	private Role role;
+
+	@Enumerated(EnumType.STRING)
 	private AccessStatus accessStatus;
 
 	public User(String username, String name, String password, Role role, AccessStatus accessStatus) {
@@ -15,46 +32,6 @@ public class User {
 		this.name = name;
 		this.password = password;
 		this.role = role;
-		this.accessStatus = AccessStatus.UNAUTHENTICATED;
-	}
-
-	public String getUsername() {
-		return username;
-	}
-
-	public void setUsername(String username) {
-		this.username = username;
-	}
-
-	public String getName() {
-		return name;
-	}
-
-	public void setName(String name) {
-		this.name = name;
-	}
-
-	public String getPassword() {
-		return password;
-	}
-
-	public void setPassword(String password) {
-		this.password = password;
-	}
-
-	public Role getRole() {
-		return role;
-	}
-
-	public void setRole(Role role) {
-		this.role = role;
-	}
-
-	public AccessStatus isAccessStatus() {
-		return accessStatus;
-	}
-
-	public void setAccessStatus(AccessStatus accessStatus) {
 		this.accessStatus = accessStatus;
 	}
 }

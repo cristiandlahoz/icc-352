@@ -15,12 +15,14 @@ public class App {
         int port = EnvConfig.getInt("PORT", 8080);
         Javalin app = AppConfig.createApp().start(port);
 
+        StartDatabase.getInstance().initDatabase();
+        DependencyConfig.init();
         List.of(
-                new ArticleController(app),
-                new AuthenticationController(app),
-                new UserController(app),
-                new CommentController(app),
-                new TagController(app)).forEach(BaseController::applyRoutes);
+                new ArticleController(app, DependencyConfig.getArticleService(), DependencyConfig.getTagService(), DependencyConfig.getCommentService()),
+                new AuthController(app, DependencyConfig.getAuthService()),
+                new UserController(app, DependencyConfig.getUserService()),
+                new CommentController(app, DependencyConfig.getCommentService(), DependencyConfig.getArticleService()),
+                new TagController(app, DependencyConfig.getTagService())).forEach(BaseController::applyRoutes);
 
         app.get(Routes.HOME.getPath(), ctx -> {
             ctx.redirect(Routes.ARTICLES.getPath());
