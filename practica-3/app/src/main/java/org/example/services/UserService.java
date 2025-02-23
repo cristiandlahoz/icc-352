@@ -15,11 +15,6 @@ public class UserService {
     this.userRepository = userRepository;
   }
 
-  /*static {
-      User administrator = new User("Theprimeagen", "Ignacio", "1234",Role.ADMIN, AccessStatus.UNAUTHENTICATED);
-      users.put(administrator.getUsername(), administrator);
-  }*/
-
   public Collection<User> getAllUsers() {
     return userRepository.findAll();
   }

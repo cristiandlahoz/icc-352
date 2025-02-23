@@ -15,6 +15,7 @@ public class DependencyConfig {
   private static CommentRepository commentRepository;
   private static TagRepository tagRepository;
   private static UserRepository userRepository;
+  private static AuthRepository authRepository;
 
   @Getter private static ArticleService articleService;
   @Getter private static AuthService authService;
@@ -30,9 +31,10 @@ public class DependencyConfig {
     commentRepository = new CommentRepository(entityManager);
     tagRepository = new TagRepository(entityManager);
     userRepository = new UserRepository(entityManager);
+    authRepository = new AuthRepository(CoackroachDBConfig.getSql2o());
 
     articleService = new ArticleService(articleRepository);
-    authService = new AuthService(userRepository);
+    authService = new AuthService(userRepository, authRepository);
     commentService = new CommentService(commentRepository, articleService);
     tagService = new TagService(tagRepository);
     userService = new UserService(userRepository);
