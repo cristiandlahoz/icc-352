@@ -1,15 +1,13 @@
 package org.example.controllers;
 
+import org.example.util.*;
 import io.javalin.Javalin;
 import io.javalin.http.Context;
-
 import org.example.models.User;
 import org.example.services.AuthService;
 import org.jasypt.util.text.BasicTextEncryptor;
 import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServletResponse;
-
-import org.example.util.*;
 
 public class AuthController extends BaseController {
 
@@ -95,4 +93,3 @@ public class AuthController extends BaseController {
             ctx.redirect(Routes.SIGNUP.getPath());
         }
     }
-}

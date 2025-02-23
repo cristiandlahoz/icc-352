@@ -12,26 +12,27 @@ import org.example.util.Role;
 @Table(name = "users")
 public class User {
 
-	@Id
-	@GeneratedValue(strategy = GenerationType.IDENTITY)
-	private Long userId;
+  @Id
+  @GeneratedValue(strategy = GenerationType.IDENTITY)
+  private Long userId;
 
-	@Column(unique = true)
-	private String username;
-	private String name;
-	private String password;
+  @Column(unique = true)
+  private String username;
 
-	@Enumerated(EnumType.STRING)
-	private Role role;
+  private String name;
+  private String password;
 
-	@Enumerated(EnumType.STRING)
-	private AccessStatus accessStatus;
+  @Enumerated(EnumType.STRING)
+  private Role role;
 
-	public User(String username, String name, String password, Role role, AccessStatus accessStatus) {
-		this.username = username;
-		this.name = name;
-		this.password = password;
-		this.role = role;
-		this.accessStatus = accessStatus;
-	}
+  @Enumerated(EnumType.STRING)
+  private AccessStatus accessStatus;
+
+  public User(String username, String name, String password, Role role, AccessStatus accessStatus) {
+    this.username = username;
+    this.name = name;
+    this.password = password;
+    this.role = role;
+    this.accessStatus = accessStatus;
+  }
 }

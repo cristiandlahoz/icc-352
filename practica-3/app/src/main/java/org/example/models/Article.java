@@ -1,9 +1,7 @@
 package org.example.models;
 
 import jakarta.persistence.*;
-
 import java.util.*;
-
 import lombok.*;
 
 @Entity
