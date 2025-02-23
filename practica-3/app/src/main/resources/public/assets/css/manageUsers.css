@@ -1,0 +1,42 @@
+body {
+    background-color: #f8f9fa;
+    color: #343a40;
+}
+
+.container {
+    background: #ffffff;
+    padding: 20px;
+    border-radius: 8px;
+    box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.1);
+}
+
+h2 {
+    color: #6c757d;
+}
+
+.table {
+    background: #ffffff;
+}
+
+.table th {
+    background: #dee2e6;
+    color: #495057;
+}
+
+.table tbody tr {
+    background: #f8f9fa;
+}
+
+.table tbody tr:nth-child(even) {
+    background: #e9ecef;
+}
+
+.btn-danger {
+    background: #6c757d;
+    border-color: #6c757d;
+}
+
+.btn-danger:hover {
+    background: #495057;
+    border-color: #495057;
+}
