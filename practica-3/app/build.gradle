@@ -2,7 +2,6 @@ plugins {
     id 'java'
     id 'application'
     id 'com.diffplug.spotless' version '6.22.0'
-    id 'checkstyle'
 }
 
 repositories {
@@ -38,17 +37,6 @@ application {
     mainClass = 'org.example.App'
 }
 
-checkstyle {
-    toolVersion = '10.12.2'
-    configFile = file('config/checkstyle.xml')
-}
-
-tasks.withType(Checkstyle){
-    reports {
-        xml.required = true
-        html.required = true
-    }
-}
 spotless {
     java {
         googleJavaFormat()
