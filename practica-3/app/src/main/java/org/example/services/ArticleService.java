@@ -45,6 +45,12 @@ public class ArticleService {
         if (title == null || content == null || authorUsername == null) {
             throw new IllegalArgumentException("Title, content, and author username cannot be null");
         }
+        boolean exists = articleRepository.findAll().stream()
+                .anyMatch(article -> article.getTitle().equalsIgnoreCase(title));
+        if (exists) {
+            throw new IllegalArgumentException("An article with this title already exists");
+        }
+
         Article newArticle = new Article(title, content, authorUsername);
         return articleRepository.save(newArticle);
     }
@@ -56,6 +62,11 @@ public class ArticleService {
         Optional<Article> existingArticle = articleRepository.findById(article.getArticleId());
         if (existingArticle.isEmpty()) {
             throw new IllegalArgumentException("Article not found");
+        }
+        boolean exists = articleRepository.findAll().stream()
+                .anyMatch(a -> !a.getArticleId().equals(article.getArticleId()) && a.getTitle().equalsIgnoreCase(article.getTitle()));
+        if (exists) {
+            throw new IllegalArgumentException("An article with this title already exists");
         }
         return articleRepository.update(article);
     }
