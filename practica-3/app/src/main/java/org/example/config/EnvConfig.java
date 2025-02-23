@@ -9,6 +9,10 @@ public class EnvConfig {
     return dotenv.get(key, defaultValue);
   }
 
+  public static String get(String key) {
+    return get(key, null);
+  }
+
   public static int getInt(String key, int defaultValue) {
     try {
       return Integer.parseInt(get(key, String.valueOf(defaultValue)));
