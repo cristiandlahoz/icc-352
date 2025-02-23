@@ -1,6 +1,7 @@
 package org.example.controllers;
 
 import java.util.*;
+import java.util.stream.Collectors;
 
 import org.example.models.Article;
 import org.example.models.Comment;
@@ -47,9 +48,17 @@ public class ArticleController extends BaseController {
     public void getAllArticles(Context ctx) {
        int page = ctx.queryParam("page") != null ? Integer.parseInt(ctx.queryParam("page")) : 1;
        int pageSize = ctx.queryParam("size") != null ? Integer.parseInt(ctx.queryParam("size")) : PageSize.DEFAULT.getSize();
+       String tagName = ctx.queryParam("tag");
        Long countPages = articleService.countAllArticles();
 
-        List<Article> articleCollection = articleService.getAllArticles(page, pageSize);
+        List<Article> articleCollection;
+        if (tagName != null && !tagName.isEmpty()) {
+           Tag tag = tagService.getTagByName(tagName);
+            articleCollection = articleService.getAllArticlesByTag(page, pageSize, tagName);
+            countPages = articleService.countAllArticlesByTag(tagName);
+       }else{
+           articleCollection = articleService.getAllArticles(page, pageSize);
+       }
         Collection<Tag> tagCollection = tagService.getAllTags();
         Boolean logged = ctx.sessionAttribute(SessionKeys.USER.getKey()) != null;
         User user = ctx.sessionAttribute(SessionKeys.USER.getKey());
@@ -63,6 +72,7 @@ public class ArticleController extends BaseController {
                 "logged", logged,
                 "role", role,
                 "currentPage", page,
+                "tag", tagName,
                 "countPages", (int) Math.ceil((double) countPages / pageSize));
 
         ctx.render("index.html", model);
