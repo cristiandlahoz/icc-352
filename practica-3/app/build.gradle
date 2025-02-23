@@ -27,6 +27,8 @@ dependencies {
     implementation 'io.javalin:javalin-rendering:6.4.0'
     implementation 'org.thymeleaf:thymeleaf:3.1.1.RELEASE'
     implementation 'io.github.cdimascio:dotenv-java:3.1.0'
+    implementation 'org.jasypt:jasypt:1.9.3'
+    compileOnly 'jakarta.servlet:jakarta.servlet-api:6.0.0'
 }
 
 // Apply a specific Java toolchain to ease working on different environments.
