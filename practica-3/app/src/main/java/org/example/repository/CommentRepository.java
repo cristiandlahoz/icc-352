@@ -5,8 +5,7 @@ import org.example.models.Comment;
 import org.example.util.BaseRepository;
 
 public class CommentRepository extends BaseRepository<Comment, Long> {
-	public CommentRepository(EntityManager entityManager) {
-		super(entityManager, Comment.class);
-	}
-
+  public CommentRepository(EntityManager entityManager) {
+    super(entityManager, Comment.class);
+  }
 }
