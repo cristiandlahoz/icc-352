@@ -20,9 +20,21 @@ public class ArticleRepository extends BaseRepository<Article, Long> {
 			query.setMaxResults(pageSize);
 			return query.getResultList();
 	}
+	public List<Article> findAllByTagName(int page, int pageSize, String tagName){
+		String jpql = "SELECT a FROM Article a JOIN a.tags t WHERE t.name = :tagName ORDER BY a.date DESC";
+		TypedQuery<Article> query = entityManager.createQuery(jpql, Article.class);
+		query.setParameter("tagName", tagName);
+		query.setFirstResult((page - 1) * pageSize);
+		query.setMaxResults(pageSize);
+		return query.getResultList();
+	}
 
-	public long countAll(){
+	public Long countAll(){
 		String jpql = "SELECT COUNT(a) FROM Article a";
 		return entityManager.createQuery(jpql, Long.class).getSingleResult();
+	}
+	public Long countAllByTagName(String tagName){
+		String jpql = "SELECT COUNT(a) FROM Article a JOIN a.tags t WHERE t.name = :tagName";
+		return entityManager.createQuery(jpql, Long.class).setParameter("tagName", tagName).getSingleResult();
 	}
 }
