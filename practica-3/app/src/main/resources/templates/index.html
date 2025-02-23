@@ -71,23 +71,11 @@
                     <a class="link-secondary" href=""> </a>
                 </div>
                 <div class="col-4 text-center">
-                    <a class="blog-header-logo text-body-emphasis text-decoration-none" href="#">Wornux</a>
+                    <a class="blog-header-logo text-body-emphasis text-decoration-none" href="/">Wornux</a>
                 </div>
                 <div class="col-4 gap-2 d-flex justify-content-end align-items-center">
-                    <!--<a class="link-secondary" href="#" aria-label="Search">
-                        <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="none" stroke="currentColor"
-                            stroke-linecap="round" stroke-linejoin="round" stroke-width="2" class="mx-3" role="img"
-                            viewBox="0 0 24 24">
-                            <title>Search</title>
-                            <circle cx="10.5" cy="10.5" r="7.5" />
-                            <path d="M21 21l-5.2-5.2" />
-                        </svg>s
-
-                    </a>
-                        -->
                     <a th:if="${role == 'ADMIN' || role == 'AUTHOR'}" class="btn btn-sm btn-outline-secondary"
                         th:href="@{/createarticle}">Create article</a>
-
 
                     <a th:if="${role == 'ADMIN'}" class="btn btn-sm btn-outline-secondary"
                         th:href="@{/createuser}">Create user</a>
@@ -114,7 +102,7 @@
         <div class="nav-scroller py-1 mb-3 border-bottom">
             <nav class="nav nav-underline justify-content-between">
                 <th:block th:each="tag : ${tagCollection}">
-                    <a class="nav-item nav-link link-body-emphasis active" th:href="@{'#' + ${tag.name}}"
+                    <a class="nav-item nav-link link-body-emphasis active" th:href="@{/articles?tag={tag}(tag=${tag.name})}"
                         th:text="${tag.name}">World</a>
                 </th:block>
             </nav>
@@ -219,10 +207,16 @@
 
         <ul class="nav justify-content-center gap-2 mb-4">
             <li class="nav-item">
-                <a class="btn btn-secondary" role="button" th:if="${currentPage > 1}" th:href="@{/articles?page={page}(page=${currentPage - 1})}">Prev page</a>
+                <a class="btn btn-secondary" role="button" th:if="${currentPage > 1}"
+                   th:href="@{/articles(page=${currentPage - 1}, tag=${tag != null ? tag : ''})}">
+                    Prev page
+                </a>
             </li>
             <li class="nav-item">
-                <a class="link btn btn-secondary" role="button" th:if="${currentPage < countPages}" th:href="@{/articles?page={page}(page=${currentPage + 1})}" >Next page</a>
+                <a class="link btn btn-secondary" role="button" th:if="${currentPage < countPages}"
+                   th:href="@{/articles(page=${currentPage + 1}, tag=${tag != null ? tag : ''})}">
+                    Next page
+                </a>
             </li>
         </ul>
     </main>
