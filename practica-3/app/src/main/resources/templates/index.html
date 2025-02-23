@@ -73,7 +73,7 @@
                 <div class="col-4 text-center">
                     <a class="blog-header-logo text-body-emphasis text-decoration-none" href="#">Wornux</a>
                 </div>
-                <div class="col-4 d-flex justify-content-end align-items-center">
+                <div class="col-4 gap-2 d-flex justify-content-end align-items-center">
                     <!--<a class="link-secondary" href="#" aria-label="Search">
                         <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="none" stroke="currentColor"
                             stroke-linecap="round" stroke-linejoin="round" stroke-width="2" class="mx-3" role="img"
@@ -96,10 +96,10 @@
                         th:href="@{/login}">Log in</a>
 
                     <form th:if="${logged}" th:action="@{/logout}" method="post">
-                        <button type="submit" class="btn btn-sm btn-outline-danger">Log out</button>
+                        <button type="submit" class="btn btn-sm btn-danger">Log out</button>
                     </form>
                     <form th:if="${role == 'USER' || role == 'AUTHOR'}" th:action="@{'/users/' + ${user.username}}" method="post">
-                        <button type="submit" class="btn btn-sm btn-outline-danger">Update account</button>
+                        <button type="submit" class="btn btn-sm btn-danger">Update account</button>
                     </form>
 
                 </div>
@@ -211,8 +211,16 @@
                 </div>
             </div>
         </div>
-    </main>
 
+        <ul class="nav justify-content-center gap-2 mb-4">
+            <li class="nav-item">
+                <a class="btn btn-secondary" role="button" th:if="${currentPage > 1}" th:href="@{/articles?page={page}(page=${currentPage - 1})}">Prev page</a>
+            </li>
+            <li class="nav-item">
+                <a class="link btn btn-secondary" role="button" th:if="${currentPage < countPages}" th:href="@{/articles?page={page}(page=${currentPage + 1})}" >Next page</a>
+            </li>
+        </ul>
+    </main>
 
     <div th:replace="~{/layouts/footer.html :: footer}"></div>
     <script src="/assets/js/bootstrap.bundle.min.js"></script>

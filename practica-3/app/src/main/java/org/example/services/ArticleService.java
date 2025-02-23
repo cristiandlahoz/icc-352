@@ -5,7 +5,6 @@ import java.util.stream.Collectors;
 
 import org.example.exceptions.NotFoundException;
 import org.example.models.Article;
-import org.example.models.Tag;
 import org.example.repository.ArticleRepository;
 
 public class ArticleService {
@@ -21,6 +20,13 @@ public class ArticleService {
                 .collect(Collectors.toList());
     }
 
+    public List<Article> getAllArticles(int page, int pageSize) {
+        return articleRepository.findAll(page, pageSize);
+    }
+
+    public Long countAllArticles() {
+        return articleRepository.countAll();
+    }
     public Article getArticleById(Long articleId) {
         if (articleId == null) {
             throw new IllegalArgumentException("Article ID cannot be null");

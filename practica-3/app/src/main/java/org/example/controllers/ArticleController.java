@@ -10,6 +10,7 @@ import org.example.services.ArticleService;
 import org.example.services.CommentService;
 import org.example.services.TagService;
 import org.example.util.BaseController;
+import org.example.util.PageSize;
 import org.example.util.Routes;
 import org.example.util.SessionKeys;
 
@@ -44,7 +45,11 @@ public class ArticleController extends BaseController {
     }
 
     public void getAllArticles(Context ctx) {
-        List<Article> articleCollection = articleService.getAllArticles();
+       int page = ctx.queryParam("page") != null ? Integer.parseInt(ctx.queryParam("page")) : 1;
+       int pageSize = ctx.queryParam("size") != null ? Integer.parseInt(ctx.queryParam("size")) : PageSize.DEFAULT.getSize();
+       Long countPages = articleService.countAllArticles();
+
+        List<Article> articleCollection = articleService.getAllArticles(page, pageSize);
         Collection<Tag> tagCollection = tagService.getAllTags();
         Boolean logged = ctx.sessionAttribute(SessionKeys.USER.getKey()) != null;
         User user = ctx.sessionAttribute(SessionKeys.USER.getKey());
@@ -56,7 +61,9 @@ public class ArticleController extends BaseController {
                 "articleCollection", articleCollection,
                 "tagCollection", tagCollection,
                 "logged", logged,
-                "role", role);
+                "role", role,
+                "currentPage", page,
+                "countPages", (int) Math.ceil((double) countPages / pageSize));
 
         ctx.render("index.html", model);
     }
