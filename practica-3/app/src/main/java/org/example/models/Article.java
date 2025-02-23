@@ -14,6 +14,7 @@ public class Article {
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private Long articleId;
+	@Column(unique = true)
 	private String title;
 	@Lob
 	private String content;
