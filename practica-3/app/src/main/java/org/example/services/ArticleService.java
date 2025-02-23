@@ -24,9 +24,18 @@ public class ArticleService {
         return articleRepository.findAll(page, pageSize);
     }
 
+    public List<Article> getAllArticlesByTag(int page, int pageSize, String tag) {
+        return articleRepository.findAllByTagName(page, pageSize, tag);
+    }
+
     public Long countAllArticles() {
         return articleRepository.countAll();
     }
+
+    public Long countAllArticlesByTag(String tag) {
+        return articleRepository.countAllByTagName(tag);
+    }
+
     public Article getArticleById(Long articleId) {
         if (articleId == null) {
             throw new IllegalArgumentException("Article ID cannot be null");
