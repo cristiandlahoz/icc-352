@@ -29,7 +29,12 @@ public class TagService {
         }
         return tagRepository.findById(tagId);
     }
-
+    public Tag getTagByName(String name) {
+        if (name == null) {
+            throw new IllegalArgumentException("Name cannot be null");
+        }else
+            return tagRepository.findByName(name);
+    }
     public Tag createTag(String name) {
         if (name == null || name.isBlank()) {
             throw new IllegalArgumentException("Tag name cannot be null or empty");
