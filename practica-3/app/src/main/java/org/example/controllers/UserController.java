@@ -19,6 +19,7 @@ public class UserController extends BaseController {
 
     public void applyRoutes() {
         app.get(Routes.CREATEUSER.getPath(), this::renderCreateUserPage);
+        app.get(Routes.MANAGEUSERS.getPath(), this::renderManageUsers);
         app.get(Routes.USERS.getPath(), this::getAllUsers);
         app.get(Routes.USER.getPath(), this::getUserByUsername);
         app.post(Routes.USERS.getPath(), this::createUser);
@@ -29,6 +30,10 @@ public class UserController extends BaseController {
 
     private void renderCreateUserPage(Context ctx) {
         ctx.render("/pages/create_user.html");
+    }
+
+    private void renderManageUsers(Context ctx) {
+        ctx.render("/pages/manage_users.html");
     }
 
     public void getAllUsers(Context ctx) {
