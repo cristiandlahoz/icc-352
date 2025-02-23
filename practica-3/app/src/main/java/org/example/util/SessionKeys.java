@@ -1,15 +1,15 @@
 package org.example.util;
 
 public enum SessionKeys {
-    USER("USER");
+  USER("USER");
 
-    private final String key;
+  private final String key;
 
-    SessionKeys(String key) {
-        this.key = key;
-    }
+  SessionKeys(String key) {
+    this.key = key;
+  }
 
-    public String getKey() {
-        return key;
-    }
+  public String getKey() {
+    return key;
+  }
 }
