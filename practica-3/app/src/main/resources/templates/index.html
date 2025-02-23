@@ -101,6 +101,11 @@
                     <form th:if="${role == 'USER' || role == 'AUTHOR'}" th:action="@{'/users/' + ${user.username}}" method="post">
                         <button type="submit" class="btn btn-sm btn-outline-danger">Update account</button>
                     </form>
+                    <!-- Botón para ir a Manage Users-->
+                    <a th:if="${role == 'ADMIN'}" href="/manageusers" class="btn btn-sm btn-outline-secondary">
+                        <i class="bi bi-people"></i> Manage Users
+                    </a>
+
 
                 </div>
             </div>
