@@ -44,30 +44,41 @@ public class ArticleService {
         .orElseThrow(() -> new NotFoundException("Article not found"));
   }
 
+    public Article createArticle(String title, String content, String authorUsername) {
+        if (title == null || content == null || authorUsername == null) {
+            throw new IllegalArgumentException("Title, content, and author username cannot be null");
+        }
+        boolean exists = articleRepository.findAll().stream()
+                .anyMatch(article -> article.getTitle().equalsIgnoreCase(title));
+        if (exists) {
+            throw new IllegalArgumentException("An article with this title already exists");
+        }
+
+        Article newArticle = new Article(title, content, authorUsername);
+        return articleRepository.save(newArticle);
+    }
+
+    public Article updateArticle(Article article) {
+        if (article == null || article.getArticleId() == null) {
+            throw new IllegalArgumentException("Article and ID cannot be null");
+        }
+        Optional<Article> existingArticle = articleRepository.findById(article.getArticleId());
+        if (existingArticle.isEmpty()) {
+            throw new IllegalArgumentException("Article not found");
+        }
+        boolean exists = articleRepository.findAll().stream()
+                .anyMatch(a -> !a.getArticleId().equals(article.getArticleId()) && a.getTitle().equalsIgnoreCase(article.getTitle()));
+        if (exists) {
+            throw new IllegalArgumentException("An article with this title already exists");
+        }
+        return articleRepository.update(article);
+    }
+
   public List<Article> getArticleByAuthor(String author) {
     return articleRepository.findAll().stream()
         .filter(article -> article.getAuthor().equals(author))
         .sorted(Comparator.comparing(Article::getDate).reversed())
         .collect(Collectors.toList());
-  }
-
-  public Article createArticle(String title, String content, String authorUsername) {
-    if (title == null || content == null || authorUsername == null) {
-      throw new IllegalArgumentException("Title, content, and author username cannot be null");
-    }
-    Article newArticle = new Article(title, content, authorUsername);
-    return articleRepository.save(newArticle);
-  }
-
-  public Article updateArticle(Article article) {
-    if (article == null || article.getArticleId() == null) {
-      throw new IllegalArgumentException("Article and ID cannot be null");
-    }
-    Optional<Article> existingArticle = articleRepository.findById(article.getArticleId());
-    if (existingArticle.isEmpty()) {
-      throw new IllegalArgumentException("Article not found");
-    }
-    return articleRepository.update(article);
   }
 
   public void deleteArticleById(Long id) {

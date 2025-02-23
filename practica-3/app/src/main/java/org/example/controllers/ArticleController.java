@@ -131,6 +131,8 @@ public class ArticleController extends BaseController {
       ctx.redirect("/");
     } else {
       ctx.status(400).result("Error Creating Article");
+      //revisar
+      ctx.redirect(Routes.CREATEARTICLE.getPath());
     }
   }
 
