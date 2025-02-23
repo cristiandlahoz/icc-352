@@ -72,15 +72,24 @@ public class ArticleController extends BaseController {
 
     final Map<String, Object> model =
         setModel(
-            "title", "Wornux",
-            "user", user,
-            "articleCollection", articleCollection,
-            "tagCollection", tagCollection,
-            "logged", logged,
-            "role", role,
-            "currentPage", page,
-            "tag", tagName,
-            "countPages", (int) Math.ceil((double) countPages / pageSize));
+            "title",
+            "Wornux",
+            "user",
+            user,
+            "articleCollection",
+            articleCollection,
+            "tagCollection",
+            tagCollection,
+            "logged",
+            logged,
+            "role",
+            role,
+            "currentPage",
+            page,
+            "tag",
+            tagName,
+            "countPages",
+            (int) Math.ceil((double) countPages / pageSize));
 
     ctx.render("index.html", model);
   }
@@ -111,14 +120,22 @@ public class ArticleController extends BaseController {
     List<Comment> comments = commentService.getCommentsByArticleId(articleId);
     Map<String, Object> model =
         setModel(
-            "title", "Wornux",
-            "article", myArticle,
-            "tags", tags,
-            "logged", logged,
-            "role", role,
-            "authorArticles", authorArticles,
-            "comments", comments,
-            "user", username);
+            "title",
+            "Wornux",
+            "article",
+            myArticle,
+            "tags",
+            tags,
+            "logged",
+            logged,
+            "role",
+            role,
+            "authorArticles",
+            authorArticles,
+            "comments",
+            comments,
+            "user",
+            username);
 
     ctx.render("/pages/article-view.html", model);
   }

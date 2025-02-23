@@ -15,8 +15,10 @@ public enum Role {
           Permissions.MANAGE_USERS)),
   AUTHOR(
       EnumSet.of(
-          Permissions.ARTICLE_CREATE, Permissions.ARTICLE_EDIT,
-          Permissions.COMMENT_CREATE, Permissions.COMMENT_EDIT)),
+          Permissions.ARTICLE_CREATE,
+          Permissions.ARTICLE_EDIT,
+          Permissions.COMMENT_CREATE,
+          Permissions.COMMENT_EDIT)),
   USER(EnumSet.of(Permissions.COMMENT_CREATE, Permissions.COMMENT_EDIT)),
   GUEST(EnumSet.noneOf(Permissions.class)); // No tiene permisos
 
