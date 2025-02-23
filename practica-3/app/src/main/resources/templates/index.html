@@ -83,9 +83,6 @@
                     <a th:if="${!logged}" class="btn btn-sm btn-outline-secondary"
                         th:href="@{/login}">Log in</a>
 
-                    <form th:if="${logged}" th:action="@{/logout}" method="post">
-                        <button type="submit" class="btn btn-sm btn-danger">Log out</button>
-                    </form>
                     <form th:if="${role == 'USER' || role == 'AUTHOR'}" th:action="@{'/users/' + ${user.username}}" method="post">
                         <button type="submit" class="btn btn-sm btn-danger">Update account</button>
                     </form>
@@ -94,6 +91,9 @@
                         <i class="bi bi-people"></i> Manage Users
                     </a>
 
+                    <form th:if="${logged}" th:action="@{/logout}" method="post">
+                        <button type="submit" class="btn btn-sm btn-danger">Log out</button>
+                    </form>
 
                 </div>
             </div>
