@@ -131,7 +131,7 @@ public class ArticleController extends BaseController {
       ctx.redirect("/");
     } else {
       ctx.status(400).result("Error Creating Article");
-      //revisar
+      // revisar
       ctx.redirect(Routes.CREATEARTICLE.getPath());
     }
   }
@@ -168,8 +168,11 @@ public class ArticleController extends BaseController {
     article.setContent(content);
     article.setTags(tagArrayList);
 
-    articleService.updateArticle(article);
-    ctx.status(200).redirect(Routes.ARTICLES.getPath() + "/" + articleId);
+    articleService
+        .updateArticle(article)
+        .ifPresentOrElse(
+            a -> ctx.status(200).redirect(Routes.ARTICLES.getPath() + "/" + a.getArticleId()),
+            () -> updateArticle(ctx));
   }
 
   public void updateArticle(Context ctx) {

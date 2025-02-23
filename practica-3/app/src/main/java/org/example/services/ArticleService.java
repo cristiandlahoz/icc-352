@@ -44,35 +44,39 @@ public class ArticleService {
         .orElseThrow(() -> new NotFoundException("Article not found"));
   }
 
-    public Article createArticle(String title, String content, String authorUsername) {
-        if (title == null || content == null || authorUsername == null) {
-            throw new IllegalArgumentException("Title, content, and author username cannot be null");
-        }
-        boolean exists = articleRepository.findAll().stream()
-                .anyMatch(article -> article.getTitle().equalsIgnoreCase(title));
-        if (exists) {
-            throw new IllegalArgumentException("An article with this title already exists");
-        }
-
-        Article newArticle = new Article(title, content, authorUsername);
-        return articleRepository.save(newArticle);
+  public Article createArticle(String title, String content, String authorUsername) {
+    if (title == null || content == null || authorUsername == null) {
+      throw new IllegalArgumentException("Title, content, and author username cannot be null");
+    }
+    boolean exists =
+        articleRepository.findAll().stream()
+            .anyMatch(article -> article.getTitle().equalsIgnoreCase(title));
+    if (exists) {
+      throw new IllegalArgumentException("An article with this title already exists");
     }
 
-    public Article updateArticle(Article article) {
-        if (article == null || article.getArticleId() == null) {
-            throw new IllegalArgumentException("Article and ID cannot be null");
-        }
-        Optional<Article> existingArticle = articleRepository.findById(article.getArticleId());
-        if (existingArticle.isEmpty()) {
-            throw new IllegalArgumentException("Article not found");
-        }
-        boolean exists = articleRepository.findAll().stream()
-                .anyMatch(a -> !a.getArticleId().equals(article.getArticleId()) && a.getTitle().equalsIgnoreCase(article.getTitle()));
-        if (exists) {
-            throw new IllegalArgumentException("An article with this title already exists");
-        }
-        return articleRepository.update(article);
+    Article newArticle = new Article(title, content, authorUsername);
+    return articleRepository.save(newArticle);
+  }
+
+  public Optional<Article> updateArticle(Article article) {
+    if (article == null || article.getArticleId() == null) {
+      throw new IllegalArgumentException("Article and ID cannot be null");
     }
+    Optional<Article> existingArticle = articleRepository.findById(article.getArticleId());
+    if (existingArticle.isEmpty()) {
+      throw new IllegalArgumentException("Article not found");
+    }
+
+    try {
+      return Optional.ofNullable(articleRepository.update(article));
+    } catch (Exception e) {
+      System.out.println(
+          "Error while updating article, article with this title already exists: "
+              + article.getTitle());
+    }
+    return Optional.empty();
+  }
 
   public List<Article> getArticleByAuthor(String author) {
     return articleRepository.findAll().stream()
