@@ -5,16 +5,22 @@ import io.javalin.http.Context;
 
 import org.example.models.User;
 import org.example.services.AuthService;
-import org.example.services.UserService;
+import org.jasypt.util.text.BasicTextEncryptor;
+import jakarta.servlet.http.Cookie;
+import jakarta.servlet.http.HttpServletResponse;
+
 import org.example.util.*;
 
 public class AuthController extends BaseController {
 
     private final AuthService authService;
+    private final BasicTextEncryptor textEncryptor;
 
     public AuthController(Javalin app, AuthService authService) {
         super(app);
         this.authService = authService;
+        this.textEncryptor = new BasicTextEncryptor();
+        this.textEncryptor.setPassword("superSecretKey");
     }
 
     public void applyRoutes() {
@@ -36,19 +42,43 @@ public class AuthController extends BaseController {
     private void login(Context ctx) {
         String username = ctx.formParam("username");
         String password = ctx.formParam("password");
+        boolean rememberMe = ctx.formParam("remember_me") != null;
 
         authService.authenticate(username, password).ifPresentOrElse(user -> {
             ctx.sessionAttribute(SessionKeys.USER.getKey(), user);
+
+            if (rememberMe && username != null && !username.isEmpty()) {
+                // Encripta el username antes de almacenarlo en la cookie
+                String encryptedUsername = textEncryptor.encrypt(username);
+
+                Cookie cookie = new Cookie("remember_me", encryptedUsername);
+                cookie.setMaxAge(7 * 24 * 60 * 60);
+                cookie.setHttpOnly(true);
+                cookie.setSecure(true);
+                cookie.setPath("/");
+
+                ctx.res().addCookie(cookie);
+            }
+
             ctx.redirect(Routes.HOME.getPath());
         }, () -> ctx.redirect(Routes.LOGIN.getPath()));
     }
 
     private void logout(Context ctx) {
         ctx.req().getSession().invalidate();
+
+
+        Cookie cookie = new Cookie("remember_me", "");
+        cookie.setMaxAge(0);
+        cookie.setHttpOnly(true);
+        cookie.setSecure(true);
+        cookie.setPath("/");
+        ctx.res().addCookie(cookie);
+
         ctx.redirect(Routes.HOME.getPath());
     }
 
-    public  void signup(Context ctx) {
+    public void signup(Context ctx) {
         String username = ctx.formParam("username");
         String name = ctx.formParam("name");
         String password = ctx.formParam("password");
@@ -65,6 +95,4 @@ public class AuthController extends BaseController {
             ctx.redirect(Routes.SIGNUP.getPath());
         }
     }
-
-
 }
