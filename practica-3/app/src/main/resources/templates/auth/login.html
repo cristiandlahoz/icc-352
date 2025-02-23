@@ -9,32 +9,46 @@
 </head>
 
 <body>
-    <div class="container">
-        <h1>Welcome to Wornux</h1>
-        <form action="/login" method="post">
-            <label for="username">Usuario:</label>
-            <input type="text" id="username" name="username" placeholder="Ingresa tu usuario" required
-                autocomplete="username">
+<div class="container">
+    <h1>Welcome to Wornux</h1>
+    <form action="/login" method="post">
+        <label for="username">Usuario:</label>
+        <input type="text" id="username" name="username" placeholder="Ingresa tu usuario" required
+               autocomplete="username">
 
-            <label for="password">Contraseña:</label>
-            <div class="password-container">
-                <input type="password" id="password" name="password" placeholder="Ingresa tu contraseña" required
-                    autocomplete="current-password">
-                <span onclick="togglePassword()">👁</span>
-            </div>
+        <label for="password">Contraseña:</label>
+        <div class="password-container">
+            <input type="password" id="password" name="password" placeholder="Ingresa tu contraseña" required
+                   autocomplete="current-password">
+            <span onclick="togglePassword()">👁</span>
+        </div>
 
-            <button type="submit">Iniciar Sesión</button>
-        </form>
-        <!--<a href="/templates/auth/signUp.html">Crear una cuenta nueva</a>-->
-        <a href="/signup">Crear una cuenta nueva</a>
-    </div>
+        <div class="remember-me">
+            <label for="remember_me" style="display: inline-flex; align-items: center; gap: 5px;">
+                Recordarme:
+                <input type="checkbox" id="remember_me" name="remember_me">
+            </label>
+        </div>
+        
+        <button type="submit">Iniciar Sesión</button>
+    </form>
 
-    <script>
-        function togglePassword() {
-            let passInput = document.getElementById("password");
-            passInput.type = (passInput.type === "password") ? "text" : "password";
+    <a href="/signup">Crear una cuenta nueva</a>
+</div>
+
+<script>
+    function togglePassword() {
+        let passInput = document.getElementById("password");
+        passInput.type = (passInput.type === "password") ? "text" : "password";
+    }
+
+    // Guardar y recuperar la opción de "Recordarme"
+    document.addEventListener("DOMContentLoaded", function () {
+        if (document.cookie.includes("remember_me")) {
+            document.getElementById("remember_me").checked = true;
         }
-    </script>
+    });
+</script>
 </body>
 
 </html>

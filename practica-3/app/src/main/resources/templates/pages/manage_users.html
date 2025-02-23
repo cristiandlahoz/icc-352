@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Manage Users</title>
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css">
+  <link rel="stylesheet" href="/assets/css/manageUsers.css">
+  <script>
+    async function loadUsers() {
+      try {
+        const response = await fetch("/users"); // Llamada a la API
+        if (!response.ok) throw new Error("Error al cargar los usuarios");
+
+        const users = await response.json(); // Convertir a JSON
+        const tbody = document.getElementById("userTableBody");
+
+        tbody.innerHTML = ""; // Limpiar la tabla antes de agregar nuevos datos
+
+        users.forEach(user => {
+          const row = document.createElement("tr");
+          row.innerHTML = `
+                        <td>${user.username}</td>
+                        <td>${user.name}</td>
+                        <td>${user.role}</td>
+                        <td>
+                            <form action="/users/${user.username}" method="post">
+                                <button type="submit" class="btn btn-danger btn-sm">Update Account</button>
+                            </form>
+                             <button class="btn btn-sm btn-outline-danger delete-button" data-username="${user.username}">Delete</button>
+
+                    `;
+          tbody.appendChild(row);
+        });
+
+        document.querySelectorAll(".delete-button").forEach(button => {
+          button.addEventListener("click", async function () {
+            const username = this.getAttribute("data-username");
+            if (confirm(`Are you sure you want to delete ${username}?`)) {
+              try {
+                const response = await fetch(`/users/${username}`, { method: "DELETE" });
+                if (!response.ok) throw new Error("Error deleting user");
+
+                alert(`User ${username} deleted successfully.`);
+                loadUsers(); // Recargar la tabla después de eliminar
+              } catch (error) {
+                console.error("Error:", error);
+                alert("Failed to delete user.");
+              }
+            }
+          });
+        });
+
+      } catch (error) {
+        console.error(error);
+      }
+    }
+
+    document.addEventListener("DOMContentLoaded", loadUsers);
+  </script>
+</head>
+<body class="container mt-5">
+
+<h2 class="mb-4 text-center">User List</h2>
+<table class="table table-bordered">
+  <thead>
+  <tr>
+    <th>Username</th>
+    <th>Name</th>
+    <th>Role</th>
+    <th>Action</th>
+  </tr>
+  </thead>
+  <tbody id="userTableBody">
+  <!-- Los usuarios se cargarán aquí dinámicamente -->
+  </tbody>
+</table>
+
+</body>
+</html>

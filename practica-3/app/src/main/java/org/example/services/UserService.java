@@ -1,77 +1,99 @@
 package org.example.services;
 
+import java.util.Collection;
+import java.util.Optional;
 import org.example.exceptions.NotFoundException;
 import org.example.models.User;
-import java.util.Collection;
-import java.util.HashMap;
-import java.util.Map;
-
+import org.example.repository.UserRepository;
 import org.example.util.AccessStatus;
 import org.example.util.Role;
 
 public class UserService {
-    private static final Map<String, User> users = new HashMap<>();
+  private final UserRepository userRepository;
 
-    public UserService() {
+  public UserService(UserRepository userRepository) {
+    this.userRepository = userRepository;
+  }
 
+  /*static {
+      User administrator = new User("Theprimeagen", "Ignacio", "1234",Role.ADMIN, AccessStatus.UNAUTHENTICATED);
+      users.put(administrator.getUsername(), administrator);
+  }*/
+
+  public Collection<User> getAllUsers() {
+    return userRepository.findAll();
+  }
+
+  public Optional<User> getUserByUsername(String username) {
+    if (username == null) {
+      throw new IllegalArgumentException("Username cannot be null");
+    }
+    return userRepository.findByUsername(username);
+  }
+
+  public User getUserByUserId(Long userId) {
+    if (userId == null) {
+      throw new IllegalArgumentException("User ID cannot be null");
+    }
+    return userRepository
+        .findById(userId)
+        .orElseThrow(() -> new NotFoundException("User not found"));
+  }
+
+  public User createUser(
+      String username, String name, String password, Role role, AccessStatus accessStatus) {
+    if (username == null
+        || name == null
+        || password == null
+        || role == null
+        || accessStatus == null) {
+      throw new IllegalArgumentException("Username and name cannot be null");
     }
 
-    static {
-        User administrator = new User("Theprimeagen", "Ignacio", "1234",Role.ADMIN, AccessStatus.UNAUTHENTICATED);
-        users.put(administrator.getUsername(), administrator);
+    Optional<User> existingUser = userRepository.findByUsername(username);
+    if (existingUser.isPresent()) {
+      throw new IllegalArgumentException("Username already exists");
     }
 
-    public Collection<User> getAllUsers() {
-        return users.values();
+    User newUser = new User(username, name, password, role, accessStatus);
+    return userRepository.save(newUser);
+  }
+
+  public User updateUser(User user) {
+    if (user == null || user.getUsername() == null) {
+      throw new IllegalArgumentException("User and username cannot be null");
+    }
+    Optional<User> existingUser = userRepository.findById(user.getUserId());
+    if (existingUser.isEmpty()) {
+      throw new NotFoundException("User not found");
     }
 
-    public User getUserByUsername(String username) {
-        if (username == null) {
-            throw new IllegalArgumentException("The argument 'username' cannot be null.");
-        }
-        if (!users.containsKey(username)) {
-            throw new IllegalArgumentException("User not found for the provided username.");
-        }
-        return users.get(username);
+    Optional<User> userWithSameUsername = userRepository.findByUsername(user.getUsername());
+    if (userWithSameUsername.isPresent()
+        && !userWithSameUsername.get().getUserId().equals(user.getUserId())) {
+      throw new IllegalArgumentException("Username already exists");
     }
 
-    /*public void createUser(User user) {
-        users.put(user.getUsername(), user);
-    }*/
+    return userRepository.update(user);
+  }
 
-    public void createUser(User user) {
-        if (users.containsKey(user.getUsername())) {
-            throw new IllegalArgumentException("User already exists");
-        }
-        users.put(user.getUsername(), user);
-        System.out.println("Usuario registrado: " + user.getUsername()); // Debugging
+  public void deleteUserByUserId(Long userId) {
+    if (userId == null) {
+      throw new IllegalArgumentException("UserId cannot be null");
+    }
+    userRepository.deleteById(userId);
+  }
+
+  public void deleteUserByUsername(String username) {
+    if (username == null || username.trim().isEmpty()) {
+      throw new IllegalArgumentException("Username cannot be null or empty");
     }
 
-
-    public void updateUser(User user){
-        if (user == null) {
-            throw new IllegalArgumentException("User cannot be null");
-        } else if (!users.containsKey(user.getUsername())) {
-            throw new NotFoundException("Username not found");
-        } else {
-            User myUser = users.get(user.getUsername());
-            myUser.setName(user.getName());
-            myUser.setAccessStatus(user.isAccessStatus());
-            myUser.setPassword(user.getPassword());
-            users.put(myUser.getUsername(), myUser);
-        }
-        
+    Optional<User> userOptional = userRepository.findByUsername(username);
+    if (userOptional.isEmpty()) {
+      throw new NotFoundException("User not found");
     }
 
-    public void deleteUserByUsername(String username) {
-        if (username == null) {
-            throw new IllegalArgumentException("Username cannot be null");
-        } else if (!users.containsKey(username)) {
-            throw new NotFoundException("Username not found");
-        } else {
-            users.remove(username);
-        }
-
-    }
-
+    userRepository.deleteById(userOptional.get().getUserId());
+  }
 }
