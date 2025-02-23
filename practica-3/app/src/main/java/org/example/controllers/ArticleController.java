@@ -46,25 +46,30 @@ public class ArticleController extends BaseController {
     }
 
     public void getAllArticles(Context ctx) {
-       int page = ctx.queryParam("page") != null ? Integer.parseInt(ctx.queryParam("page")) : 1;
-       int pageSize = ctx.queryParam("size") != null ? Integer.parseInt(ctx.queryParam("size")) : PageSize.DEFAULT.getSize();
-       String tagName = ctx.queryParam("tag");
-       Long countPages = articleService.countAllArticles();
+        final int page = parseQueryParam(ctx.queryParam("page"), 1);
+        final int pageSize = parseQueryParam(ctx.queryParam("size"), PageSize.DEFAULT.getSize());
+        final String tagName = ctx.queryParam("tag");
 
-        List<Article> articleCollection;
-        if (tagName != null && !tagName.isEmpty()) {
-           Tag tag = tagService.getTagByName(tagName);
-            articleCollection = articleService.getAllArticlesByTag(page, pageSize, tagName);
-            countPages = articleService.countAllArticlesByTag(tagName);
-       }else{
-           articleCollection = articleService.getAllArticles(page, pageSize);
-       }
-        Collection<Tag> tagCollection = tagService.getAllTags();
-        Boolean logged = ctx.sessionAttribute(SessionKeys.USER.getKey()) != null;
-        User user = ctx.sessionAttribute(SessionKeys.USER.getKey());
-        String role = (user != null) ? user.getRole().toString() : "GUEST";
-        ctx.sessionAttribute("ROL", role);
-        Map<String, Object> model = setModel(
+        final List<Article> articleCollection = Optional.ofNullable(tagName)
+                .filter(tag -> !tag.isEmpty())
+                .map(tag -> articleService.getAllArticlesByTag(page, pageSize, tag))
+                .orElseGet(() -> articleService.getAllArticles(page, pageSize));
+
+        final long countPages = Optional.ofNullable(tagName)
+                .filter(tag -> !tag.isEmpty())
+                .map(articleService::countAllArticlesByTag)
+                .orElseGet(articleService::countAllArticles);
+
+        final Collection<Tag> tagCollection = tagService.getAllTags();
+
+        final User user = ctx.sessionAttribute(SessionKeys.USER.getKey());
+        final boolean logged = Optional.ofNullable(user).isPresent();
+        final String role = Optional.ofNullable(user)
+                .map(User::getRole)
+                .map(Enum::toString)
+                .orElse("GUEST");
+
+        final Map<String, Object> model = setModel(
                 "title", "Wornux",
                 "user", user,
                 "articleCollection", articleCollection,
@@ -73,11 +78,24 @@ public class ArticleController extends BaseController {
                 "role", role,
                 "currentPage", page,
                 "tag", tagName,
-                "countPages", (int) Math.ceil((double) countPages / pageSize));
+                "countPages", (int) Math.ceil((double) countPages / pageSize)
+        );
 
         ctx.render("index.html", model);
     }
 
+    private int parseQueryParam(String param, int defaultValue) {
+        return Optional.ofNullable(param)
+                .filter(p -> p.matches("\\d+"))
+                .map(Integer::parseInt)
+                .orElse(defaultValue);
+    }
+
+    private List<Article> getArticlesByTag(String tagName) {
+        return Optional.ofNullable(tagService.getTagByName(tagName))
+                .map(tag -> articleService.getAllArticlesByTag(1, PageSize.DEFAULT.getSize(), tagName))
+                .orElseGet(Collections::emptyList);
+    }
     public void getArticleById(Context ctx) {
         long articleId = Long.parseLong(ctx.pathParam("id"));
         Article myArticle = articleService.getArticleById(articleId);
