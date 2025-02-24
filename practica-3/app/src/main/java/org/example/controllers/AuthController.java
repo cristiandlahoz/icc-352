@@ -3,10 +3,13 @@ package org.example.controllers;
 import io.javalin.Javalin;
 import io.javalin.http.Context;
 import jakarta.servlet.http.Cookie;
+import org.example.models.Photo;
 import org.example.models.User;
 import org.example.services.AuthService;
 import org.example.util.*;
 import org.jasypt.util.text.BasicTextEncryptor;
+
+import java.util.Base64;
 
 public class AuthController extends BaseController {
 
@@ -85,7 +88,23 @@ public class AuthController extends BaseController {
     boolean isAuthor = ctx.formParam("is_author") != null;
     Role role = isAuthor ? Role.AUTHOR : Role.USER;
 
-    User newUser = new User(username, name, password, role, AccessStatus.AUTHENTICATED);
+    // Procesar la foto de perfil si se envió
+    Photo profilePhoto = null;
+    if (ctx.uploadedFile("profilePhoto") != null) {
+      try {
+        var uploadedFile = ctx.uploadedFile("profilePhoto");
+        byte[] bytes = uploadedFile.content().readAllBytes();
+        String encodedString = Base64.getEncoder().encodeToString(bytes);
+        profilePhoto = new Photo(uploadedFile.filename(), uploadedFile.contentType(), encodedString);
+      } catch (Exception e) {
+        e.printStackTrace();
+        ctx.status(500).result("Error processing profile photo.");
+        return;
+      }
+    }
+
+    // Crear el nuevo usuario con la foto de perfil
+    User newUser = new User(username, name, password, role, AccessStatus.AUTHENTICATED, profilePhoto);
 
     try {
       authService.register(newUser);
@@ -95,4 +114,5 @@ public class AuthController extends BaseController {
       ctx.redirect(Routes.SIGNUP.getPath());
     }
   }
+
 }
