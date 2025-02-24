@@ -16,10 +16,13 @@ public class User {
   @GeneratedValue(strategy = GenerationType.IDENTITY)
   private Long userId;
 
-  @Column(unique = true)
+  @Column(unique = true, nullable = false)
   private String username;
 
+  @Column(nullable = false)
   private String name;
+
+  @Column(nullable = false)
   private String password;
 
   @Enumerated(EnumType.STRING)
@@ -28,11 +31,16 @@ public class User {
   @Enumerated(EnumType.STRING)
   private AccessStatus accessStatus;
 
-  public User(String username, String name, String password, Role role, AccessStatus accessStatus) {
+  @OneToOne(fetch = FetchType.EAGER, cascade = CascadeType.ALL)
+  @JoinColumn(name = "photo_id", referencedColumnName = "id", nullable = true)
+  private Photo profilePhoto;
+
+  public User(String username, String name, String password, Role role, AccessStatus accessStatus, Photo profilePhoto) {
     this.username = username;
     this.name = name;
     this.password = password;
     this.role = role;
     this.accessStatus = accessStatus;
+    this.profilePhoto = profilePhoto;
   }
 }
