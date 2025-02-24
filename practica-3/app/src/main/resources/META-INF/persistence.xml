@@ -5,7 +5,7 @@
         <class>org.example.models.Article</class>
         <class>org.example.models.Comment</class>
         <class>org.example.models.Tag</class>
-        <!--<class>org.example.models.Foto</class> -->
+        <class>org.example.models.Photo</class>
         <class>org.example.models.User</class>
         <properties>
             <!--<property name="javax.persistence.jdbc.url" value="jdbc:h2:mem:test" />-->
