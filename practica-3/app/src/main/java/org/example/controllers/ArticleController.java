@@ -1,10 +1,11 @@
 package org.example.controllers;
 
 import io.javalin.Javalin;
+import io.javalin.http.BadRequestResponse;
 import io.javalin.http.Context;
+import io.javalin.http.NotFoundResponse;
 import java.util.*;
 import org.example.models.Article;
-import org.example.models.Comment;
 import org.example.models.Tag;
 import org.example.models.User;
 import org.example.services.ArticleService;
@@ -102,43 +103,49 @@ public class ArticleController extends BaseController {
   }
 
   public void getArticleById(Context ctx) {
-    long articleId = Long.parseLong(ctx.pathParam("id"));
-    Article myArticle = articleService.getArticleById(articleId);
-    if (myArticle == null) ctx.status(404).result("Article not found");
+    var articleId =
+        parseArticleId(ctx.pathParam("id"))
+            .orElseThrow(() -> new BadRequestResponse("Invalid article ID"));
 
-    assert myArticle != null;
-    Collection<Tag> tags = myArticle.getTags();
-    List<Article> authorArticles = articleService.getArticleByAuthor(myArticle.getAuthor().getName());
-    User user = ctx.sessionAttribute(SessionKeys.USER.getKey());
-    String role = (user != null) ? user.getRole().toString() : "GUEST";
-    User myUser = myArticle.getAuthor();
-    boolean logged = false;
-    if (user != null) {
-      logged = true;
-      myUser = user;
-      System.out.println("\u001B[37m[USER_LOG] Name: " + myUser.getProfilePhoto().getFotoBase64() + "\u001B[0m");
-    }
-    List<Comment> comments = commentService.getCommentsByArticleId(articleId);
-    Map<String, Object> model =
-        setModel(
-            "title",
-            "Wornux",
-            "article",
-            myArticle,
-            "tags",
-            tags,
-            "logged",
-            logged,
-            "role",
-            role,
-            "authorArticles",
-            authorArticles,
-            "comments",
-            comments,
-            "user",
-            myUser);
+    var myArticle =
+        Optional.ofNullable(articleService.getArticleById(articleId))
+            .orElseThrow(() -> new NotFoundResponse("Article not found"));
+
+    var tags = Optional.ofNullable(myArticle.getTags()).orElseGet(List::of);
+
+    var authorArticles =
+        Optional.ofNullable(myArticle.getAuthor())
+            .map(author -> articleService.getArticleByAuthor(author.getName()))
+            .orElseGet(List::of);
+
+    Optional<User> user = Optional.ofNullable(ctx.sessionAttribute(SessionKeys.USER.getKey()));
+    var role = user.map(u -> u.getRole().toString()).orElse("GUEST");
+    var myUser = user.orElse(myArticle.getAuthor());
+    var logged = user.isPresent();
+
+    var comments =
+        Optional.ofNullable(commentService.getCommentsByArticleId(articleId)).orElseGet(List::of);
+
+    var model =
+        Map.of(
+            "title", "Wornux",
+            "article", myArticle,
+            "tags", tags,
+            "logged", logged,
+            "role", role,
+            "authorArticles", authorArticles,
+            "comments", comments,
+            "user", myUser);
 
     ctx.render("/pages/article-view.html", model);
+  }
+
+  private Optional<Long> parseArticleId(String id) {
+    try {
+      return Optional.of(Long.parseLong(id));
+    } catch (NumberFormatException e) {
+      return Optional.empty();
+    }
   }
 
   public void createArticle(Context ctx) {
