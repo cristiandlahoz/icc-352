@@ -108,10 +108,10 @@ public class ArticleController extends BaseController {
 
     assert myArticle != null;
     Collection<Tag> tags = myArticle.getTags();
-    List<Article> authorArticles = articleService.getArticleByAuthor(myArticle.getAuthor());
+    List<Article> authorArticles = articleService.getArticleByAuthor(myArticle.getAuthor().getName());
     User user = ctx.sessionAttribute(SessionKeys.USER.getKey());
     String role = (user != null) ? user.getRole().toString() : "GUEST";
-    String username = "";
+    String username = myArticle.getAuthor().getUsername();
     boolean logged = false;
     if (user != null) {
       logged = true;
@@ -145,7 +145,7 @@ public class ArticleController extends BaseController {
 
     if (newArticle != null) {
       ctx.status(201);
-      ctx.redirect("/");
+      ctx.redirect(Routes.ARTICLES.getPath());
     } else {
       ctx.status(400).result("Error Creating Article");
       // revisar
@@ -234,14 +234,13 @@ public class ArticleController extends BaseController {
 
       if (article == null) {
         Article newArticle = articleService.createArticle(title, content, author.getUsername());
+        System.out.println(author.getUsername());
         newArticle.setTags(tagArrayList);
 
         return newArticle;
       } else {
         article.setTitle(title);
         article.setContent(content);
-        // article.setTags(tagArrayList);
-
         articleService.updateArticle(article);
 
         getArticleById(ctx);

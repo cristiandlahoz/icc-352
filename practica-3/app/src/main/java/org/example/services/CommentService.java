@@ -5,15 +5,18 @@ import java.util.stream.Collectors;
 import org.example.exceptions.NotFoundException;
 import org.example.models.Article;
 import org.example.models.Comment;
+import org.example.models.User;
 import org.example.repository.CommentRepository;
 
 public class CommentService {
   private final CommentRepository commentRepository;
   private final ArticleService articleService;
+  private final UserService userService;
 
-  public CommentService(CommentRepository commentRepository, ArticleService articleService) {
+  public CommentService(CommentRepository commentRepository, ArticleService articleService, UserService userService) {
     this.commentRepository = commentRepository;
     this.articleService = articleService;
+    this.userService = userService;
   }
 
   public List<Comment> getAllComments() {
@@ -41,10 +44,15 @@ public class CommentService {
 
   public Comment createComment(String author, String comment, Long articleId) {
     Article article = articleService.getArticleById(articleId);
+    Optional<User> user = userService.getUserByUsername(author);
     if (article == null) {
       throw new NotFoundException("Article not found with ID " + articleId);
+    }else if(user.isEmpty()) {
+      throw new NotFoundException("User not found with username " + author);
+    }else {
+      Comment newComment = new Comment(comment, user.get(), article);
+      return commentRepository.save(newComment);
     }
-    return new Comment(comment, author, article);
   }
 
   public Comment updateComment(Comment comment) {
