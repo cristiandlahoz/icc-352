@@ -14,7 +14,8 @@ public enum Routes {
   COMMENTS("/comments"),
   COMMENT("/comments/{id}"),
   TAGS("/tags"),
-  MANAGEUSERS("/manageusers");
+  MANAGEUSERS("/manageusers"),
+  PHOTOLIST("photolist");
 
   private final String path;
 
