@@ -111,11 +111,12 @@ public class ArticleController extends BaseController {
     List<Article> authorArticles = articleService.getArticleByAuthor(myArticle.getAuthor().getName());
     User user = ctx.sessionAttribute(SessionKeys.USER.getKey());
     String role = (user != null) ? user.getRole().toString() : "GUEST";
-    String username = myArticle.getAuthor().getUsername();
+    User myUser = myArticle.getAuthor();
     boolean logged = false;
     if (user != null) {
       logged = true;
-      username = user.getUsername();
+      myUser = user;
+      System.out.println("\u001B[37m[USER_LOG] Name: " + myUser.getProfilePhoto().getFotoBase64() + "\u001B[0m");
     }
     List<Comment> comments = commentService.getCommentsByArticleId(articleId);
     Map<String, Object> model =
@@ -135,7 +136,7 @@ public class ArticleController extends BaseController {
             "comments",
             comments,
             "user",
-            username);
+            myUser);
 
     ctx.render("/pages/article-view.html", model);
   }
