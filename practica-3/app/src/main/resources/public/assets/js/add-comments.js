@@ -1,14 +1,15 @@
 document.addEventListener("DOMContentLoaded", function () {
-    const articleId = document.getElementById("commentForm").dataset.articleId;
-    const logged = document.getElementById("commentForm").dataset.logged === "true";
-    const user = document.getElementById("commentForm").dataset.user;
+    const commentForm = document.getElementById("commentForm");
+    const articleId = commentForm.dataset.articleId;
+    const logged = commentForm.dataset.logged === "true";
+    const user = commentForm.dataset.user;
 
-    document.getElementById("commentForm").addEventListener("submit", async function (event) {
+    commentForm.addEventListener("submit", async function (event) {
         event.preventDefault();
 
         const commentBox = document.getElementById("commentBox");
         const commentText = commentBox.value.trim();
-        
+
         if (!logged) {
             let loginModal = new bootstrap.Modal(document.getElementById('loginModal'));
             loginModal.show();
@@ -36,7 +37,14 @@ document.addEventListener("DOMContentLoaded", function () {
     });
 
     function appendComment(comment) {
-        const commentsList = document.querySelector(".comments-list");
+        let commentsList = document.querySelector(".comments-list");
+
+        // Si el contenedor de comentarios no existe, créalo
+        if (!commentsList) {
+            commentsList = document.createElement("div");
+            commentsList.classList.add("comments-list");
+            document.querySelector(".comments-section").appendChild(commentsList);
+        }
 
         const newCommentDiv = document.createElement("div");
         newCommentDiv.classList.add("comment-box");
@@ -50,8 +58,7 @@ document.addEventListener("DOMContentLoaded", function () {
                         <span class="comment-time">2 hours ago</span>
                     </div>
                     <p class="mb-2">${comment.comment}</p>
-                    <div class="comment-actions">
-                    </div>
+                    <div class="comment-actions"></div>
                 </div>
             </div>
         `;

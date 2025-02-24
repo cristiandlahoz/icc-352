@@ -4,13 +4,16 @@ import java.util.*;
 import java.util.stream.Collectors;
 import org.example.exceptions.NotFoundException;
 import org.example.models.Article;
+import org.example.models.User;
 import org.example.repository.ArticleRepository;
 
 public class ArticleService {
   private final ArticleRepository articleRepository;
+  private final UserService userService;
 
-  public ArticleService(ArticleRepository articleRepository) {
+  public ArticleService(ArticleRepository articleRepository, UserService userService) {
     this.articleRepository = articleRepository;
+    this.userService = userService;
   }
 
   public List<Article> getAllArticles() {
@@ -48,14 +51,20 @@ public class ArticleService {
     if (title == null || content == null || authorUsername == null) {
       throw new IllegalArgumentException("Title, content, and author username cannot be null");
     }
-    boolean exists =
-        articleRepository.findAll().stream()
+    boolean exists = articleRepository.findAll().stream()
             .anyMatch(article -> article.getTitle().equalsIgnoreCase(title));
+
     if (exists) {
       throw new IllegalArgumentException("An article with this title already exists");
     }
 
-    Article newArticle = new Article(title, content, authorUsername);
+    Optional<User> authorOpt = userService.getUserByUsername(authorUsername);
+
+    if (authorOpt.isEmpty()) {
+      throw new IllegalArgumentException("User not found with username: " + authorUsername);
+    }
+
+    Article newArticle = new Article(title, content, authorOpt.get());
     return articleRepository.save(newArticle);
   }
 

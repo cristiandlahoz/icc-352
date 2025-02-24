@@ -58,7 +58,7 @@ public class CommentController extends BaseController {
       return;
     }
 
-    Comment myComment = commentService.createComment(comment, author, articleId);
+    Comment myComment = commentService.createComment(author,comment, articleId);
     ctx.json(myComment);
   }
 

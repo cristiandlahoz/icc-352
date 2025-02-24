@@ -77,12 +77,15 @@ public class UserController extends BaseController {
     String username = ctx.formParam("username");
     String password = ctx.formParam("password");
     boolean isAuthor = ctx.formParam("is_author") != null;
-    Role role = isAuthor ? Role.AUTHOR : Role.USER;
 
     User user = userService.getUserByUserId(userId);
     if (user == null) {
       ctx.status(404).result("User not found");
       return;
+    }
+    Role role = isAuthor ? Role.AUTHOR : Role.USER;
+    if(user.getRole().toString().equals(Role.ADMIN.toString())) {
+    role = Role.ADMIN;
     }
     user.setUsername(username);
     user.setName(name);
