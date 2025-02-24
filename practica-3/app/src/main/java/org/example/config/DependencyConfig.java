@@ -33,10 +33,10 @@ public class DependencyConfig {
     userRepository = new UserRepository(entityManager);
     authRepository = new AuthRepository(CoackroachDBConfig.getSql2o());
 
-    articleService = new ArticleService(articleRepository);
     authService = new AuthService(userRepository, authRepository);
-    commentService = new CommentService(commentRepository, articleService);
     tagService = new TagService(tagRepository);
     userService = new UserService(userRepository);
+    articleService = new ArticleService(articleRepository, userService);
+    commentService = new CommentService(commentRepository, articleService, userService);
   }
 }

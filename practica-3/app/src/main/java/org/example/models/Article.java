@@ -1,6 +1,10 @@
 package org.example.models;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 import jakarta.persistence.*;
+
+import java.io.Serializable;
 import java.util.*;
 import lombok.*;
 
@@ -8,7 +12,7 @@ import lombok.*;
 @Getter
 @Setter
 @NoArgsConstructor
-public class Article {
+public class Article implements Serializable {
   @Id
   @GeneratedValue(strategy = GenerationType.IDENTITY)
   private Long articleId;
@@ -17,7 +21,10 @@ public class Article {
   private String title;
 
   @Lob private String content;
-  private String author;
+  @ManyToOne
+  @JsonBackReference
+  @JoinColumn(name = "author_id", nullable = false)
+  private User author;
   private Date date;
 
   @PrePersist
@@ -26,6 +33,7 @@ public class Article {
   }
 
   @OneToMany(mappedBy = "article")
+  @JsonManagedReference
   private List<Comment> comments;
 
   @ManyToMany
@@ -35,7 +43,7 @@ public class Article {
       inverseJoinColumns = @JoinColumn(name = "tag_id"))
   private List<Tag> tags;
 
-  public Article(String title, String content, String author) {
+  public Article(String title, String content, User author) {
     this.title = title;
     this.content = content;
     this.author = author;
