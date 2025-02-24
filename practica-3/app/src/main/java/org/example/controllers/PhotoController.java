@@ -27,7 +27,7 @@ public class PhotoController extends BaseController {
     }
 
     private void renderPhotoListar(Context ctx) {
-        ctx.render(Routes.PHOTOLIST.getPath());
+        ctx.render("/templates/listar.html");
     }
 
     public void getAllPhotos(Context ctx) {
