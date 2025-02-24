@@ -13,7 +13,8 @@ public class CommentService {
   private final ArticleService articleService;
   private final UserService userService;
 
-  public CommentService(CommentRepository commentRepository, ArticleService articleService, UserService userService) {
+  public CommentService(
+      CommentRepository commentRepository, ArticleService articleService, UserService userService) {
     this.commentRepository = commentRepository;
     this.articleService = articleService;
     this.userService = userService;
@@ -47,9 +48,9 @@ public class CommentService {
     Optional<User> user = userService.getUserByUsername(author);
     if (article == null) {
       throw new NotFoundException("Article not found with ID " + articleId);
-    }else if(user.isEmpty()) {
+    } else if (user.isEmpty()) {
       throw new NotFoundException("User not found with username " + author);
-    }else {
+    } else {
       Comment newComment = new Comment(comment, user.get(), article);
       return commentRepository.save(newComment);
     }

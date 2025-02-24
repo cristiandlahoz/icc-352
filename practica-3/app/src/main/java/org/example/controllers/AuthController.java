@@ -3,13 +3,12 @@ package org.example.controllers;
 import io.javalin.Javalin;
 import io.javalin.http.Context;
 import jakarta.servlet.http.Cookie;
+import java.util.Base64;
 import org.example.models.Photo;
 import org.example.models.User;
 import org.example.services.AuthService;
 import org.example.util.*;
 import org.jasypt.util.text.BasicTextEncryptor;
-
-import java.util.Base64;
 
 public class AuthController extends BaseController {
 
@@ -95,16 +94,20 @@ public class AuthController extends BaseController {
         var uploadedFile = ctx.uploadedFile("profilePhoto");
         byte[] bytes = uploadedFile.content().readAllBytes();
         String encodedString = Base64.getEncoder().encodeToString(bytes);
-        profilePhoto = new Photo(uploadedFile.filename(), uploadedFile.contentType(), encodedString);
+        profilePhoto =
+            new Photo(uploadedFile.filename(), uploadedFile.contentType(), encodedString);
       } catch (Exception e) {
         e.printStackTrace();
         ctx.status(500).result("Error processing profile photo.");
         return;
       }
     }
-
+    if (profilePhoto.getFotoBase64().isEmpty()) {
+      profilePhoto = null;
+    }
     // Crear el nuevo usuario con la foto de perfil
-    User newUser = new User(username, name, password, role, AccessStatus.AUTHENTICATED, profilePhoto);
+    User newUser =
+        new User(username, name, password, role, AccessStatus.AUTHENTICATED, profilePhoto);
 
     try {
       authService.register(newUser);
@@ -114,5 +117,4 @@ public class AuthController extends BaseController {
       ctx.redirect(Routes.SIGNUP.getPath());
     }
   }
-
 }

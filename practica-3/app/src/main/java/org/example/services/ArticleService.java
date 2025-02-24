@@ -51,7 +51,8 @@ public class ArticleService {
     if (title == null || content == null || authorUsername == null) {
       throw new IllegalArgumentException("Title, content, and author username cannot be null");
     }
-    boolean exists = articleRepository.findAll().stream()
+    boolean exists =
+        articleRepository.findAll().stream()
             .anyMatch(article -> article.getTitle().equalsIgnoreCase(title));
 
     if (exists) {

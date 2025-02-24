@@ -37,13 +37,19 @@ public class UserService {
   }
 
   public User createUser(
-          String username, String name, String password, Role role, AccessStatus accessStatus, Photo profilePhoto) {
+      String username,
+      String name,
+      String password,
+      Role role,
+      AccessStatus accessStatus,
+      Photo profilePhoto) {
     if (username == null
-            || name == null
-            || password == null
-            || role == null
-            || accessStatus == null) {
-      throw new IllegalArgumentException("Username, name, password, role, and accessStatus cannot be null");
+        || name == null
+        || password == null
+        || role == null
+        || accessStatus == null) {
+      throw new IllegalArgumentException(
+          "Username, name, password, role, and accessStatus cannot be null");
     }
 
     Optional<User> existingUser = userRepository.findByUsername(username);
@@ -66,7 +72,8 @@ public class UserService {
     }
 
     Optional<User> userWithSameUsername = userRepository.findByUsername(user.getUsername());
-    if (userWithSameUsername.isPresent() && !userWithSameUsername.get().getUserId().equals(user.getUserId())) {
+    if (userWithSameUsername.isPresent()
+        && !userWithSameUsername.get().getUserId().equals(user.getUserId())) {
       throw new IllegalArgumentException("Username already exists");
     }
 
@@ -77,7 +84,6 @@ public class UserService {
 
     return userRepository.update(user);
   }
-
 
   public void deleteUserByUsername(String username) {
     if (username == null || username.trim().isEmpty()) {

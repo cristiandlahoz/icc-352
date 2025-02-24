@@ -25,7 +25,6 @@ public class DependencyConfig {
   @Getter private static UserService userService;
   @Getter private static PhotoService photoService;
 
-
   public static void init() {
     entityManagerFactory = Persistence.createEntityManagerFactory("h2-persistence-unit");
     entityManager = entityManagerFactory.createEntityManager();
@@ -44,6 +43,4 @@ public class DependencyConfig {
     commentService = new CommentService(commentRepository, articleService, userService);
     photoService = new PhotoService(photoRepository);
   }
-
-
 }

@@ -2,12 +2,11 @@ package org.example.models;
 
 import com.fasterxml.jackson.annotation.JsonManagedReference;
 import jakarta.persistence.*;
+import java.io.Serializable;
+import java.util.List;
 import lombok.*;
 import org.example.util.AccessStatus;
 import org.example.util.Role;
-
-import java.io.Serializable;
-import java.util.List;
 
 @Entity
 @Getter
@@ -42,12 +41,18 @@ public class User implements Serializable {
   @OneToMany(mappedBy = "author")
   @JsonManagedReference
   private List<Article> articles;
-  
+
   @OneToOne(fetch = FetchType.EAGER, cascade = CascadeType.ALL)
   @JoinColumn(name = "photo_id", referencedColumnName = "id", nullable = true)
   private Photo profilePhoto;
 
-  public User(String username, String name, String password, Role role, AccessStatus accessStatus, Photo profilePhoto) {
+  public User(
+      String username,
+      String name,
+      String password,
+      Role role,
+      AccessStatus accessStatus,
+      Photo profilePhoto) {
     this.username = username;
     this.name = name;
     this.password = password;
