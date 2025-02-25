@@ -4,6 +4,7 @@ import java.util.*;
 import java.util.stream.Collectors;
 import org.example.exceptions.NotFoundException;
 import org.example.models.Article;
+import org.example.models.Tag;
 import org.example.models.User;
 import org.example.repository.ArticleRepository;
 
@@ -47,11 +48,13 @@ public class ArticleService {
         .orElseThrow(() -> new NotFoundException("Article not found"));
   }
 
-  public Article createArticle(String title, String content, String authorUsername) {
+  public Article createArticle(
+      String title, String content, String authorUsername, List<Tag> tagArrayList) {
     if (title == null || content == null || authorUsername == null) {
       throw new IllegalArgumentException("Title, content, and author username cannot be null");
     }
-    boolean exists = articleRepository.findAll().stream()
+    boolean exists =
+        articleRepository.findAll().stream()
             .anyMatch(article -> article.getTitle().equalsIgnoreCase(title));
 
     if (exists) {
@@ -65,6 +68,7 @@ public class ArticleService {
     }
 
     Article newArticle = new Article(title, content, authorOpt.get());
+    newArticle.setTags(tagArrayList);
     return articleRepository.save(newArticle);
   }
 

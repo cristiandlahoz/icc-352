@@ -79,12 +79,12 @@
                     </form>
                     <br>
 
-                    <form th:if="${article.author.equals(user) || role == 'ADMIN'}"
+                    <form th:if="${article.author.username.equals(user.username) && logged || role == 'ADMIN'}"
                         th:action="@{'/articles/' + ${article.articleId}}" method="post">
                         <button type="submit" class="btn btn-sm btn-outline-danger">Update</button>
                     </form>
 
-                    <button id="deleteButton" th:if="${article.author.equals(user) || role == 'ADMIN'}"
+                    <button id="deleteButton" th:if="${article.author.username.equals(user.username) && logged|| role == 'ADMIN'}"
                         th:data-article-id="${article.articleId}" class="btn btn-sm btn-outline-danger">Delete</button>
 
                 </div>
@@ -101,7 +101,7 @@
         </div>
     </div>
 
-    <main class="container" th:if=${article}>
+    <main class="container" th:if="${article}">
         <div class="p-4 p-md-5 mb-4 rounded text-body-emphasis bg-body-secondary">
             <div class="col-lg-6 px-0">
                 <h1 class="display-4 fst-italic" th:text="${article.title}"></h1>
@@ -113,17 +113,15 @@
         <div class="row g-5">
             <div class="col-md-8">
                 <article class="blog-post">
-                    <p class="contenido" th:text=${article.content}></p>
+                    <p class="contenido" th:text="${article.content}"></p>
                     <hr>
                     <div class="container">
                         <div class="comment-section">
                             <!-- New Comment Form -->
                             <div class="mb-4">
                                 <div class="d-flex gap-3">
-                                    <img src="https://randomuser.me/api/portraits/men/34.jpg" alt="User Avatar"
-                                        class="user-avatar">
                                     <form id="commentForm"
-                                        th:attr="data-article-id=${article.articleId},data-logged=${logged},data-user=${user}"
+                                        th:attr="data-article-id=${article.articleId},data-logged=${logged},data-user=${user.username}"
                                         class="flex-grow-1">
                                         <textarea id="commentBox" class="form-control comment-input" rows="3"
                                             placeholder="Write a comment..."></textarea>
@@ -163,12 +161,13 @@
                                 <!-- Comment 1 -->
                                 <div class="comment-box">
                                     <div class="d-flex gap-3">
-                                        <img src="https://randomuser.me/api/portraits/men/34.jpg" alt="User Avatar"
-                                            class="user-avatar">
+                                        <img id="profilePreview"
+                                             th:src="${comment.user.profilePhoto != null ? 'data:image/*;base64,' + comment.user.profilePhoto.fotoBase64 : '/assets/img/profilepic.png'}"
+                                             alt="Image Preview" class="user-avatar" />
                                         <div class="flex-grow-1">
                                             <div class="d-flex justify-content-between align-items-center mb-2">
                                                 <h6 class="mb-0" th:text="${comment.user.name}"></h6>
-                                                <span class="comment-time">2 hours ago</span>
+                                                <span class="comment-time" th:text="${comment.prettyTime}">2 hours ago</span>
                                             </div>
                                             <p class="mb-2" th:text="${comment.comment}"></p>
                                             <div class="comment-actions">

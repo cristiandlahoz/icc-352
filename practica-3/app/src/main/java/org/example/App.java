@@ -27,11 +27,12 @@ public class App {
             new UserController(app, DependencyConfig.getUserService()),
             new CommentController(
                 app, DependencyConfig.getCommentService(), DependencyConfig.getArticleService()),
-            new TagController(app, DependencyConfig.getTagService()))
+            new TagController(app, DependencyConfig.getTagService()),
+            new PhotoController(app, DependencyConfig.getPhotoService()))
         .forEach(BaseController::applyRoutes);
     try {
       DependencyConfig.getUserService()
-          .createUser("admin", "cristian", "admin", Role.ADMIN, AccessStatus.AUTHENTICATED);
+          .createUser("admin", "cristian", "admin", Role.ADMIN, AccessStatus.AUTHENTICATED, null);
     } catch (Exception e) {
       System.out.println("Admin user already registered: " + e.getMessage());
     }

@@ -3,6 +3,7 @@ package org.example.services;
 import java.util.Collection;
 import java.util.Optional;
 import org.example.exceptions.NotFoundException;
+import org.example.models.Photo;
 import org.example.models.User;
 import org.example.repository.UserRepository;
 import org.example.util.AccessStatus;
@@ -36,13 +37,19 @@ public class UserService {
   }
 
   public User createUser(
-      String username, String name, String password, Role role, AccessStatus accessStatus) {
+      String username,
+      String name,
+      String password,
+      Role role,
+      AccessStatus accessStatus,
+      Photo profilePhoto) {
     if (username == null
         || name == null
         || password == null
         || role == null
         || accessStatus == null) {
-      throw new IllegalArgumentException("Username and name cannot be null");
+      throw new IllegalArgumentException(
+          "Username, name, password, role, and accessStatus cannot be null");
     }
 
     Optional<User> existingUser = userRepository.findByUsername(username);
@@ -50,7 +57,7 @@ public class UserService {
       throw new IllegalArgumentException("Username already exists");
     }
 
-    User newUser = new User(username, name, password, role, accessStatus);
+    User newUser = new User(username, name, password, role, accessStatus, profilePhoto);
     return userRepository.save(newUser);
   }
 
@@ -58,6 +65,7 @@ public class UserService {
     if (user == null || user.getUsername() == null) {
       throw new IllegalArgumentException("User and username cannot be null");
     }
+
     Optional<User> existingUser = userRepository.findById(user.getUserId());
     if (existingUser.isEmpty()) {
       throw new NotFoundException("User not found");
@@ -69,14 +77,12 @@ public class UserService {
       throw new IllegalArgumentException("Username already exists");
     }
 
-    return userRepository.update(user);
-  }
-
-  public void deleteUserByUserId(Long userId) {
-    if (userId == null) {
-      throw new IllegalArgumentException("UserId cannot be null");
+    // Si el usuario no ha subido una nueva foto, conservamos la anterior
+    if (user.getProfilePhoto() == null) {
+      user.setProfilePhoto(existingUser.get().getProfilePhoto());
     }
-    userRepository.deleteById(userId);
+
+    return userRepository.update(user);
   }
 
   public void deleteUserByUsername(String username) {

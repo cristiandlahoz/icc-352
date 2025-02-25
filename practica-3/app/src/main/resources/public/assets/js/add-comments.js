@@ -28,41 +28,22 @@ document.addEventListener("DOMContentLoaded", function () {
         });
 
         if (response.ok) {
-            const newComment = await response.json();
-            appendComment(newComment);
-            commentBox.value = "";
+            // Guardar la posición del scroll antes de recargar la página
+            localStorage.setItem('scrollPosition', window.scrollY);
+
+            // Recargar la página
+            window.location.reload();
         } else {
             alert("Error al enviar el comentario");
         }
     });
 
-    function appendComment(comment) {
-        let commentsList = document.querySelector(".comments-list");
-
-        // Si el contenedor de comentarios no existe, créalo
-        if (!commentsList) {
-            commentsList = document.createElement("div");
-            commentsList.classList.add("comments-list");
-            document.querySelector(".comments-section").appendChild(commentsList);
+    // Restaurar la posición del scroll al recargar la página
+    window.onload = () => {
+        const scrollPosition = localStorage.getItem('scrollPosition');
+        if (scrollPosition) {
+            window.scrollTo(0, parseInt(scrollPosition, 10));
+            localStorage.removeItem('scrollPosition'); // Limpiar el almacenamiento una vez restaurado
         }
-
-        const newCommentDiv = document.createElement("div");
-        newCommentDiv.classList.add("comment-box");
-
-        newCommentDiv.innerHTML = `
-            <div class="d-flex gap-3">
-                <img src="https://randomuser.me/api/portraits/men/34.jpg" alt="User Avatar" class="user-avatar">
-                <div class="flex-grow-1">
-                    <div class="d-flex justify-content-between align-items-center mb-2">
-                        <h6 class="mb-0">${comment.username}</h6>
-                        <span class="comment-time">2 hours ago</span>
-                    </div>
-                    <p class="mb-2">${comment.comment}</p>
-                    <div class="comment-actions"></div>
-                </div>
-            </div>
-        `;
-
-        commentsList.prepend(newCommentDiv);
-    }
+    };
 });

@@ -25,6 +25,7 @@ dependencies {
     implementation 'io.github.cdimascio:dotenv-java:3.1.0'
     implementation 'org.jasypt:jasypt:1.9.3'
     compileOnly 'jakarta.servlet:jakarta.servlet-api:6.0.0'
+    implementation 'org.ocpsoft.prettytime:prettytime:5.0.0.Final'
 }
 
 java {
