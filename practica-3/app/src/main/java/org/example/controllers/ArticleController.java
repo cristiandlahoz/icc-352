@@ -241,23 +241,18 @@ public class ArticleController extends BaseController {
       }
 
       if (article == null) {
-        Article newArticle = articleService.createArticle(title, content, author.getUsername());
-        System.out.println(author.getUsername());
-        newArticle.setTags(tagArrayList);
-
-        return newArticle;
+	      return articleService.createArticle(title, content, author.getUsername(), tagArrayList);
       } else {
         article.setTitle(title);
         article.setContent(content);
         articleService.updateArticle(article);
-
         getArticleById(ctx);
 
         return article;
       }
 
     } catch (Exception e) {
-      System.out.println("Error Updating Article" + e.getMessage());
+      System.out.println("Error updating/creating Article" + e.getMessage());
       return null;
     }
   }
