@@ -241,7 +241,7 @@ public class ArticleController extends BaseController {
       }
 
       if (article == null) {
-	      return articleService.createArticle(title, content, author.getUsername(), tagArrayList);
+        return articleService.createArticle(title, content, author.getUsername(), tagArrayList);
       } else {
         article.setTitle(title);
         article.setContent(content);

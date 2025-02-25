@@ -48,7 +48,8 @@ public class ArticleService {
         .orElseThrow(() -> new NotFoundException("Article not found"));
   }
 
-  public Article createArticle(String title, String content, String authorUsername, List<Tag> tagArrayList) {
+  public Article createArticle(
+      String title, String content, String authorUsername, List<Tag> tagArrayList) {
     if (title == null || content == null || authorUsername == null) {
       throw new IllegalArgumentException("Title, content, and author username cannot be null");
     }
