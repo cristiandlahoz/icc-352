@@ -8,7 +8,7 @@ public abstract class BaseController {
 
   protected Javalin app;
 
-  public BaseController(Javalin app) {
+  protected BaseController(Javalin app) {
     this.app = app;
   }
 
