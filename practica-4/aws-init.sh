@@ -1,7 +1,38 @@
 #!/usr/bin/env bash
-printf "Iniciando la configuración de la instancia de AWS\n"
 
-# Habilitando la memoria de intercambio.
+<<COMMENT
+This script is used to configure an AWS instance with the necessary software to run a Java application.
+It also clones a repository from GitHub and runs the application.
+The following environment variables must be set:
+- TOKEN: GitHub token with access to the repository
+- GITHUB_USER: GitHub user that owns the repository
+- REPO_NAME: Name of the repository
+COMMENT
+
+handle_error() {
+    echo "Error on line $1"
+    exit 1
+}
+
+trap 'handle_error $LINENO' ERR
+
+if [ -z "$TOKEN" ]; then
+    echo "TOKEN is not set. Exiting..."
+    exit 1
+fi
+
+if [ -z "$GITHUB_USER" ]; then
+    echo "GITHUB_USER is not set. Exiting..."
+    exit 1
+fi
+
+if [ -z "$REPO_NAME" ]; then
+  echo "REPO_NAME is not set. Exiting..."
+  exit 1
+fi
+
+printf "Starting AWS instance configuration\n"
+
 sudo dd if=/dev/zero of=/swapfile count=2048 bs=1MiB
 sudo chmod 600 /swapfile
 sudo mkswap /swapfile
@@ -9,35 +40,26 @@ sudo swapon /swapfile
 sudo cp /etc/fstab /etc/fstab.bak
 echo '/swapfile none swap sw 0 0' | sudo tee -a /etc/fstab
 
-# Instando los software necesarios para probar el concepto.
 sudo apt update && sudo apt -y install zip unzip nmap apache2 certbot eza
 
-# Instalando la versión sdkman y java
 curl -s "https://get.sdkman.io" | bash
 source "$HOME/.sdkman/bin/sdkman-init.sh"
-
-# Utilizando la versión de java 17 como base.
 sdk install java 21.0.3-tem
 
-# Subiendo el servicio de Apache.
 sudo service apache2 start
 
-curl https://raw.githubusercontent.com/cristiandelahooz/icc-352/refs/heads/main/practica-4/config/proxyreverso.conf?token=GHSAT0AAAAAAC6ZYOAHCD2JVEK4SL7VMNJQZ6DNBSA -o /etc/apache2/sites-available/proxyreverso.conf
 
-# Creando las estructuras de los archivos.
+curl -H "Authorization: token $TOKEN" -H 'Accept: application/vnd.github.v3.raw' -o /etc/apache2/sites-available/proxyreverso.conf https://api.github.com/repos/$GITHUB_USER/icc-352/contents/practica-4/config/proxyreverso.conf
+
 sudo mkdir -p /var/www/html/app1 /var/www/html/app2
 
-# Creando los archivos por defecto.
-printf "<h1>Sitio Aplicacion #1</h1>" | sudo tee /var/www/html/app1/index.html
-printf "<h1>Sitio Aplicacion #2</h1>" | sudo tee /var/www/html/app2/index.html
+printf "<h1>Application Site #1</h1>" | sudo tee /var/www/html/app1/index.html
+printf "<h1>Application Site #2</h1>" | sudo tee /var/www/html/app2/index.html
 
-# Clonando el proyecto ORM y moviendo a la carpeta descargada.
 cd ~/
-git clone https://github.com/cristiandelahooz/practica-3
-cd practica-3
+git clone https://$TOKEN@github.com/$GITHUB_USER/$REPO_NAME
+cd $REPO_NAME
 
-# Ejecutando la creación de fatjar
 ./gradlew shadowjar
 
-# Subiendo la aplicación puerto por defecto.
-java -jar ~/practica-3/build/libs/app.jar > ~/practica-3/build/libs/salida.txt 2> ~/practica-3/build/libs/error.txt &
+java -jar $HOME/$REPO_NAME/app/build/libs/app.jar > $HOME/$REPO_NAME/app/build/libs/output.log 2> $HOME/$REPO_NAME/app/build/libs/error.log &
