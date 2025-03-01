@@ -52,9 +52,6 @@ sudo service apache2 start
 curl -H "Authorization: token $TOKEN" -o /etc/apache2/sites-available/proxyreverso.conf \
      -L "https://raw.githubusercontent.com/$GITHUB_USER/icc-352/main/practica-4/config/proxyreverso.conf"
 
-curl -H "Authorization: token $TOKEN" -o /etc/apache2/sites-available/proxyreverso.conf \
-     -L "https://raw.githubusercontent.com/$GITHUB_USER/icc-352/main/practica-4/config/proxyreverso.conf"
-
 sudo mkdir -p /var/www/html/app1 /var/www/html/app2
 
 printf "<h1>Application Site #1</h1>" | sudo tee /var/www/html/app1/index.html
