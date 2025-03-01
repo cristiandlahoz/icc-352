@@ -45,6 +45,7 @@ sudo apt update && sudo apt -y install zip unzip nmap apache2 certbot eza
 curl -s "https://get.sdkman.io" | bash
 source "$HOME/.sdkman/bin/sdkman-init.sh"
 sdk install java 21.0.3-tem
+source "$HOME/.sdkman/bin/sdkman-init.sh"
 
 sudo service apache2 start
 
