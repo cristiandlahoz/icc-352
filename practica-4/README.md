@@ -13,15 +13,22 @@ This script is designed to set up an AWS instance with necessary configurations 
 
 ## Usage
 
-1. **Set the GitHub Token**:
-   Ensure the `TOKEN` environment variable is set with your GitHub personal access token:
+1. **Set the Environment Variables**:
+   Ensure the following environment variables are set with your GitHub personal access token, GitHub username, and repository name:
    ```sh
    export TOKEN="YOUR_ACCESS_TOKEN"
+   export GITHUB_USER="YOUR_GITHUB_USERNAME"
+   export REPO_NAME="YOUR_REPOSITORY_NAME"
    ```
 
-2. **Run the Script**:
-   Execute the script on your AWS instance:
+2. **Download and Run the Script**:
+   Execute the following command on your AWS EC2 instance to download the initialization script:
    ```sh
+   curl -H "Authorization: token $TOKEN" -o aws-init.sh -L "https://raw.githubusercontent.com/$GITHUB_USER/icc-352/main/practica-4/aws-init.sh"
+   ```
+   After setting the environment variables, run the script:
+   ```sh
+   chmod +x aws-init.sh
    ./aws-init.sh
    ```
 
@@ -45,7 +52,7 @@ This script is designed to set up an AWS instance with necessary configurations 
    - Creates default HTML files for both applications.
 
 6. **Java Application Deployment**:
-   - Clones the ORM project repository.
+   - Clones the ORM project repository using the GitHub token.
    - Builds the project using `gradlew`.
    - Runs the Java application and redirects the output and error logs to appropriate files.
 
@@ -56,8 +63,8 @@ The script includes error handling to ensure that any issues encountered during 
 ## Logs
 
 Application logs and error logs are stored in:
-- Output Log: `$HOME/practica-3/app/build/libs/output.log`
-- Error Log: `$HOME/practica-3/app/build/libs/error.log`
+- Output Log: `$HOME/$REPO_NAME/app/build/libs/output.log`
+- Error Log: `$HOME/$REPO_NAME/app/build/libs/error.log`
 
 Ensure to check these files for any runtime issues or errors.
 
