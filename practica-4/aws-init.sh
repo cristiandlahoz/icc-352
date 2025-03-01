@@ -49,8 +49,8 @@ source "$HOME/.sdkman/bin/sdkman-init.sh"
 
 sudo service apache2 start
 
-
-curl -H "Authorization: token $TOKEN" -H 'Accept: application/vnd.github.v3.raw' -o /etc/apache2/sites-available/proxyreverso.conf https://api.github.com/repos/$GITHUB_USER/icc-352/contents/practica-4/config/proxyreverso.conf
+curl -H "Authorization: token $TOKEN" -o /etc/apache2/sites-available/proxyreverso.conf \
+     -L "https://raw.githubusercontent.com/$GITHUB_USER/icc-352/main/practica-4/config/proxyreverso.conf"
 
 sudo mkdir -p /var/www/html/app1 /var/www/html/app2
 
