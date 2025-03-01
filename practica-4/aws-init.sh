@@ -1,5 +1,5 @@
 #!/usr/bin/env bash
-echo "Instalando estructura basica para clase virtualhost y proxy reverso"
+printf "Iniciando la configuración de la instancia de AWS\n"
 
 # Habilitando la memoria de intercambio.
 sudo dd if=/dev/zero of=/swapfile count=2048 bs=1MiB
@@ -22,13 +22,7 @@ sdk install java 21.0.3-tem
 # Subiendo el servicio de Apache.
 sudo service apache2 start
 
-# Clonando el repositorio.
-git clone https://github.com/cristiandelahooz/virtualhost-proxyreverso
-
-# Copiando los archivos de configuración en la ruta indicada.
-sudo cp ~/virtualhost-proxyreverso/configuraciones/virtualhost.conf /etc/apache2/sites-available/
-sudo cp ~/virtualhost-proxyreverso/configuraciones/seguro.conf /etc/apache2/sites-available/
-sudo cp ~/virtualhost-proxyreverso/configuraciones/proxyreverso.conf /etc/apache2/sites-available/
+curl https://raw.githubusercontent.com/cristiandelahooz/icc-352/refs/heads/main/practica-4/config/proxyreverso.conf?token=GHSAT0AAAAAAC6ZYOAHCD2JVEK4SL7VMNJQZ6DNBSA -o /etc/apache2/sites-available/proxyreverso.conf
 
 # Creando las estructuras de los archivos.
 sudo mkdir -p /var/www/html/app1 /var/www/html/app2
