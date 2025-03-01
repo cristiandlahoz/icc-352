@@ -10,7 +10,7 @@ sudo cp /etc/fstab /etc/fstab.bak
 echo '/swapfile none swap sw 0 0' | sudo tee -a /etc/fstab
 
 # Instando los software necesarios para probar el concepto.
-sudo apt update && sudo apt -y install zip unzip nmap apache2 certbot tree
+sudo apt update && sudo apt -y install zip unzip nmap apache2 certbot eza
 
 # Instalando la versión sdkman y java
 curl -s "https://get.sdkman.io" | bash
@@ -23,7 +23,7 @@ sdk install java 21.0.3-tem
 sudo service apache2 start
 
 # Clonando el repositorio.
-git clone https://github.com/vacax/virtualhost-proxyreverso
+git clone https://github.com/cristiandelahooz/virtualhost-proxyreverso
 
 # Copiando los archivos de configuración en la ruta indicada.
 sudo cp ~/virtualhost-proxyreverso/configuraciones/virtualhost.conf /etc/apache2/sites-available/
@@ -39,11 +39,11 @@ printf "<h1>Sitio Aplicacion #2</h1>" | sudo tee /var/www/html/app2/index.html
 
 # Clonando el proyecto ORM y moviendo a la carpeta descargada.
 cd ~/
-git clone https://github.com/vacax/orm-jpa
-cd orm-jpa
+git clone https://github.com/cristiandelahooz/practica-3
+cd practica-3
 
 # Ejecutando la creación de fatjar
 ./gradlew shadowjar
 
 # Subiendo la aplicación puerto por defecto.
-java -jar ~/orm-jpa/build/libs/app.jar > ~/orm-jpa/build/libs/salida.txt 2> ~/orm-jpa/build/libs/error.txt &
+java -jar ~/practica-3/build/libs/app.jar > ~/practica-3/build/libs/salida.txt 2> ~/practica-3/build/libs/error.txt &
