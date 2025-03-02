@@ -6,7 +6,7 @@ It also clones a repository from GitHub and runs the application.
 The following environment variables must be set:
 - TOKEN: GitHub token with access to the repository
 - GITHUB_USER: GitHub user that owns the repository
-- REPO_NAME: Name of the repository
+- GITHUB_REPO: Name of the repository
 COMMENT
 
 handle_error() {
@@ -26,8 +26,8 @@ if [ -z "$GITHUB_USER" ]; then
     exit 1
 fi
 
-if [ -z "$REPO_NAME" ]; then
-  echo "REPO_NAME is not set. Exiting..."
+if [ -z "$GITHUB_REPO" ]; then
+  echo "GITHUB_REPO is not set. Exiting..."
   exit 1
 fi
 
@@ -52,9 +52,17 @@ sudo curl -H "Authorization: token $TOKEN" -o /etc/apache2/sites-available/proxy
      -L "https://raw.githubusercontent.com/$GITHUB_USER/icc-352/main/practica-4/config/proxyreverso.conf"
 
 cd $HOME
-git clone https://$TOKEN@github.com/$GITHUB_USER/$REPO_NAME
-cd $REPO_NAME
+git clone https://$TOKEN@github.com/$GITHUB_USER/$GITHUB_REPO
+cd $GITHUB_REPO
 
 ./gradlew shadowjar
 
-java -jar $HOME/$REPO_NAME/app/build/libs/app.jar > $HOME/$REPO_NAME/app/build/libs/output.log 2> $HOME/$REPO_NAME/app/build/libs/error.log &
+java -jar $HOME/$GITHUB_REPO/app/build/libs/app.jar > $HOME/$GITHUB_REPO/app/build/libs/output.log 2> $HOME/$GITHUB_REPO/app/build/libs/error.log &
+
+cd $HOME
+git clone https://github.com/$GITHUB_USER/$GITHUB_SEGCOND_REPO
+cd $GITHUB_SEGCOND_REPO
+
+./gradlew shadowjar
+
+java -jar $HOME/$GITHUB_SEGCOND_REPO/app/build/libs/app.jar > $HOME/$GITHUB_SEGCOND_REPO/app/build/libs/output.log 2> $HOME/$GITHUB_SEGCOND_REPO/app/build/libs/error.log &
