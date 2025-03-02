@@ -51,6 +51,9 @@ sudo service apache2 start
 sudo curl -H "Authorization: token $TOKEN" -o /etc/apache2/sites-available/proxyreverso.conf \
      -L "https://raw.githubusercontent.com/$GITHUB_USER/icc-352/main/practica-4/config/proxyreverso.conf"
 
+sudo curl -H "Authorization: token $TOKEN" -o /etc/apache2/sites-available/seguro.conf \
+     -L "https://raw.githubusercontent.com/$GITHUB_USER/icc-352/main/practica-4/config/seguro.conf"
+
 cd $HOME
 git clone https://$TOKEN@github.com/$GITHUB_USER/$GITHUB_REPO
 cd $GITHUB_REPO
