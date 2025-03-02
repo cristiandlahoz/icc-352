@@ -67,9 +67,9 @@ cd $GITHUB_REPO
 java -jar $HOME/$GITHUB_REPO/app/build/libs/app.jar > $HOME/$GITHUB_REPO/app/build/libs/output.log 2> $HOME/$GITHUB_REPO/app/build/libs/error.log &
 
 cd $HOME
-git clone https://github.com/$GITHUB_USER/$GITHUB_SEGCOND_REPO
-cd $GITHUB_SEGCOND_REPO
+git clone https://github.com/$GITHUB_USER/$GITHUB_SECOND_REPO
+cd $GITHUB_SECOND_REPO
 
 ./gradlew shadowjar
 
-java -jar $HOME/$GITHUB_SEGCOND_REPO/app/build/libs/app.jar > $HOME/$GITHUB_SEGCOND_REPO/app/build/libs/output.log 2> $HOME/$GITHUB_SEGCOND_REPO/app/build/libs/error.log &
+java -jar $HOME/$GITHUB_SECOND_REPO/app/build/libs/app.jar > $HOME/$GITHUB_SECOND_REPO/app/build/libs/output.log 2> $HOME/$GITHUB_SECOND_REPO/app/build/libs/error.log &
