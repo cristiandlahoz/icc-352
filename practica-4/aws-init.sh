@@ -45,19 +45,13 @@ sudo apt update && sudo apt -y install zip unzip nmap apache2 certbot eza
 curl -s "https://get.sdkman.io" | bash
 source "$HOME/.sdkman/bin/sdkman-init.sh"
 sdk install java 21.0.3-tem
-source "$HOME/.sdkman/bin/sdkman-init.sh"
 
 sudo service apache2 start
 
 sudo curl -H "Authorization: token $TOKEN" -o /etc/apache2/sites-available/proxyreverso.conf \
      -L "https://raw.githubusercontent.com/$GITHUB_USER/icc-352/main/practica-4/config/proxyreverso.conf"
 
-sudo mkdir -p /var/www/html/app1 /var/www/html/app2
-
-printf "<h1>Application Site #1</h1>" | sudo tee /var/www/html/app1/index.html
-printf "<h1>Application Site #2</h1>" | sudo tee /var/www/html/app2/index.html
-
-cd ~/
+cd $HOME
 git clone https://$TOKEN@github.com/$GITHUB_USER/$REPO_NAME
 cd $REPO_NAME
 
