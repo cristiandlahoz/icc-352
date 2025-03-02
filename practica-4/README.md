@@ -68,6 +68,39 @@ Application logs and error logs are stored in:
 
 Ensure to check these files for any runtime issues or errors.
 
+# Instructions to Obtain a Certificate with Certbot
+
+Follow these steps to obtain an SSL certificate using Certbot with the manual DNS method.
+
+## Instructions
+
+1. Cerbot is already installed due to the prev script.
+
+2. Run the following command in your terminal, replacing `your-email@domain.com` with your email address and `yourdomain.com` with your domain:
+
+    ```bash
+    sudo certbot certonly --manual --preferred-challenges dns \
+      --email your-email@domain.com --agree-tos --no-eff-email \
+      -d "*.yourdomain.com" -d "yourdomain.com"
+    ```
+
+3. After running the command, Certbot will prompt you to create a DNS TXT record for each specified domain. You need to access your domain provider's DNS settings and add the TXT records that Certbot specifies.
+
+4. Once you have added the TXT records, return to the terminal and press Enter so that Certbot can verify the records.
+
+5. If everything is correct, Certbot will generate and save the certificates on your server. The certificates are typically saved in the `/etc/letsencrypt/live/yourdomain.com/` directory.
+
+6. Configure your web server (e.g., Apache or Nginx) to use the generated certificates.
+
+## Certificate Renewal
+
+Remember that Let's Encrypt certificates are valid for 90 days. You will need to renew them before they expire. You can set up a cron job for automatic renewal or manually run the following command:
+
+```bash
+sudo certbot renew
+```
+
+That's it! You should now have a valid SSL certificate for your domain.
 ## Security Considerations
 
 - The GitHub token is handled securely by using an environment variable.
