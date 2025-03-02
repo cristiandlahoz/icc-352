@@ -46,6 +46,10 @@ curl -s "https://get.sdkman.io" | bash
 source "$HOME/.sdkman/bin/sdkman-init.sh"
 sdk install java 21.0.3-tem
 
+sdk use java 21.0.3-tem
+export JAVA_HOME="$HOME/.sdkman/candidates/java/current"
+export PATH="$JAVA_HOME/bin:$PATH"
+
 sudo service apache2 start
 
 sudo curl -H "Authorization: token $TOKEN" -o /etc/apache2/sites-available/proxyreverso.conf \
