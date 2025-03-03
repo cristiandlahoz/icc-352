@@ -106,3 +106,4 @@ That's it! You should now have a valid SSL certificate for your domain.
 - The GitHub token is handled securely by using an environment variable.
 - Ensure your token is stored securely and not hard-coded in the script.
 
+[![Watch the video](https://img.youtube.com/vi/A2YatL-raWg/maxresdefault.jpg)](https://www.youtube.com/watch?v=A2YatL-raWg)
