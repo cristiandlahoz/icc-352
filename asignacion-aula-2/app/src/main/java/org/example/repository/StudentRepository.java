@@ -14,7 +14,7 @@ public class StudentRepository {
   }
 
   public List<Student> getAllStudents() {
-    String sql = "SELECT * FROM students";
+    String sql = "SELECT * FROM estudiante";
     try (Connection conn = sql2o.open()) {
       return conn.createQuery(sql).executeAndFetch(Student.class);
     } catch (Exception e) {
@@ -24,7 +24,7 @@ public class StudentRepository {
   }
 
   public Optional<Student> getStudentByMatricula(int matricula) {
-    String sql = "SELECT * FROM students WHERE matricula = :matricula";
+    String sql = "SELECT * FROM estudiante WHERE matricula = :matricula";
     try (Connection conn = sql2o.open()) {
       return Optional.ofNullable(conn.createQuery(sql)
           .addParameter("matricula", matricula)
@@ -36,7 +36,7 @@ public class StudentRepository {
   }
 
   public void createStudent(Student student) {
-    String sql = "INSERT INTO students (matricula, nombre, carrera) VALUES (:matricula, :nombre, :carrera)";
+    String sql = "INSERT INTO estudiante (matricula, nombre, carrera) VALUES (:matricula, :nombre, :carrera)";
     try (Connection conn = sql2o.open()) {
       conn.createQuery(sql)
           .addParameter("matricula", student.getMatricula())
@@ -49,7 +49,7 @@ public class StudentRepository {
   }
 
   public void updateStudent(Student student) {
-    String sql = "UPDATE students SET nombre = :nombre, carrera = :carrera WHERE matricula = :matricula";
+    String sql = "UPDATE estudiante SET nombre = :nombre, carrera = :carrera WHERE matricula = :matricula";
     try (Connection conn = sql2o.open()) {
       conn.createQuery(sql)
           .addParameter("nombre", student.getNombre())
@@ -62,7 +62,7 @@ public class StudentRepository {
   }
 
   public void deleteStudent(int matricula) {
-    String sql = "DELETE FROM students WHERE matricula = :matricula";
+    String sql = "DELETE FROM estudiante WHERE matricula = :matricula";
     try (Connection conn = sql2o.open()) {
       conn.createQuery(sql)
           .addParameter("matricula", matricula)
