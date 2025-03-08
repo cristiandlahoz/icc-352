@@ -20,7 +20,10 @@ public class StudentController extends BaseController {
 
   @Override
   public void applyRoutes() {
+    app.get("/", ctx -> ctx.redirect("/students"));
     app.get("/students", this::getStudents);
+    app.get("/create", this::createStudentForm);
+    app.post("/create", this::createStudent);
 
   }
 
@@ -28,6 +31,23 @@ public class StudentController extends BaseController {
     List<Student> students = studentService.getAllStudents();
     Map<String, Object> model = setModel("titulo", "Student list", "lista", students);
     ctx.render("listar.html", model);
+  }
+
+  public void createStudentForm(Context ctx) {
+    Map<String, Object> model = setModel("titulo", "Create student", "accion", "/create");
+    ctx.render("crearEditarVisualizar.html", model);
+  }
+
+  public void createStudent(Context ctx) {
+    int matricula = Integer.parseInt(ctx.formParam("matricula"));
+    String name = ctx.formParam("nombre");
+    String carrera = ctx.formParam("carrera");
+    try {
+      studentService.createStudent(matricula, name, carrera);
+    } catch (Exception e) {
+      System.out.println("Error creating student: " + e.getMessage());
+    }
+    ctx.redirect("/students");
   }
 
 }
