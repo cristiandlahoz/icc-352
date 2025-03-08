@@ -32,7 +32,7 @@
           <td th:text="${estudiante.carrera}">Carrera</td>
           <td>
             <a th:text="Editar" th:href="'editar/'+${estudiante.matricula}" th class="btn btn-secondary btn-sm" /> |
-            <a th:text="Eliminar" th:href="'eliminar/'+${estudiante.matricula}" th class="btn btn-danger btn-sm" />
+            <a th:text="Eliminar" th:href="'delete/'+${estudiante.matricula}" th class="btn btn-danger btn-sm" />
           </td>
         </tr>
       </tbody>
