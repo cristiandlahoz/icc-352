@@ -1,6 +1,7 @@
 package org.example.repository;
 
 import java.util.List;
+import java.util.Optional;
 
 import org.example.model.Student;
 import org.sql2o.*;
@@ -22,12 +23,12 @@ public class StudentRepository {
     }
   }
 
-  public Student getStudentByMatricula(int matricula) {
+  public Optional<Student> getStudentByMatricula(int matricula) {
     String sql = "SELECT * FROM students WHERE matricula = :matricula";
     try (Connection conn = sql2o.open()) {
-      return conn.createQuery(sql)
+      return Optional.ofNullable(conn.createQuery(sql)
           .addParameter("matricula", matricula)
-          .executeAndFetchFirst(Student.class);
+          .executeAndFetchFirst(Student.class));
     } catch (Exception e) {
       System.out.println("Error getting student by matricula" + e.getMessage());
       return null;
