@@ -20,8 +20,6 @@ public class StudentService {
   public Optional<Student> getStudentByMatricula(int matricula) {
     if (matricula <= 0) {
       throw new IllegalArgumentException("Matricula must be greater than 0");
-    } else if (getStudentByMatricula(matricula).isEmpty()) {
-      throw new IllegalArgumentException("Student does not exist");
     } else {
       return studentRepository.getStudentByMatricula(matricula);
     }
