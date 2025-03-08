@@ -24,6 +24,7 @@ public class StudentController extends BaseController {
     app.get("/students", this::getStudents);
     app.get("/create", this::createStudentForm);
     app.post("/create", this::createStudent);
+    app.get("/delete/{matricula}", this::deleteStudent);
 
   }
 
@@ -46,6 +47,16 @@ public class StudentController extends BaseController {
       studentService.createStudent(matricula, name, carrera);
     } catch (Exception e) {
       System.out.println("Error creating student: " + e.getMessage());
+    }
+    ctx.redirect("/students");
+  }
+
+  public void deleteStudent(Context ctx) {
+    int matricula = Integer.parseInt(ctx.pathParam("matricula"));
+    try {
+      studentService.deleteStudent(matricula);
+    } catch (Exception e) {
+      System.out.println("Error deleting student: " + e.getMessage());
     }
     ctx.redirect("/students");
   }
