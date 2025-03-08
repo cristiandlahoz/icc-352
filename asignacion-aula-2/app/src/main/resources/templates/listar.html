@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org">
 
-<head th:replace="/plantilla.html::head">
+<head th:replace="~{/plantilla.html::head}">
   <title th:text="${titulo}">Listar</title>
 </head>
 
@@ -40,7 +40,7 @@
   </div>
 
   <!-- incluyendo la parte de javascript del template.        -->
-  <div th:replace="/plantilla.html::javascript">
+  <div th:replace="~{/plantilla.html::javascript}">
 
   </div>
 
