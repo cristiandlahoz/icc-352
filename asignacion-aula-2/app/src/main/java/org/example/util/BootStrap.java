@@ -3,11 +3,11 @@ package org.example.util;
 import org.h2.tools.Server;
 import org.sql2o.Sql2o;
 
-//import org.h2.tools.Server;
-
 public class BootStrap {
   private static BootStrap INSTANCE;
   private Sql2o sql2o;
+  private Server tcpServer;
+  private Server webServer;
 
   private BootStrap() {
   }
@@ -20,44 +20,51 @@ public class BootStrap {
 
   public void initDatabase() {
     try {
-      Server.createTcpServer("-tcpPort", "9092", "-tcpAllowOthers", "-tcpDaemon",
-          "-ifNotExists")
-          .start();
+      // Inicia el servidor TCP
+      tcpServer = Server.createTcpServer("-tcpPort", "9092", "-tcpAllowOthers", "-ifNotExists").start();
+      webServer = Server.createWebServer("-trace", "-webPort", "8082").start();
 
-      String status = Server.createWebServer("-trace", "-webPort",
-          "0").start().getStatus();
-      System.out.println("Status web:" + status);
+      System.out.println("H2 Web Console running at: http://localhost:8082");
 
-      this.sql2o = new Sql2o("jdbc:h2:tcp://localhost/~/database", "sa", "");
+      // Conectar a H2 en modo TCP
+      this.sql2o = new Sql2o("jdbc:h2:tcp://localhost/./database", "sa", "");
       createTables();
 
     } catch (Exception e) {
-      System.out.println("Error starting web server: " + e.getMessage());
+      System.out.println("Error iniciando la base de datos: " + e.getMessage());
+      e.printStackTrace();
     }
   }
 
   public void stopDatabase() {
     try {
-      Server.shutdownTcpServer("tcp://localhost:9092", "", true, true);
+      if (tcpServer != null) {
+        tcpServer.stop();
+        System.out.println("Servidor TCP detenido.");
+      }
+      if (webServer != null) {
+        webServer.stop();
+        System.out.println("Consola Web detenida.");
+      }
     } catch (Exception e) {
-      System.out.println("Error stopping web server: " + e.getMessage());
+      System.out.println("Error deteniendo la base de datos: " + e.getMessage());
     }
   }
 
   private void createTables() {
     String sql = """
         CREATE TABLE IF NOT EXISTS estudiante (
-            id IDENTITY PRIMARY KEY,
+            matricula IDENTITY PRIMARY KEY,
             nombre VARCHAR(100) NOT NULL,
-            edad INT NOT NULL,
-            correo VARCHAR(150) UNIQUE NOT NULL);
+            carrera VARCHAR(150) UNIQUE NOT NULL
+        );
         """;
 
     try (var con = sql2o.open()) {
       con.createQuery(sql).executeUpdate();
-      System.out.println("Tabla 'estudiante' verificada/creada.");
+      System.out.println("Tabla 'estudiante' creada/verificada.");
     } catch (Exception e) {
-      System.out.println("Error al crear la tabla: " + e.getMessage());
+      System.out.println("Error creando la tabla: " + e.getMessage());
     }
   }
 
