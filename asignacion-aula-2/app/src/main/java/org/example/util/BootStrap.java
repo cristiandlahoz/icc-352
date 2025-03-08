@@ -56,7 +56,7 @@ public class BootStrap {
         CREATE TABLE IF NOT EXISTS estudiante (
             matricula IDENTITY PRIMARY KEY,
             nombre VARCHAR(100) NOT NULL,
-            carrera VARCHAR(150) UNIQUE NOT NULL
+            carrera VARCHAR(150) NOT NULL
         );
         """;
 
