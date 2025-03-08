@@ -2,11 +2,9 @@ package org.example.controller;
 
 import java.util.List;
 import java.util.Map;
-
 import org.example.model.Student;
 import org.example.service.StudentService;
 import org.example.util.BaseController;
-
 import io.javalin.Javalin;
 import io.javalin.http.Context;
 
@@ -25,7 +23,8 @@ public class StudentController extends BaseController {
     app.get("/create", this::createStudentForm);
     app.post("/create", this::createStudent);
     app.get("/delete/{matricula}", this::deleteStudent);
-
+    app.get("/editar/{matricula}", this::editStudentForm);
+    app.post("/editar", this::updateStudent);
   }
 
   public void getStudents(Context ctx) {
@@ -57,6 +56,32 @@ public class StudentController extends BaseController {
       studentService.deleteStudent(matricula);
     } catch (Exception e) {
       System.out.println("Error deleting student: " + e.getMessage());
+    }
+    ctx.redirect("/students");
+  }
+
+  public void editStudentForm(Context ctx) {
+    int matricula = Integer.parseInt(ctx.pathParam("matricula"));
+    studentService.getStudentByMatricula(matricula).ifPresentOrElse(
+        student -> {
+          Map<String, Object> model = setModel(
+              "titulo", "Edit student" + student.getMatricula(),
+              "estudiante", student,
+              "accion", "/editar");
+          ctx.render("crearEditarVisualizar.html", model);
+        },
+        () -> ctx.status(404).result("Student not found"));
+  }
+
+  public void updateStudent(Context ctx) {
+    int matricula = Integer.parseInt(ctx.formParam("matricula"));
+    String name = ctx.formParam("nombre");
+    String carrera = ctx.formParam("carrera");
+
+    try {
+      studentService.updateStudent(matricula, name, carrera);
+    } catch (Exception e) {
+      System.out.println("Error updating student: " + e.getMessage());
     }
     ctx.redirect("/students");
   }
