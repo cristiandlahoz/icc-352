@@ -17,13 +17,9 @@ public class Encuestado implements Serializable {
   private Long encuestadoId;
 
   @Column(nullable = false)
-  // @NotBlank(message = "El nombre no puede estar vacío")
-  // @Size(max = 100, message = "El nombre no puede exceder los 100 caracteres")
   private String nombre;
 
   @Column(nullable = false)
-  // @NotBlank(message = "El sector no puede estar vacío")
-  // @Size(max = 100, message = "El sector no puede exceder los 100 caracteres")
   private String sector;
 
   @Enumerated(EnumType.STRING)
