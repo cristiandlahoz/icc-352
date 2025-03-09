@@ -12,7 +12,7 @@ import jakarta.persistence.*;
 public class Location {
   @Id
   @GeneratedValue(strategy = GenerationType.IDENTITY)
-  private Long id;
+  private Long locationId;
   @Column(nullable = false)
   private Double latitude;
   @Column(nullable = false)
