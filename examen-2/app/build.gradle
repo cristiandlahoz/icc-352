@@ -1,0 +1,49 @@
+plugins {
+    id 'application'
+    id 'com.diffplug.spotless' version '6.10.0'
+    id 'com.github.johnrengelman.shadow' version '8.1.1'
+}
+
+repositories {
+    mavenCentral()
+}
+
+dependencies {
+    testImplementation libs.junit.jupiter
+    testRuntimeOnly 'org.junit.platform:junit-platform-launcher'
+    implementation libs.guava
+    implementation 'io.javalin:javalin:6.4.0'
+    implementation 'org.slf4j:slf4j-simple:2.0.16'
+    compileOnly 'org.projectlombok:lombok:1.18.36'
+
+}
+
+java {
+    toolchain {
+        languageVersion = JavaLanguageVersion.of(21)
+    }
+}
+
+tasks.named('jar') {
+    enabled = false
+}
+
+application {
+    mainClass = 'org.example.App'
+}
+
+tasks.named('test') {
+    useJUnitPlatform()
+}
+
+spotless {
+    java {
+        target '**/*.java'
+        googleJavaFormat('1.17.0')
+    }
+}
+
+shadowJar {
+    archiveBaseName.set('app')
+    archiveVersion.set('1.0.0')
+}
