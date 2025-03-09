@@ -1,7 +1,7 @@
 package org.example.repository;
 
+import org.example.model.User;
 import org.example.util.baseclasses.BaseRepository;
-import org.h2.engine.User;
 
 import jakarta.persistence.EntityManager;
 
