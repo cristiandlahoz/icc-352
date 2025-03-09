@@ -1,10 +1,9 @@
 package org.example.controller;
 
+import io.javalin.http.Context;
 import org.example.util.annotations.Controller;
 import org.example.util.annotations.Get;
 import org.example.util.annotations.Post;
-
-import io.javalin.http.Context;
 
 @Controller(path = "/formularios")
 public class FormularioController {
@@ -23,5 +22,4 @@ public class FormularioController {
   public void update(Context ctx) {
     ctx.result("POST /formulario/update");
   }
-
 }
