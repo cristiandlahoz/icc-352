@@ -9,7 +9,7 @@
 </head>
 
 <body class="bg-gray-100">
-  <nav th:replace="components/navbar :: navbar" />
+  <nav th:replace="~{components/navbar.html::navbar}" />
   <div class="flex items-center justify-center min-h-screen">
     <div class="bg-white shadow-lg rounded-lg p-8 w-full max-w-md">
       <h2 class="text-2xl font-semibold text-gray-800 mb-6">Form</h2>
@@ -82,7 +82,7 @@
 
     </div>
   </div>
-  <footer th:replace="components/footer :: footer" />
+  <footer th:replace="~{components/footer.html::footer}" />
 </body>
 <script>
   function obtenerUbicacion() {
