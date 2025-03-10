@@ -61,7 +61,7 @@ public class LocationController {
         locationService.findById(locationId).ifPresentOrElse(
                 location -> {
                     Map<String, Object> model = new HashMap<>();
-                    model.put("titulo", "Editar Ubicación " + location.getId());
+                    model.put("titulo", "Editar Ubicación " + location.getLocationId());
                     model.put("location", location);
                     model.put("accion", "/update");
                     ctx.render("crearEditarVisualizar.html", model);
