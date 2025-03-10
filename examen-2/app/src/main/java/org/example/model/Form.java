@@ -23,6 +23,11 @@ public class Form {
   @JoinColumn(name = "user_id", nullable = false)
   private User user;
 
+  @OneToOne(fetch = FetchType.LAZY)
+  @Column(nullable = false)
+  private Encuestado encuestado;
+
+  @Column(nullable = false)
   private Boolean isSynchronized;
 
   @PrePersist
@@ -30,9 +35,10 @@ public class Form {
     this.createdAt = new Date(System.currentTimeMillis());
   }
 
-  public Form(User user, Location location, Boolean isSynchronized) {
+  public Form(User user, Location location, Encuestado encuestado, Boolean isSynchronized) {
     this.location = location;
     this.user = user;
+    this.encuestado = encuestado;
     this.isSynchronized = isSynchronized;
   }
 
