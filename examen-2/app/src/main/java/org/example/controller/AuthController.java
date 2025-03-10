@@ -8,6 +8,7 @@ import org.example.util.annotations.Get;
 import org.example.util.annotations.Post;
 import org.example.util.enums.Role;
 import org.example.util.*;
+import org.example.util.enums.Routes;
 import org.example.util.enums.SessionKeys;
 
 @Controller(path = "/auth")
