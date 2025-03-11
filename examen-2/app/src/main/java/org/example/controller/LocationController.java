@@ -85,10 +85,26 @@ public class LocationController {
     ctx.redirect("/locations");
   }
 
+
+  @Get(path = "/update/{id}")
+  public void editLocationForm(Context ctx) {
+    Long locationId = Long.parseLong(ctx.pathParam("id"));
+
+     locationService.findById(locationId).ifPresentOrElse(
+                location -> {
+                    Map<String, Object> model = new HashMap<>();
+                    model.put("titulo", "Editar Ubicación " + location.getLocationId());
+                    model.put("location", location);
+                    model.put("accion", "/update");
+                    ctx.render("crearEditarVisualizar.html", model);
+                },
+                () -> ctx.status(404).result("Ubicación no encontrada")
+        );
+  }
+
   @Post(path = "/delete/{id}")
   public void deleteLocation(Context ctx) {
     Long locationId = Long.parseLong(ctx.pathParam("id"));
-
     try {
       locationService.deleteLocation(locationId);
     } catch (Exception e) {
