@@ -37,7 +37,5 @@ public class App {
     Router.registerRoutes(app);
 
     app.get("/", ctx -> ctx.render("/home.html"));
-    app.get("/auth/login", ctx -> ctx.render("/auth/login.html"));
-    app.get("/auth/signup", ctx -> ctx.render("/auth/signup.html"));
   }
 }
