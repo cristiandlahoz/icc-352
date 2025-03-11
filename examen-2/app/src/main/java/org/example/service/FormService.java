@@ -3,6 +3,7 @@ package org.example.service;
 import java.util.List;
 import java.util.Optional;
 
+import org.example.model.Encuestado;
 import org.example.model.Form;
 import org.example.model.Location;
 import org.example.model.User;
@@ -25,13 +26,13 @@ public class FormService {
     return formRepository.findById(id);
   }
 
-  public Optional<Form> createForm(User user, Location location, Boolean isSynchronized) {
-    if (user == null || location == null || isSynchronized == null)
-      throw new IllegalArgumentException("User, location, and isSynchronized must not be null");
-    else if (user.getUserId() == null || location.getLocationId() == null)
-      throw new IllegalArgumentException("User and location must have valid IDs");
+  public Optional<Form> createForm(User user, Location location, Encuestado encuestado, Boolean isSynchronized) {
+    if (user == null || location == null || isSynchronized == null || encuestado == null)
+      throw new IllegalArgumentException("User, location, encuestado and isSynchronized must not be null");
+    else if (user.getUserId() == null || location.getLocationId() == null || encuestado.getEncuestadoId() == null)
+      throw new IllegalArgumentException("User, location and encuestado must have valid IDs");
 
-    Form form = new Form(user, location, isSynchronized);
+    Form form = new Form(user, location, encuestado, isSynchronized);
     return Optional.ofNullable(formRepository.save(form));
   }
 

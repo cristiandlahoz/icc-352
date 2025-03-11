@@ -20,8 +20,6 @@ dependencies {
     annotationProcessor 'org.projectlombok:lombok:1.18.36'
     implementation 'org.hibernate.orm:hibernate-core:6.2.0.Final'
     implementation 'com.h2database:h2:2.3.232'
-    implementation 'org.thymeleaf:thymeleaf:3.1.1.RELEASE'
-    implementation 'io.github.cdimascio:dotenv-java:3.1.0'
     implementation 'io.javalin:javalin-rendering:6.4.0'
     implementation 'org.thymeleaf:thymeleaf:3.1.1.RELEASE'
     implementation 'io.github.cdimascio:dotenv-java:3.1.0'

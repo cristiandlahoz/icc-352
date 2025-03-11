@@ -3,7 +3,6 @@ package org.example.config;
 import io.javalin.Javalin;
 import io.javalin.rendering.template.JavalinThymeleaf;
 import org.example.model.User;
-import org.example.util.*;
 import org.example.util.enums.*;
 import org.thymeleaf.TemplateEngine;
 import org.thymeleaf.templateresolver.ClassLoaderTemplateResolver;

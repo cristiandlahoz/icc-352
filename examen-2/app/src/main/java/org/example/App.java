@@ -5,11 +5,13 @@ import io.javalin.Javalin;
 import org.example.config.AppConfig;
 import org.example.config.EnvConfig;
 import org.example.util.Router;
+import org.example.util.StartDatabase;
 
 public class App {
   public static void main(String[] args) {
     int PORT = EnvConfig.getInt("PORT", 7000);
     Javalin app = AppConfig.createApp().start(PORT);
+    StartDatabase.getInstance().initDatabase();
     Router.registerRoutes(app);
   }
 }
