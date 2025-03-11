@@ -1,8 +1,6 @@
 package org.example.controller;
 
 import io.javalin.http.Context;
-import lombok.NoArgsConstructor;
-
 import org.example.model.Location;
 import org.example.service.LocationService;
 import org.example.util.annotations.Controller;
@@ -14,7 +12,6 @@ import java.util.List;
 import java.util.Map;
 
 @Controller(path = "/locations")
-@NoArgsConstructor
 public class LocationController {
 
   private LocationService locationService;

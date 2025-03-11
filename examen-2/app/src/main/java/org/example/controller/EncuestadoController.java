@@ -1,8 +1,6 @@
 package org.example.controller;
 
 import io.javalin.http.Context;
-import lombok.NoArgsConstructor;
-
 import org.example.model.Encuestado;
 import org.example.service.EncuestadoService;
 import org.example.util.annotations.Controller;
@@ -15,7 +13,6 @@ import java.util.List;
 import java.util.Map;
 
 @Controller(path = "/encuestados")
-@NoArgsConstructor
 public class EncuestadoController {
 
   private EncuestadoService encuestadoService;
