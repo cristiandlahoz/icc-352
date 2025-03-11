@@ -23,7 +23,6 @@ public class Encuestado implements Serializable {
   private String sector;
 
   @OneToOne(mappedBy = "encuestado")
-  @Column(nullable = false)
   private Form form;
 
   @Enumerated(EnumType.STRING)
