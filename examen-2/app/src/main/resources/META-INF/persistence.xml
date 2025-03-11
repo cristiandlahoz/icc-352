@@ -10,10 +10,11 @@
         <class>org.example.model.Encuestado</class>
         <properties>
             <property name="hibernate.connection.driver_class" value="org.h2.Driver"/>
-            <property name="hibernate.connection.url" value="jdbc:h2:tcp://localhost/./data/ormjpa"/>
+            <property name="hibernate.connection.url" value="jdbc:h2:tcp://localhost/./data/jpa"/>
             <property name="hibernate.connection.username" value="sa"/>
             <property name="hibernate.connection.password" value=""/>
             <property name="hibernate.dialect" value="org.hibernate.dialect.H2Dialect"/>
             <property name="hibernate.hbm2ddl.auto" value="create-drop"/>
         </properties>
     </persistence-unit>
+</persistence>
