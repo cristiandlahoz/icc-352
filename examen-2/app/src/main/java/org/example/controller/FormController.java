@@ -1,8 +1,6 @@
 package org.example.controller;
 
 import io.javalin.http.Context;
-import lombok.AllArgsConstructor;
-import lombok.NoArgsConstructor;
 
 import org.example.service.EncuestadoService;
 import org.example.service.FormService;
@@ -12,14 +10,20 @@ import org.example.util.annotations.*;
 import org.example.util.enums.NivelEscolar;
 
 @Controller(path = "/forms")
-@NoArgsConstructor
-@AllArgsConstructor
 public class FormController {
 
   private FormService formService;
   private UserService userService;
   private EncuestadoService encuestadoService;
   private LocationService locationService;
+
+  public FormController(FormService formService, UserService userService, EncuestadoService encuestadoService,
+      LocationService locationService) {
+    this.formService = formService;
+    this.userService = userService;
+    this.encuestadoService = encuestadoService;
+    this.locationService = locationService;
+  }
 
   @Get(path = "/")
   public void getForm(Context ctx) {
@@ -36,10 +40,14 @@ public class FormController {
     String username = ctx.formParam("username");
     String fullname = ctx.formParam("fullname");
     String sector = ctx.formParam("sector");
-    NivelEscolar nivelEscolar = NivelEscolar.valueOf(ctx.formParam("education"));
-    Double latitude = Double.valueOf(ctx.formParam("latitude"));
-    Double longitude = Double.valueOf(ctx.formParam("longitude"));
+    String education = ctx.formParam("education").replace(" ", "_").toUpperCase();
+    NivelEscolar nivelEscolar = NivelEscolar.valueOf(education);
+
+    // Double latitude = Double.valueOf(ctx.formParam("latitude"));
+    // Double longitude = Double.valueOf(ctx.formParam("longitude"));
     Boolean isShynchronized = Boolean.parseBoolean(ctx.formParam("isSynchronized"));
+    Double latitude = 5.0;
+    Double longitude = 4.0;
 
     userService.getUserByUsername(username).ifPresentOrElse(u -> {
       locationService.createLocation(latitude, longitude).ifPresentOrElse(l -> {
