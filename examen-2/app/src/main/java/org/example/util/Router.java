@@ -2,7 +2,6 @@ package org.example.util;
 
 import io.javalin.Javalin;
 import io.javalin.http.Context;
-import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.util.List;
 import org.example.util.annotations.Controller;
@@ -21,7 +20,9 @@ public class Router {
         Controller controller = clazz.getAnnotation(Controller.class);
 
         try {
-          Object controllerInstance = clazz.getDeclaredConstructor().newInstance();
+          // Obtener la instancia del controlador a través del contenedor de DI
+          Object controllerInstance = DIContainer.get(clazz);
+
           for (Method method : clazz.getDeclaredMethods()) {
             String path = controller.path();
 
@@ -43,10 +44,7 @@ public class Router {
               app.delete(path, ctx -> invokeMethod(method, controllerInstance, ctx));
             }
           }
-        } catch (InstantiationException
-            | IllegalAccessException
-            | InvocationTargetException
-            | NoSuchMethodException e) {
+        } catch (Exception e) {
           System.err.println("❌ Error initializing controller: " + clazz.getName());
           e.printStackTrace();
         }
@@ -57,8 +55,6 @@ public class Router {
   }
 
   private static void invokeMethod(Method method, Object instance, Context ctx) {
-    System.out.println(
-        "🔄 Invoking method: " + method.getName() + " in " + instance.getClass().getName());
     try {
       if (method.getParameterCount() == 1 && method.getParameterTypes()[0] == Context.class) {
         method.invoke(instance, ctx);
@@ -66,9 +62,8 @@ public class Router {
         System.err.println(
             "❌ Invalid method signature: " + method.getName() + " must accept only Context.");
       }
-    } catch (IllegalAccessException | InvocationTargetException e) {
-      System.err.println(
-          "❌ Error invoking method: " + method.getName() + " in " + instance.getClass().getName());
+    } catch (Exception e) {
+      System.err.println("❌ Error invoking method: " + method.getName());
       e.printStackTrace();
     }
   }
