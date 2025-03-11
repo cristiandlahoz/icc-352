@@ -24,7 +24,6 @@ public class Form {
   private User user;
 
   @OneToOne(fetch = FetchType.LAZY)
-  @Column(nullable = false)
   private Encuestado encuestado;
 
   @Column(nullable = false)
