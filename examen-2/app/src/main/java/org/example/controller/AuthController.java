@@ -1,4 +1,4 @@
-package org.example.controllers;
+package org.example.controller;
 
 import io.javalin.http.Context;
 import org.example.model.User;
@@ -35,21 +35,26 @@ public class AuthController {
         String username = ctx.formParam("username");
         String password = ctx.formParam("password");
 
+        System.out.println("🟡 Intentando autenticación para el usuario: " + username);
+
         authService.authenticate(username, password)
                 .ifPresentOrElse(
                         user -> {
+                            System.out.println("✅ Usuario autenticado: " + user.getUsername());
                             ctx.sessionAttribute(SessionKeys.USER.getKey(), user);
                             ctx.redirect(Routes.HOME.getPath());
                         },
-                        () -> ctx.redirect(Routes.LOGIN.getPath())
+                        () -> { System.out.println("❌ Error: Usuario no autenticado.");
+                            ctx.redirect(Routes.LOGIN.getPath());}
                 );
     }
 
     @Post(path = "/logout")
     public void logout(Context ctx) {
         ctx.req().getSession().invalidate();
-        ctx.redirect(Routes.HOME.getPath());
+        ctx.redirect(Routes.LOGIN.getPath());
     }
+
 
     @Post(path = "/signup")
     public void signup(Context ctx) {
@@ -63,10 +68,14 @@ public class AuthController {
 
         try {
             authService.register(newUser);
+            System.out.println("✅ Usuario registrado correctamente: " + username);
             ctx.sessionAttribute(SessionKeys.USER.getKey(), newUser);
             ctx.redirect(Routes.HOME.getPath());
         } catch (IllegalArgumentException e) {
+            System.out.println("❌ Error al registrar el usuario: " + e.getMessage());
             ctx.redirect(Routes.SIGNUP.getPath());
         }
     }
 }
+
+
