@@ -3,3 +3,8 @@
 
 # Ignore Gradle build output directory
 build
+**/.env
+**/*.mv.db
+**/.project
+**/.settings
+**/.classpath
