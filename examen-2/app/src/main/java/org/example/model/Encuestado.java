@@ -22,6 +22,9 @@ public class Encuestado implements Serializable {
   @Column(nullable = false)
   private String sector;
 
+  @OneToOne(mappedBy = "encuestado")
+  private Form form;
+
   @Enumerated(EnumType.STRING)
   @Column(nullable = false)
   private NivelEscolar nivelEscolar;

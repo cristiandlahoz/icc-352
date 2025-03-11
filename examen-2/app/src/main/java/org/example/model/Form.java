@@ -14,7 +14,6 @@ public class Form {
   @GeneratedValue(strategy = GenerationType.IDENTITY)
   private Long formId;
   private Date createdAt;
-  private Boolean isSynchronized;
 
   @ManyToOne(fetch = FetchType.LAZY)
   @JoinColumn(name = "location_id", nullable = false)
@@ -24,14 +23,21 @@ public class Form {
   @JoinColumn(name = "user_id", nullable = false)
   private User user;
 
+  @OneToOne(fetch = FetchType.LAZY)
+  private Encuestado encuestado;
+
+  @Column(nullable = false)
+  private Boolean isSynchronized;
+
   @PrePersist
   protected void onCreate() {
     this.createdAt = new Date(System.currentTimeMillis());
   }
 
-  public Form(Location location, User user, Boolean isSynchronized) {
+  public Form(User user, Location location, Encuestado encuestado, Boolean isSynchronized) {
     this.location = location;
     this.user = user;
+    this.encuestado = encuestado;
     this.isSynchronized = isSynchronized;
   }
 

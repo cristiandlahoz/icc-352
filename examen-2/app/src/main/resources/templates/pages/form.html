@@ -1,0 +1,106 @@
+<!DOCTYPE html>
+<html lang="es" xmlns:th="http://www.thymeleaf.org">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Form</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+</head>
+
+<body class="bg-gray-100">
+  <nav th:replace="~{components/navbar.html::navbar}" />
+  <div class="flex items-center justify-center min-h-screen">
+    <div class="bg-white shadow-lg rounded-lg p-8 w-full max-w-md">
+      <h2 class="text-2xl font-semibold text-gray-800 mb-6">Form</h2>
+      <form class="bg-black text-white p-8 rounded-lg" action="/forms/create" method="POST">
+        <div class="space-y-12">
+          <div class="border-b border-gray-700 pb-12">
+            <h2 class="text-base font-semibold">Profile</h2>
+            <p class="mt-1 text-sm text-gray-400">This information will be displayed publicly so be careful what you
+              share.</p>
+
+            <div class="mt-10 grid grid-cols-1 gap-x-6 gap-y-8 sm:grid-cols-6">
+              <div class="sm:col-span-4">
+                <label for="username" class="block text-sm font-medium">Username</label>
+                <div class="mt-2">
+                  <div class="flex items-center rounded-md bg-gray-800 pl-3">
+                    <div class="shrink-0 text-base text-gray-400 select-none sm:text-sm">delahoz</div>
+                    <input type="text" name="username" id="username"
+                      class="block min-w-0 grow py-1.5 pr-3 pl-1 text-base text-gray-300 bg-gray-800 outline-none"
+                      readonly>
+                  </div>
+                </div>
+              </div>
+
+              <div class="col-span-full">
+                <label for="map" class="block text-sm font-medium">Location</label>
+                <div class="mt-2" id="map">
+                  <button onclick="obtenerUbicacion()">Obtener ubicación actual</button>
+                  <iframe id="iframeMapa" class="w-full h-64 rounded-md bg-gray-800"
+                    src="https://www.google.com/maps/embed?pb=" allowfullscreen="" loading="lazy"
+                    referrerpolicy="no-referrer-when-downgrade">
+                  </iframe>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div class="border-b border-gray-700 pb-12">
+            <h2 class="text-base font-semibold">Personal Information</h2>
+            <div class="mt-10 grid grid-cols-1 gap-x-6 gap-y-8 sm:grid-cols-6">
+              <div class="sm:col-span-6">
+                <label for="fullname" class="block text-sm font-medium">Full name</label>
+                <div class="mt-2">
+                  <input type="text" name="fullname" id="fullname"
+                    class="block w-full rounded-md bg-gray-800 px-3 py-1.5 text-base text-gray-300 outline-none">
+                </div>
+              </div>
+
+              <div class="sm:col-span-6">
+                <label for="education" class="block text-sm font-medium">Nivel Académico</label>
+                <div class="mt-2">
+                  <select id="education" name="education"
+                    class="block w-full rounded-md bg-gray-800 py-1.5 text-base text-gray-300 outline-none">
+                    <option>Básico</option>
+                    <option>Medio</option>
+                    <option>Grado Universitario</option>
+                    <option>Postgrado</option>
+                    <option>Doctorado</option>
+                  </select>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div class="mt-6 flex justify-end gap-x-6">
+            <button type="submit"
+              class="rounded-md bg-indigo-600 px-4 py-2 text-sm font-semibold text-white hover:bg-indigo-500">Save</button>
+          </div>
+        </div>
+      </form>
+
+    </div>
+  </div>
+  <footer th:replace="~{components/footer.html::footer}" />
+</body>
+<script>
+  function obtenerUbicacion() {
+    if (navigator.geolocation) {
+      navigator.geolocation.getCurrentPosition((position) => {
+        const lat = position.coords.latitude;
+        const lon = position.coords.longitude;
+
+        const url = `https://www.google.com/maps/embed/v1/view?key=TU_API_KEY&center=${lat},${lon}&zoom=14`;
+
+        document.getElementById("iframeMapa").src = url;
+      }, (error) => {
+        alert("No se pudo obtener la ubicación: " + error.message);
+      });
+    } else {
+      alert("La geolocalización no es compatible con este navegador.");
+    }
+  }
+</script>
+
+</html>
