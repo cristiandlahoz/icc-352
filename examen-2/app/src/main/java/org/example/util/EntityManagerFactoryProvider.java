@@ -7,6 +7,7 @@ import jakarta.persistence.Persistence;
 public class EntityManagerFactoryProvider {
 
   private static EntityManagerFactory emf;
+  private static EntityManager em;
 
   // Obtener una instancia de EntityManagerFactory
   public static EntityManagerFactory getEntityManagerFactory() {
@@ -18,6 +19,9 @@ public class EntityManagerFactoryProvider {
 
   // Crear un EntityManager
   public static EntityManager getEntityManager() {
-    return getEntityManagerFactory().createEntityManager();
+    if (em == null) {
+      em = getEntityManagerFactory().createEntityManager();
+    }
+    return em;
   }
 }
