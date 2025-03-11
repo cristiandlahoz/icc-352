@@ -1,5 +1,8 @@
 package org.example.service;
 
+import static org.junit.jupiter.api.Assertions.*;
+import static org.mockito.Mockito.*;
+
 import java.util.Optional;
 import org.example.model.User;
 import org.example.repository.UserRepository;
@@ -8,12 +11,9 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
-import static org.mockito.Mockito.*;
-import static org.junit.jupiter.api.Assertions.*;
 
 public class UserServiceTest {
-  @Mock
-  private UserRepository userRepository;
+  @Mock private UserRepository userRepository;
 
   private UserService userService;
 
@@ -81,9 +81,11 @@ public class UserServiceTest {
 
     when(userRepository.findByUsername(username)).thenReturn(Optional.empty());
 
-    assertThrows(IllegalArgumentException.class, () -> {
-      userService.updateUser(username, password, name);
-    });
+    assertThrows(
+        IllegalArgumentException.class,
+        () -> {
+          userService.updateUser(username, password, name);
+        });
   }
 
   @Test
@@ -105,8 +107,10 @@ public class UserServiceTest {
 
     when(userRepository.findByUsername(username)).thenReturn(Optional.of(user));
 
-    assertThrows(IllegalArgumentException.class, () -> {
-      userService.deleteUser(username);
-    });
+    assertThrows(
+        IllegalArgumentException.class,
+        () -> {
+          userService.deleteUser(username);
+        });
   }
 }

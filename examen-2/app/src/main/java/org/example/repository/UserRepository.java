@@ -1,12 +1,10 @@
 package org.example.repository;
 
-import java.util.Optional;
-
-import org.example.model.User;
-import org.example.util.baseclasses.BaseRepository;
-
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.EntityTransaction;
+import java.util.Optional;
+import org.example.model.User;
+import org.example.util.baseclasses.BaseRepository;
 
 public class UserRepository extends BaseRepository<User, Long> {
   public UserRepository(EntityManager entityManager) {
@@ -14,7 +12,8 @@ public class UserRepository extends BaseRepository<User, Long> {
   }
 
   public Optional<User> findByUsername(String username) {
-    return entityManager.createQuery("SELECT u FROM User u WHERE u.username = :username", User.class)
+    return entityManager
+        .createQuery("SELECT u FROM User u WHERE u.username = :username", User.class)
         .setParameter("username", username)
         .getResultList()
         .stream()
@@ -26,7 +25,8 @@ public class UserRepository extends BaseRepository<User, Long> {
 
     try {
       transaction.begin();
-      entityManager.createQuery("DELETE FROM User u WHERE u.username = :username")
+      entityManager
+          .createQuery("DELETE FROM User u WHERE u.username = :username")
           .setParameter("username", username)
           .executeUpdate();
       transaction.commit();

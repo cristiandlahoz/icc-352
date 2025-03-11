@@ -1,7 +1,6 @@
 package org.example.controller;
 
 import io.javalin.http.Context;
-
 import org.example.service.EncuestadoService;
 import org.example.service.FormService;
 import org.example.service.LocationService;
@@ -17,7 +16,10 @@ public class FormController {
   private EncuestadoService encuestadoService;
   private LocationService locationService;
 
-  public FormController(FormService formService, UserService userService, EncuestadoService encuestadoService,
+  public FormController(
+      FormService formService,
+      UserService userService,
+      EncuestadoService encuestadoService,
       LocationService locationService) {
     this.formService = formService;
     this.userService = userService;
@@ -49,30 +51,46 @@ public class FormController {
     Double latitude = 5.0;
     Double longitude = 4.0;
 
-    userService.getUserByUsername(username).ifPresentOrElse(u -> {
-      locationService.createLocation(latitude, longitude).ifPresentOrElse(l -> {
-        encuestadoService.createEncuestado(fullname, sector, nivelEscolar).ifPresentOrElse(e -> {
-          formService.createForm(u, l, e, isShynchronized);
-          ctx.status(200).redirect("/forms");
-        }, () -> {
-          ctx.status(400).result("Error creating encuestado");
-        });
-      }, () -> {
-        ctx.status(400).result("Error creating location");
-      });
-    }, () -> {
-      ctx.status(400).result("User not found");
-    });
+    userService
+        .getUserByUsername(username)
+        .ifPresentOrElse(
+            u -> {
+              locationService
+                  .createLocation(latitude, longitude)
+                  .ifPresentOrElse(
+                      l -> {
+                        encuestadoService
+                            .createEncuestado(fullname, sector, nivelEscolar)
+                            .ifPresentOrElse(
+                                e -> {
+                                  formService.createForm(u, l, e, isShynchronized);
+                                  ctx.status(200).redirect("/forms");
+                                },
+                                () -> {
+                                  ctx.status(400).result("Error creating encuestado");
+                                });
+                      },
+                      () -> {
+                        ctx.status(400).result("Error creating location");
+                      });
+            },
+            () -> {
+              ctx.status(400).result("User not found");
+            });
   }
 
   @Get(path = "/update/{id}")
   public void getUpdateForm(Context ctx) {
     Long id = Long.valueOf(ctx.pathParam("id"));
-    formService.getFormById(id).ifPresentOrElse(f -> {
-      ctx.render("pages/form.html");
-    }, () -> {
-      ctx.status(404).result("Form not found");
-    });
+    formService
+        .getFormById(id)
+        .ifPresentOrElse(
+            f -> {
+              ctx.render("pages/form.html");
+            },
+            () -> {
+              ctx.status(404).result("Form not found");
+            });
   }
 
   @Post(path = "/update/{id}")
@@ -83,16 +101,24 @@ public class FormController {
     Double longitude = Double.valueOf(ctx.formParam("longitude"));
     Boolean isShynchronized = Boolean.parseBoolean(ctx.formParam("isSynchronized"));
 
-    userService.getUserByUsername(username).ifPresentOrElse(u -> {
-      locationService.getLocationByCoordinates(latitude, longitude).ifPresentOrElse(l -> {
-        formService.updateForm(id, isShynchronized);
-        ctx.status(200).redirect("/forms");
-      }, () -> {
-        ctx.status(400).result("Location not found");
-      });
-    }, () -> {
-      ctx.status(400).result("User not found");
-    });
+    userService
+        .getUserByUsername(username)
+        .ifPresentOrElse(
+            u -> {
+              locationService
+                  .getLocationByCoordinates(latitude, longitude)
+                  .ifPresentOrElse(
+                      l -> {
+                        formService.updateForm(id, isShynchronized);
+                        ctx.status(200).redirect("/forms");
+                      },
+                      () -> {
+                        ctx.status(400).result("Location not found");
+                      });
+            },
+            () -> {
+              ctx.status(400).result("User not found");
+            });
   }
 
   @Post(path = "/delete/{id}")
@@ -101,5 +127,4 @@ public class FormController {
     formService.deleteForm(id);
     ctx.status(200).redirect("/forms");
   }
-
 }

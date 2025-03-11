@@ -2,7 +2,6 @@ package org.example.service;
 
 import java.util.List;
 import java.util.Optional;
-
 import org.example.model.User;
 import org.example.repository.UserRepository;
 import org.example.util.enums.Role;
@@ -63,13 +62,11 @@ public class UserService {
   }
 
   public void deleteUser(String username) {
-    if (getUserByUsername(username).isEmpty())
-      throw new IllegalArgumentException("User not found");
+    if (getUserByUsername(username).isEmpty()) throw new IllegalArgumentException("User not found");
     else if (username == null || username.isEmpty())
       throw new IllegalArgumentException("Username cannot be empty");
     else if (getUserByUsername(username).get().getRole() == Role.ADMIN)
       throw new IllegalArgumentException("Cannot delete admin user");
-    else
-      userRepository.deleteByUsername(username);
+    else userRepository.deleteByUsername(username);
   }
 }

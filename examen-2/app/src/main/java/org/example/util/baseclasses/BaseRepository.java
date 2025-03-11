@@ -1,8 +1,8 @@
 package org.example.util.baseclasses;
 
+import jakarta.persistence.*;
 import java.util.List;
 import java.util.Optional;
-import jakarta.persistence.*;
 
 public class BaseRepository<T, ID> {
   protected EntityManager entityManager;
@@ -18,7 +18,8 @@ public class BaseRepository<T, ID> {
   }
 
   public List<T> findAll() {
-    return entityManager.createQuery("SELECT e FROM " + entityClass.getSimpleName() + " e", entityClass)
+    return entityManager
+        .createQuery("SELECT e FROM " + entityClass.getSimpleName() + " e", entityClass)
         .getResultList();
   }
 
@@ -64,8 +65,12 @@ public class BaseRepository<T, ID> {
   }
 
   public void deleteById(ID id) {
-    findById(id).ifPresentOrElse(this::delete, () -> {
-      throw new RuntimeException("Error deleting entitiy:" + entityClass.getSimpleName() + " with id:" + id);
-    });
+    findById(id)
+        .ifPresentOrElse(
+            this::delete,
+            () -> {
+              throw new RuntimeException(
+                  "Error deleting entitiy:" + entityClass.getSimpleName() + " with id:" + id);
+            });
   }
 }

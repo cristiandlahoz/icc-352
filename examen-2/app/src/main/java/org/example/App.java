@@ -1,7 +1,6 @@
 package org.example;
 
 import io.javalin.Javalin;
-
 import org.example.config.AppConfig;
 import org.example.config.EnvConfig;
 import org.example.model.User;
@@ -16,21 +15,22 @@ public class App {
     StartDatabase.getInstance().initDatabase();
 
     //
-    app.before(ctx -> {
-      String path = ctx.path();
+    app.before(
+        ctx -> {
+          String path = ctx.path();
 
-      // Permitir el acceso libre a estas rutas
-      if (path.equals("/auth/login") || path.equals("/auth/signup") || path.equals("/logout")) {
-        return; // Permite el paso sin redirección
-      }
+          // Permitir el acceso libre a estas rutas
+          if (path.equals("/auth/login") || path.equals("/auth/signup") || path.equals("/logout")) {
+            return; // Permite el paso sin redirección
+          }
 
-      // Verifica si el usuario está autenticado
-      User user = ctx.sessionAttribute(SessionKeys.USER.getKey());
+          // Verifica si el usuario está autenticado
+          User user = ctx.sessionAttribute(SessionKeys.USER.getKey());
 
-      if (user == null) {
-        ctx.redirect("/auth/login"); // Redirige a la página de Login si no hay sesión activa
-      }
-    });
+          if (user == null) {
+            ctx.redirect("/auth/login"); // Redirige a la página de Login si no hay sesión activa
+          }
+        });
 
     // Rutas
 
@@ -39,8 +39,5 @@ public class App {
     app.get("/", ctx -> ctx.render("/home.html"));
     app.get("/auth/login", ctx -> ctx.render("/auth/login.html"));
     app.get("/auth/signup", ctx -> ctx.render("/auth/signup.html"));
-
-
-
   }
 }
