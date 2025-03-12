@@ -44,7 +44,6 @@ public class FormController {
     String sector = ctx.formParam("sector");
     String education = ctx.formParam("education").replace(" ", "_").toUpperCase();
     NivelEscolar nivelEscolar = NivelEscolar.valueOf(education);
-
     // Double latitude = Double.valueOf(ctx.formParam("latitude"));
     // Double longitude = Double.valueOf(ctx.formParam("longitude"));
     Boolean isShynchronized = Boolean.parseBoolean(ctx.formParam("isSynchronized"));

@@ -4,9 +4,9 @@ import io.javalin.Javalin;
 import org.example.config.AppConfig;
 import org.example.config.EnvConfig;
 import org.example.model.User;
-import org.example.util.Router;
-import org.example.util.StartDatabase;
-import org.example.util.enums.SessionKeys;
+import org.example.service.UserService;
+import org.example.util.*;
+import org.example.util.enums.*;
 
 public class App {
   public static void main(String[] args) {
@@ -14,17 +14,14 @@ public class App {
     Javalin app = AppConfig.createApp().start(PORT);
     StartDatabase.getInstance().initDatabase();
 
-    //
     app.before(
         ctx -> {
           String path = ctx.path();
 
-          // Permitir el acceso libre a estas rutas
           if (path.equals("/auth/login") || path.equals("/auth/signup") || path.equals("/logout")) {
             return; // Permite el paso sin redirección
           }
 
-          // Verifica si el usuario está autenticado
           User user = ctx.sessionAttribute(SessionKeys.USER.getKey());
 
           if (user == null) {
@@ -32,9 +29,19 @@ public class App {
           }
         });
 
-    // Rutas
-
+    /**
+     * @param app
+     * @see Router#registerRoutes(Javalin)
+     * @see DIContainer#get(Class)
+     * @see UserService#createUser(String, String, String, Role)
+     * @see Role#ADMIN
+     */
     Router.registerRoutes(app);
+    try {
+      DIContainer.get(UserService.class).createUser("admin", "admin", "admin", Role.ADMIN);
+    } catch (Exception e) {
+      System.out.println("Error creating admin user");
+    }
 
     app.get("/", ctx -> ctx.render("/home.html"));
   }

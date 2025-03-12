@@ -28,8 +28,6 @@ public class UserService {
   public Optional<User> createUser(String username, String password, String name, Role role) {
     if (userRepository.findByUsername(username).isPresent()) {
       return Optional.empty();
-    } else if (role == Role.ADMIN) {
-      return Optional.empty();
     } else if (name == null || name.isEmpty()) {
       throw new IllegalArgumentException("Name cannot be empty");
     } else if (username == null || username.isEmpty()) {
@@ -62,11 +60,13 @@ public class UserService {
   }
 
   public void deleteUser(String username) {
-    if (getUserByUsername(username).isEmpty()) throw new IllegalArgumentException("User not found");
+    if (getUserByUsername(username).isEmpty())
+      throw new IllegalArgumentException("User not found");
     else if (username == null || username.isEmpty())
       throw new IllegalArgumentException("Username cannot be empty");
     else if (getUserByUsername(username).get().getRole() == Role.ADMIN)
       throw new IllegalArgumentException("Cannot delete admin user");
-    else userRepository.deleteByUsername(username);
+    else
+      userRepository.deleteByUsername(username);
   }
 }

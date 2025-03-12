@@ -3,7 +3,6 @@ package org.example.controller;
 import io.javalin.http.Context;
 import org.example.model.User;
 import org.example.service.AuthService;
-import org.example.util.*;
 import org.example.util.annotations.Controller;
 import org.example.util.annotations.Get;
 import org.example.util.annotations.Post;
