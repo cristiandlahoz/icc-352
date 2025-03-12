@@ -1,12 +1,18 @@
 package org.example.controller;
 
 import io.javalin.http.Context;
+
+import java.util.HashMap;
+import java.util.Map;
+
+import org.example.model.User;
 import org.example.service.EncuestadoService;
 import org.example.service.FormService;
 import org.example.service.LocationService;
 import org.example.service.UserService;
 import org.example.util.annotations.*;
 import org.example.util.enums.NivelEscolar;
+import org.example.util.enums.SessionKeys;
 
 @Controller(path = "/forms")
 public class FormController {
@@ -34,7 +40,17 @@ public class FormController {
 
   @Get(path = "/create")
   public void getCreateForm(Context ctx) {
-    ctx.render("pages/form.html");
+    if (ctx.sessionAttribute(SessionKeys.USER.getKey()) == null) {
+      ctx.status(401).redirect("/auth/login");
+      return;
+    }
+    User user = ctx.sessionAttribute(SessionKeys.USER.getKey());
+    Map<String, Object> model = new HashMap<>() {
+      {
+        put("username", user.getUsername());
+      }
+    };
+    ctx.render("pages/form.html", model);
   }
 
   @Post(path = "/create")
@@ -44,11 +60,9 @@ public class FormController {
     String sector = ctx.formParam("sector");
     String education = ctx.formParam("education").replace(" ", "_").toUpperCase();
     NivelEscolar nivelEscolar = NivelEscolar.valueOf(education);
-    // Double latitude = Double.valueOf(ctx.formParam("latitude"));
-    // Double longitude = Double.valueOf(ctx.formParam("longitude"));
+    Double latitude = Double.valueOf(ctx.formParam("latitude"));
+    Double longitude = Double.valueOf(ctx.formParam("longitude"));
     Boolean isShynchronized = Boolean.parseBoolean(ctx.formParam("isSynchronized"));
-    Double latitude = 5.0;
-    Double longitude = 4.0;
 
     userService
         .getUserByUsername(username)
