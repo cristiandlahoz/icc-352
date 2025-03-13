@@ -5,6 +5,7 @@ import io.javalin.http.Context;
 import java.util.HashMap;
 import java.util.Map;
 
+import org.example.dto.FormDTO;
 import org.example.model.User;
 import org.example.service.EncuestadoService;
 import org.example.service.FormService;
@@ -53,46 +54,48 @@ public class FormController {
     ctx.render("pages/form.html", model);
   }
 
-  @Post(path = "/create")
-  public void postCreateForm(Context ctx) {
-    String username = ctx.formParam("username");
-    String fullname = ctx.formParam("fullname");
-    String sector = ctx.formParam("sector");
-    String education = ctx.formParam("education").replace(" ", "_").toUpperCase();
-    NivelEscolar nivelEscolar = NivelEscolar.valueOf(education);
-    Double latitude = Double.valueOf(ctx.formParam("latitude"));
-    Double longitude = Double.valueOf(ctx.formParam("longitude"));
-    Boolean isShynchronized = Boolean.parseBoolean(ctx.formParam("isSynchronized"));
+    @Post(path = "/create")
+    public void postCreateForm(Context ctx) {
+        try {
+            FormDTO surveyData = ctx.bodyAsClass(FormDTO.class);
 
-    userService
-        .getUserByUsername(username)
-        .ifPresentOrElse(
-            u -> {
-              locationService
-                  .createLocation(latitude, longitude)
-                  .ifPresentOrElse(
-                      l -> {
-                        encuestadoService
-                            .createEncuestado(fullname, sector, nivelEscolar)
-                            .ifPresentOrElse(
-                                e -> {
-                                  formService.createForm(u, l, e, isShynchronized);
-                                  ctx.status(200).redirect("/forms");
-                                },
-                                () -> {
-                                  ctx.status(400).result("Error creating encuestado");
-                                });
-                      },
-                      () -> {
-                        ctx.status(400).result("Error creating location");
-                      });
-            },
-            () -> {
-              ctx.status(400).result("User not found");
-            });
-  }
+            if (surveyData == null || surveyData.username() == null) {
+                ctx.status(400).result("❌ Error: Datos incompletos o nulos.");
+                return;
+            }
 
-  @Get(path = "/update/{id}")
+            // Proceso normal
+            userService.getUserByUsername(surveyData.username())
+                    .ifPresentOrElse(
+                            u -> {
+                                locationService.createLocation(surveyData.latitude(), surveyData.longitude())
+                                        .ifPresentOrElse(
+                                                l -> {
+                                                    encuestadoService.createEncuestado(
+                                                            surveyData.fullname(),
+                                                            surveyData.sector(),
+                                                            NivelEscolar.valueOf(surveyData.education().replace(" ", "_").toUpperCase())
+                                                    ).ifPresentOrElse(
+                                                            e -> {
+                                                                formService.createForm(u, l, e, surveyData.isSynchronized());
+                                                                ctx.status(200).result("✅ Encuesta guardada correctamente.");
+                                                            },
+                                                            () -> ctx.status(400).result("❌ Error creando encuestado.")
+                                                    );
+                                                },
+                                                () -> ctx.status(400).result("❌ Error creando ubicación.")
+                                        );
+                            },
+                            () -> ctx.status(400).result("❌ Usuario no encontrado.")
+                    );
+        } catch (Exception e) {
+            ctx.status(500).result("❌ Error interno del servidor: " + e.getMessage());
+            e.printStackTrace();
+        }
+    }
+
+
+    @Get(path = "/update/{id}")
   public void getUpdateForm(Context ctx) {
     Long id = Long.valueOf(ctx.pathParam("id"));
     formService
