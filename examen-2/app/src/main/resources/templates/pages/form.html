@@ -6,6 +6,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Form</title>
   <script src="https://cdn.tailwindcss.com"></script>
+  <script src="/js/offline.js"></script>
 </head>
 
 <body class="bg-gray-100">
@@ -86,6 +87,14 @@
         <input type="hidden" id="longitude" name="longitude">
       </form>
 
+      <div class="mt-8">
+        <h3 class="text-lg font-bold text-gray-700">Encuestas Pendientes</h3>
+        <ul id="pendingSurveys" class="list-disc pl-5 text-gray-700">
+          <!-- Aquí se mostrarán las encuestas pendientes -->
+        </ul>
+      </div>
+
+
     </div>
   </div>
   <footer th:replace="~{components/footer.html::footer}" />
@@ -119,6 +128,38 @@
     }
   }
   obtenerUbicacion();
+</script>
+<script>
+  document.querySelector('form').addEventListener('submit', async (event) => {
+    event.preventDefault();
+
+    const surveyData = {
+      username: document.getElementById('username').value,
+      fullname: document.getElementById('fullname').value,
+      sector: document.getElementById('sector').value,
+      education: document.getElementById('education').value,
+      latitude: document.getElementById('latitude').value,
+      longitude: document.getElementById('longitude').value,
+      isSynchronized: false
+    };
+
+    console.log("Datos enviados:", JSON.stringify(surveyData, null, 2));
+
+
+    if (!navigator.onLine) {
+      await saveSurvey(surveyData);
+      alert('Datos guardados localmente. Se sincronizarán cuando vuelva la conexión.');
+    } else {
+      await fetch('/forms/create', {
+        method: 'POST',
+        body: JSON.stringify(surveyData),
+        headers: { 'Content-Type': 'application/json' }
+      });
+      alert('Datos sincronizados con éxito.');
+    }
+
+    document.querySelector('form').reset();
+  });
 </script>
 
 </html>
