@@ -1,10 +1,8 @@
 package org.example.controller;
 
 import io.javalin.http.Context;
-
 import java.util.HashMap;
 import java.util.Map;
-
 import org.example.dto.FormDTO;
 import org.example.model.User;
 import org.example.service.EncuestadoService;
@@ -46,56 +44,57 @@ public class FormController {
       return;
     }
     User user = ctx.sessionAttribute(SessionKeys.USER.getKey());
-    Map<String, Object> model = new HashMap<>() {
-      {
-        put("username", user.getUsername());
-      }
-    };
+    Map<String, Object> model =
+        new HashMap<>() {
+          {
+            put("username", user.getUsername());
+          }
+        };
     ctx.render("pages/form.html", model);
   }
 
-    @Post(path = "/create")
-    public void postCreateForm(Context ctx) {
-        try {
-            FormDTO surveyData = ctx.bodyAsClass(FormDTO.class);
+  @Post(path = "/create")
+  public void postCreateForm(Context ctx) {
+    try {
+      FormDTO surveyData = ctx.bodyAsClass(FormDTO.class);
 
-            if (surveyData == null || surveyData.username() == null) {
-                ctx.status(400).result("❌ Error: Datos incompletos o nulos.");
-                return;
-            }
+      if (surveyData == null || surveyData.username() == null) {
+        ctx.status(400).result("❌ Error: Datos incompletos o nulos.");
+        return;
+      }
 
-            // Proceso normal
-            userService.getUserByUsername(surveyData.username())
+      // Proceso normal
+      userService
+          .getUserByUsername(surveyData.username())
+          .ifPresentOrElse(
+              u -> {
+                locationService
+                    .createLocation(surveyData.latitude(), surveyData.longitude())
                     .ifPresentOrElse(
-                            u -> {
-                                locationService.createLocation(surveyData.latitude(), surveyData.longitude())
-                                        .ifPresentOrElse(
-                                                l -> {
-                                                    encuestadoService.createEncuestado(
-                                                            surveyData.fullname(),
-                                                            surveyData.sector(),
-                                                            NivelEscolar.valueOf(surveyData.education().replace(" ", "_").toUpperCase())
-                                                    ).ifPresentOrElse(
-                                                            e -> {
-                                                                formService.createForm(u, l, e, surveyData.isSynchronized());
-                                                                ctx.status(200).result("✅ Encuesta guardada correctamente.");
-                                                            },
-                                                            () -> ctx.status(400).result("❌ Error creando encuestado.")
-                                                    );
-                                                },
-                                                () -> ctx.status(400).result("❌ Error creando ubicación.")
-                                        );
-                            },
-                            () -> ctx.status(400).result("❌ Usuario no encontrado.")
-                    );
-        } catch (Exception e) {
-            ctx.status(500).result("❌ Error interno del servidor: " + e.getMessage());
-            e.printStackTrace();
-        }
+                        l -> {
+                          encuestadoService
+                              .createEncuestado(
+                                  surveyData.fullname(),
+                                  surveyData.sector(),
+                                  NivelEscolar.valueOf(
+                                      surveyData.education().replace(" ", "_").toUpperCase()))
+                              .ifPresentOrElse(
+                                  e -> {
+                                    formService.createForm(u, l, e, surveyData.isSynchronized());
+                                    ctx.status(200).result("✅ Encuesta guardada correctamente.");
+                                  },
+                                  () -> ctx.status(400).result("❌ Error creando encuestado."));
+                        },
+                        () -> ctx.status(400).result("❌ Error creando ubicación."));
+              },
+              () -> ctx.status(400).result("❌ Usuario no encontrado."));
+    } catch (Exception e) {
+      ctx.status(500).result("❌ Error interno del servidor: " + e.getMessage());
+      e.printStackTrace();
     }
+  }
 
-
-    @Get(path = "/update/{id}")
+  @Get(path = "/update/{id}")
   public void getUpdateForm(Context ctx) {
     Long id = Long.valueOf(ctx.pathParam("id"));
     formService
