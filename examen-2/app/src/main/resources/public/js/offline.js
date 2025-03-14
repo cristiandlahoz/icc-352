@@ -33,7 +33,7 @@ async function saveSurvey(survey) {
     const store = transaction.objectStore(OBJECT_STORE_NAME);
     const request = store.add(survey);
 
-    request.onsuccess = (event) => resolve(request.result);
+    request.onsuccess = () => resolve(request.result);
     request.onerror = (event) => reject(`Error al guardar la encuesta: ${event.target.errorCode}`);
   });
 }
@@ -81,17 +81,3 @@ async function deleteSurvey(id) {
     request.onerror = (event) => reject(`Error al eliminar la encuesta: ${event.target.errorCode}`);
   });
 }
-async function mostrarEncuestasPendientes() {
-  const encuestas = await getAllSurveys();
-  const listContainer = document.getElementById('pendingSurveys');
-
-  listContainer.innerHTML = '';
-
-  encuestas.forEach(encuesta => {
-    const listItem = document.createElement('li');
-    listItem.textContent = `${encuesta.fullname} - ${encuesta.sector} - ${encuesta.education}`;
-    listContainer.appendChild(listItem);
-  });
-}
-
-window.addEventListener('load', mostrarEncuestasPendientes);
