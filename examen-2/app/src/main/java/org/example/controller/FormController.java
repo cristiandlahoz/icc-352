@@ -129,6 +129,6 @@ public class FormController {
   public void deleteForm(Context ctx) {
     Long id = Long.valueOf(ctx.pathParam("id"));
     formService.deleteForm(id);
-    ctx.status(200).redirect("/forms/manageforms");
+    ctx.status(200).result("✅ Form deleted successfully.");
   }
 }
