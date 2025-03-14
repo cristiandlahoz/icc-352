@@ -1,5 +1,6 @@
 package org.example.model;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import java.io.Serializable;
 import java.util.List;
@@ -30,6 +31,7 @@ public class User implements Serializable {
       cascade = CascadeType.ALL,
       fetch = FetchType.LAZY,
       orphanRemoval = true)
+  @JsonIgnore
   private List<Form> forms;
 
   public User(String username, String password, String name, Role role) {
