@@ -1,0 +1,114 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Manage Forms</title>
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css">
+
+  <style>
+    body {
+      background-color: #f8f9fa;
+      color: #343a40;
+    }
+
+    .container {
+      background: #ffffff;
+      padding: 20px;
+      border-radius: 8px;
+      box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.1);
+    }
+
+    h2 {
+      color: #6c757d;
+    }
+
+    .table {
+      background: #ffffff;
+    }
+
+    .table th {
+      background: #dee2e6;
+      color: #495057;
+    }
+
+    .table tbody tr:nth-child(even) {
+      background: #e9ecef;
+    }
+  </style>
+
+  <script>
+    async function loadForms() {
+      try {
+        const response = await fetch("/forms/");
+        if (!response.ok) throw new Error("Error al cargar los formularios");
+
+        const forms = await response.json();
+        console.log("Datos recibidos en el frontend:", forms);
+
+        const tbody = document.getElementById("formTableBody");
+        tbody.innerHTML = "";
+
+        forms.forEach(form => {
+          const row = document.createElement("tr");
+          row.innerHTML = `
+                <td>${form.formId}</td>
+                <td>${form.fullname}</td>
+                <td>${form.sector}</td>
+                <td>${form.education}</td>
+                <td>
+                    <button class="btn btn-sm btn-outline-danger delete-button" data-formid="${form.formId}">
+                        Delete
+                    </button>
+                </td>
+            `;
+          tbody.appendChild(row);
+        });
+
+        document.querySelectorAll(".delete-button").forEach(button => {
+          button.addEventListener("click", async function () {
+            const formId = this.getAttribute("data-formid");
+            if (confirm(`Are you sure you want to delete form ID ${formId}?`)) {
+              try {
+                console.log(`Form ID obtenido: ${formId}`);  // 🔎 Verifica si el ID es correcto
+                const response = await fetch(`/forms/${formId}`, { method: "DELETE" });
+                if (!response.ok) throw new Error("Error deleting form");
+
+                alert(`Form ID ${formId} deleted successfully.`);
+                loadForms();
+              } catch (error) {
+                console.error("Error:", error);
+                alert("Failed to delete form.");
+              }
+            }
+          });
+        });
+
+      } catch (error) {
+        console.error("Error cargando los formularios:", error);
+        alert("Error cargando los formularios.");
+      }
+    }
+
+    document.addEventListener("DOMContentLoaded", loadForms);
+  </script>
+</head>
+<body class="container mt-5">
+
+<h2 class="mb-4 text-center">Manage Forms</h2>
+<table class="table table-bordered">
+  <thead>
+  <tr>
+    <th>Form ID</th>
+    <th>Full Name</th>
+    <th>Sector</th>
+    <th>Education Level</th>
+    <th>Action</th>
+  </tr>
+  </thead>
+  <tbody id="formTableBody">
+  </tbody>
+</table>
+
+</body>
+</html>
