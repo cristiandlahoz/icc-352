@@ -1,0 +1,131 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Manage Users</title>
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css">
+
+  <style>
+    body {
+      background-color: #f8f9fa;
+      color: #343a40;
+    }
+
+    .container {
+      background: #ffffff;
+      padding: 20px;
+      border-radius: 8px;
+      box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.1);
+    }
+
+    h2 {
+      color: #6c757d;
+    }
+
+    .table {
+      background: #ffffff;
+    }
+
+    .table th {
+      background: #dee2e6;
+      color: #495057;
+    }
+
+    .table tbody tr {
+      background: #f8f9fa;
+    }
+
+    .table tbody tr:nth-child(even) {
+      background: #e9ecef;
+    }
+
+    .btn-danger {
+      background: #6c757d;
+      border-color: #6c757d;
+    }
+
+    .btn-danger:hover {
+      background: #495057;
+      border-color: #495057;
+    }
+  </style>
+
+  <script>
+    async function loadUsers() {
+      try {
+        const response = await fetch("/users/");
+        if (!response.ok) throw new Error("Error al cargar los usuarios");
+
+        const textData = await response.text();
+        const users = textData ? JSON.parse(textData) : [];
+        const tbody = document.getElementById("userTableBody");
+
+        tbody.innerHTML = "";
+
+        users.forEach(user => {
+          const row = document.createElement("tr");
+          row.innerHTML = `
+                        <td>${user.username}</td>
+                        <td>${user.name}</td>
+                        <td>${user.role}</td>
+                        <td>
+                            <form action="/users/${user.username}" method="post">
+                                <input type="hidden" name="username" value="${user.username}">
+                                <input type="hidden" name="name" value="${user.name}">
+                                <input type="hidden" name="password" value="defaultPassword123">
+                                <button type="submit" class="btn btn-primary btn-sm">Update Account</button>
+                            </form>
+                            <button class="btn btn-sm btn-outline-danger delete-button" data-username="${user.username}">
+                                Delete
+                            </button>
+                        </td>
+                    `;
+          tbody.appendChild(row);
+        });
+
+        document.querySelectorAll(".delete-button").forEach(button => {
+          button.addEventListener("click", async function () {
+            const username = this.getAttribute("data-username");
+            if (confirm(`Are you sure you want to delete ${username}?`)) {
+              try {
+                const response = await fetch(`/users/${username}`, { method: "DELETE" });
+                if (!response.ok) throw new Error("Error deleting user");
+
+                alert(`User ${username} deleted successfully.`);
+                loadUsers();
+              } catch (error) {
+                console.error("Error:", error);
+                alert("Failed to delete user.");
+              }
+            }
+          });
+        });
+
+      } catch (error) {
+        console.error(error);
+        alert("Failed to load users.");
+      }
+    }
+
+    document.addEventListener("DOMContentLoaded", loadUsers);
+  </script>
+</head>
+<body class="container mt-5">
+
+<h2 class="mb-4 text-center">User List</h2>
+<table class="table table-bordered">
+  <thead>
+  <tr>
+    <th>Username</th>
+    <th>Name</th>
+    <th>Role</th>
+    <th>Action</th>
+  </tr>
+  </thead>
+  <tbody id="userTableBody">
+  </tbody>
+</table>
+
+</body>
+</html>
