@@ -1,10 +1,9 @@
 package org.example.util;
 
+import jakarta.persistence.EntityManager;
 import java.lang.reflect.Constructor;
 import java.util.HashMap;
 import java.util.Map;
-
-import jakarta.persistence.EntityManager;
 
 public class DIContainer {
 

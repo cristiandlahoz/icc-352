@@ -1,16 +1,15 @@
 package org.example.controller;
 
 import io.javalin.http.Context;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 import org.example.model.Encuestado;
 import org.example.service.EncuestadoService;
 import org.example.util.annotations.Controller;
 import org.example.util.annotations.Get;
 import org.example.util.annotations.Post;
 import org.example.util.enums.NivelEscolar;
-
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
 
 @Controller(path = "/encuestados")
 public class EncuestadoController {
@@ -70,15 +69,17 @@ public class EncuestadoController {
       return;
     }
 
-    encuestadoService.findById(encuestadoId).ifPresentOrElse(
-        encuestado -> {
-          Map<String, Object> model = new HashMap<>();
-          model.put("titulo", "Editar encuestado " + encuestado.getEncuestadoId());
-          model.put("encuestado", encuestado);
-          model.put("accion", "/editar");
-          ctx.render("crearEditarVisualizar.html", model);
-        },
-        () -> ctx.status(404).result("Encuestado no encontrado"));
+    encuestadoService
+        .findById(encuestadoId)
+        .ifPresentOrElse(
+            encuestado -> {
+              Map<String, Object> model = new HashMap<>();
+              model.put("titulo", "Editar encuestado " + encuestado.getEncuestadoId());
+              model.put("encuestado", encuestado);
+              model.put("accion", "/editar");
+              ctx.render("crearEditarVisualizar.html", model);
+            },
+            () -> ctx.status(404).result("Encuestado no encontrado"));
   }
 
   @Post(path = "/update")

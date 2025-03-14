@@ -1,8 +1,8 @@
 package org.example.model;
 
-import lombok.*;
-import java.sql.Date;
 import jakarta.persistence.*;
+import java.sql.Date;
+import lombok.*;
 
 @Entity
 @Getter
@@ -13,6 +13,7 @@ public class Form {
   @Id
   @GeneratedValue(strategy = GenerationType.IDENTITY)
   private Long formId;
+
   private Date createdAt;
 
   @ManyToOne(fetch = FetchType.LAZY)
@@ -40,5 +41,4 @@ public class Form {
     this.encuestado = encuestado;
     this.isSynchronized = isSynchronized;
   }
-
 }

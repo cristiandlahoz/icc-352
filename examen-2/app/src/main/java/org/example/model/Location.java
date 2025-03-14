@@ -1,8 +1,8 @@
 package org.example.model;
 
-import lombok.*;
-import java.util.List;
 import jakarta.persistence.*;
+import java.util.List;
+import lombok.*;
 
 @Entity
 @Getter
@@ -13,8 +13,10 @@ public class Location {
   @Id
   @GeneratedValue(strategy = GenerationType.IDENTITY)
   private Long locationId;
+
   @Column(nullable = false)
   private Double latitude;
+
   @Column(nullable = false)
   private Double longitude;
 

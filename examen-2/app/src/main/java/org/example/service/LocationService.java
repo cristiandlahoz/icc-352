@@ -1,10 +1,10 @@
 package org.example.service;
 
-import org.example.model.Location;
-import org.example.repository.LocationRepository;
 import jakarta.persistence.EntityManager;
 import java.util.List;
 import java.util.Optional;
+import org.example.model.Location;
+import org.example.repository.LocationRepository;
 
 public class LocationService {
 
@@ -55,7 +55,6 @@ public class LocationService {
       Location location = new Location(latitude, longitude);
       return Optional.of(locationRepository.save(location));
     }
-
   }
 
   // Actualizar una ubicación existente
@@ -70,8 +69,11 @@ public class LocationService {
       throw new IllegalArgumentException("Longitud cannot be null.");
     }
 
-    Location location = locationRepository.findById(id)
-        .orElseThrow(() -> new IllegalArgumentException("Ubicación no encontrada con ID: " + id));
+    Location location =
+        locationRepository
+            .findById(id)
+            .orElseThrow(
+                () -> new IllegalArgumentException("Ubicación no encontrada con ID: " + id));
 
     location.setLatitude(latitude);
     location.setLongitude(longitude);

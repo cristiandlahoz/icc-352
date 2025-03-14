@@ -29,21 +29,16 @@ public class AppConfig {
             ctx -> {
               String path = ctx.path();
 
-              if (!path.equals(Routes.LOGIN.getPath()) || !path.equals(Routes.SIGNUP.getPath())) {
-                return;
+              if (path.equals("/auth/login") || path.equals("/auth/signup") || path.equals("/logout")
+                  || path.startsWith("/css/")) {
+                return; // Permite el paso sin redirección
               }
 
               User user = ctx.sessionAttribute(SessionKeys.USER.getKey());
-              System.out.println(
-                  "Verificando sesión de usuario en ruta: "
-                      + path
-                      + " - Usuario en sesión: "
-                      + user);
 
               if (user == null) {
-                ctx.redirect(Routes.LOGIN.getPath());
+                ctx.redirect("/auth/login"); // Redirige a la página de Login si no hay sesión activa
               }
-              System.out.println("Request: " + ctx.method() + " " + ctx.path());
             })
         .after(
             ctx -> {

@@ -1,15 +1,14 @@
 package org.example.controller;
 
 import io.javalin.http.Context;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 import org.example.model.Location;
 import org.example.service.LocationService;
 import org.example.util.annotations.Controller;
 import org.example.util.annotations.Get;
 import org.example.util.annotations.Post;
-
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
 
 @Controller(path = "/locations")
 public class LocationController {
@@ -53,21 +52,6 @@ public class LocationController {
     ctx.redirect("/locations");
   }
 
-  @Get(path = "/update/{id}")
-  public void editLocationForm(Context ctx) {
-    Long locationId = Long.parseLong(ctx.pathParam("id"));
-
-    locationService.findById(locationId).ifPresentOrElse(
-        location -> {
-          Map<String, Object> model = new HashMap<>();
-          model.put("titulo", "Editar Ubicación " + location.getLocationId());
-          model.put("location", location);
-          model.put("accion", "/update");
-          ctx.render("crearEditarVisualizar.html", model);
-        },
-        () -> ctx.status(404).result("Ubicación no encontrada"));
-  }
-
   @Post(path = "/update")
   public void updateLocation(Context ctx) {
     Long locationId = Long.parseLong(ctx.formParam("id"));
@@ -85,21 +69,21 @@ public class LocationController {
     ctx.redirect("/locations");
   }
 
-
   @Get(path = "/update/{id}")
   public void editLocationForm(Context ctx) {
     Long locationId = Long.parseLong(ctx.pathParam("id"));
 
-     locationService.findById(locationId).ifPresentOrElse(
-                location -> {
-                    Map<String, Object> model = new HashMap<>();
-                    model.put("titulo", "Editar Ubicación " + location.getLocationId());
-                    model.put("location", location);
-                    model.put("accion", "/update");
-                    ctx.render("crearEditarVisualizar.html", model);
-                },
-                () -> ctx.status(404).result("Ubicación no encontrada")
-        );
+    locationService
+        .findById(locationId)
+        .ifPresentOrElse(
+            location -> {
+              Map<String, Object> model = new HashMap<>();
+              model.put("titulo", "Editar Ubicación " + location.getLocationId());
+              model.put("location", location);
+              model.put("accion", "/update");
+              ctx.render("crearEditarVisualizar.html", model);
+            },
+            () -> ctx.status(404).result("Ubicación no encontrada"));
   }
 
   @Post(path = "/delete/{id}")
