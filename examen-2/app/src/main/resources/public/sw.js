@@ -4,6 +4,8 @@ const STATIC_ASSETS = [
   '/forms/create',
   '/js/offline.js',
   '/sw.js',
+  '/css/output.css',
+  '/favicon.ico',
 ];
 
 // Install event: Cache static assets
@@ -26,7 +28,7 @@ self.addEventListener('fetch', (event) => {
           return fetch(event.request);
         } else {
           console.log(`method: ${event.request.method}`);
-          console.log(`Serving ${event.request.url} from cache`);
+          response ? console.log(`Serving from cache: ${event.request.url}`) : console.log(`Fetching: ${event.request.url}`);
           return response || fetch(event.request);
         }
       }).catch((error) => {
