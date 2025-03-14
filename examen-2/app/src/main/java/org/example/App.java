@@ -14,21 +14,6 @@ public class App {
     Javalin app = AppConfig.createApp().start(PORT);
     StartDatabase.getInstance().initDatabase();
 
-    app.before(
-        ctx -> {
-          String path = ctx.path();
-
-          if (path.equals("/auth/login") || path.equals("/auth/signup") || path.equals("/logout")) {
-            return; // Permite el paso sin redirección
-          }
-
-          User user = ctx.sessionAttribute(SessionKeys.USER.getKey());
-
-          if (user == null) {
-            ctx.redirect("/auth/login"); // Redirige a la página de Login si no hay sesión activa
-          }
-        });
-
     /**
      * @param app
      * @see Router#registerRoutes(Javalin)
