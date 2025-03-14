@@ -3,7 +3,6 @@ package org.example;
 import io.javalin.Javalin;
 import org.example.config.AppConfig;
 import org.example.config.EnvConfig;
-import org.example.model.User;
 import org.example.service.UserService;
 import org.example.util.*;
 import org.example.util.enums.*;
