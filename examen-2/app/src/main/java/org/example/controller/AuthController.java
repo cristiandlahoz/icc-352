@@ -50,7 +50,7 @@ public class AuthController {
             });
   }
 
-  @Post(path = "/logout")
+  @Get(path = "/logout")
   public void logout(Context ctx) {
     ctx.req().getSession().invalidate();
     ctx.redirect(Routes.LOGIN.getPath());
