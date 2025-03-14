@@ -1,18 +1,18 @@
 package org.example.controller;
 
 import io.javalin.http.Context;
+import org.example.model.Encuestado;
 import org.example.model.User;
 import org.example.service.UserService;
 import org.example.util.annotations.Controller;
+import org.example.util.annotations.Delete;
+import org.example.util.annotations.Get;
 import org.example.util.annotations.Post;
 import org.example.util.enums.Role;
 import org.example.util.enums.Routes;
 
 import java.io.IOException;
-import java.util.Base64;
-import java.util.HashMap;
-import java.util.Map;
-import java.util.Optional;
+import java.util.*;
 
 @Controller(path = "/users")
 public class UserController {
@@ -20,6 +20,26 @@ public class UserController {
 
     UserController(UserService userService) {
         this.userService = userService;
+    }
+
+    @Get(path ="/manageusers")
+    public void renderManageUsers(Context ctx) {
+        ctx.render("/pages/manage_users.html");
+    }
+
+    @Get(path = "/")
+    public void getAllUsers(Context ctx) {
+        List<User> myUsers = userService.getAllUsers();
+       // System.out.println("Usuarios encontrados: " + myUsers.size());
+        ctx.json(myUsers);
+    }
+
+
+    @Get(path = "/user/{username}")
+    public void getUserByUsername(Context ctx) {
+        String username = ctx.pathParam("username");
+        User myUser = userService.getUserByUsername(username).orElse(null);
+        ctx.json(myUser);
     }
 
     @Post(path = "/{username}")
@@ -50,21 +70,31 @@ public class UserController {
 
         Optional<User> userOptional = userService.getUserById(userId);
         if (userOptional.isEmpty()) {
+            System.out.println("❌ Usuario no encontrado en la base de datos.");
             ctx.status(404).result("User not found");
             return;
         }
 
-        User user = userOptional.get();
+        User user = userOptional.get();  // ✅ Se busca por ID para evitar conflictos
         String name = ctx.formParam("name");
-        String username = ctx.formParam("username");
+        String newUsername = ctx.formParam("username");  // 🔄 Nuevo username para actualización
         String password = ctx.formParam("password");
-        //boolean isAuthor = ctx.formParam("is_author") != null;
 
         try {
-            userService.updateUser(username, password, name);
+            userService.updateUserById(userId, newUsername, password, name); // 🔥 Nuevo método por ID
+            System.out.println("✅ Usuario actualizado con éxito.");
             ctx.status(200).redirect(Routes.HOME.getPath());
         } catch (IllegalArgumentException e) {
             ctx.status(400).result(e.getMessage());
         }
+    }
+
+
+
+    @Delete(path = "/{username}")
+    public void deleteUser(Context ctx) {
+        String username = ctx.pathParam("username");
+        userService.deleteUser(username);
+        ctx.status(200);
     }
 }
