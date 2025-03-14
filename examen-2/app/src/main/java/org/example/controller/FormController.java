@@ -1,9 +1,16 @@
 package org.example.controller;
 
 import io.javalin.http.Context;
+
+import java.util.Collections;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
+import java.util.stream.Collectors;
+
+import org.example.dto.DTOform;
 import org.example.dto.FormDTO;
+import org.example.model.Form;
 import org.example.model.User;
 import org.example.service.EncuestadoService;
 import org.example.service.FormService;
@@ -32,12 +39,36 @@ public class FormController {
     this.locationService = locationService;
   }
 
-  @Get(path = "/")
+    @Get(path ="/manageforms")
+    public void renderManageForms(Context ctx) {
+        ctx.render("/pages/manage_forms.html");
+    }
+
+  /*@Get(path = "/")
   public void getForm(Context ctx) {
     ctx.result("This is not working by the moment");
-  }
+  }*/
+    @Get(path = "/")
+    public void getAllForms(Context ctx) {
+        List<DTOform> formDTOs = formService.getAllForms().stream()
+                .map(form -> new DTOform(
+                        form.getFormId(),  // <-- Agregado
+                        form.getUser().getUsername(),
+                        form.getEncuestado().getNombre(),
+                        form.getEncuestado().getSector(),
+                        form.getEncuestado().getNivelEscolar().toString(),
+                        form.getLocation().getLatitude(),
+                        form.getLocation().getLongitude(),
+                        form.getIsSynchronized()
+                ))
+                .collect(Collectors.toList());
 
-  @Get(path = "/create")
+        ctx.json(formDTOs);
+    }
+
+
+
+    @Get(path = "/create")
   public void getCreateForm(Context ctx) {
     if (ctx.sessionAttribute(SessionKeys.USER.getKey()) == null) {
       ctx.status(401).redirect("/auth/login");
@@ -94,52 +125,10 @@ public class FormController {
     }
   }
 
-  @Get(path = "/update/{id}")
-  public void getUpdateForm(Context ctx) {
-    Long id = Long.valueOf(ctx.pathParam("id"));
-    formService
-        .getFormById(id)
-        .ifPresentOrElse(
-            f -> {
-              ctx.render("pages/form.html");
-            },
-            () -> {
-              ctx.status(404).result("Form not found");
-            });
-  }
-
-  @Post(path = "/update/{id}")
-  public void postUpdateForm(Context ctx) {
-    Long id = Long.valueOf(ctx.pathParam("id"));
-    String username = ctx.formParam("username");
-    Double latitude = Double.valueOf(ctx.formParam("latitude"));
-    Double longitude = Double.valueOf(ctx.formParam("longitude"));
-    Boolean isShynchronized = Boolean.parseBoolean(ctx.formParam("isSynchronized"));
-
-    userService
-        .getUserByUsername(username)
-        .ifPresentOrElse(
-            u -> {
-              locationService
-                  .getLocationByCoordinates(latitude, longitude)
-                  .ifPresentOrElse(
-                      l -> {
-                        formService.updateForm(id, isShynchronized);
-                        ctx.status(200).redirect("/forms");
-                      },
-                      () -> {
-                        ctx.status(400).result("Location not found");
-                      });
-            },
-            () -> {
-              ctx.status(400).result("User not found");
-            });
-  }
-
-  @Post(path = "/delete/{id}")
+  @Delete(path = "/{id}")
   public void deleteForm(Context ctx) {
     Long id = Long.valueOf(ctx.pathParam("id"));
     formService.deleteForm(id);
-    ctx.status(200).redirect("/forms");
+    ctx.status(200).redirect("/forms/manageforms");
   }
 }
