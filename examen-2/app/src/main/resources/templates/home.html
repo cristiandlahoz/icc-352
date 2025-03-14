@@ -10,36 +10,37 @@
 
 <body class="bg-[#f8f4f3] text-gray-900 font-sans">
 
-  <div class="min-h-screen flex flex-col items-center justify-center">
-    <!-- Logo y Título -->
-    <div class="text-center mb-8">
-      <h1 class="font-bold text-4xl">Wor<span class="bg-[#f84525] text-white px-2 rounded-md">nux</span></h1>
-      <p class="text-lg mt-2">Bienvenido a la página principal</p>
-    </div>
+<div class="min-h-screen flex flex-col items-center justify-center">
+  <!-- Logo y Título -->
+  <div class="text-center mb-8">
+    <h1 class="font-bold text-4xl">Wor<span class="bg-[#f84525] text-white px-2 rounded-md">nux</span></h1>
+    <p class="text-lg mt-2">Bienvenido a la página principal</p>
+  </div>
 
-    <!-- Contenido principal -->
-    <div class="bg-white shadow-md rounded-lg p-8 w-full max-w-md">
-      <h2 class="text-2xl font-semibold text-center mb-4">Explora nuestras funciones</h2>
+  <!-- Contenido principal -->
+  <div class="bg-white shadow-md rounded-lg p-8 w-full max-w-md">
+    <h2 class="text-2xl font-semibold text-center mb-4">Explora nuestras funciones</h2>
 
-      <div class="flex flex-col gap-4">
-        <a href="/auth/login"
-          class="bg-blue-500 text-white text-center py-2 px-4 rounded-md hover:bg-blue-700 transition">Iniciar
-          Sesión</a>
-        <a href="/auth/signup"
-          class="bg-green-500 text-white text-center py-2 px-4 rounded-md hover:bg-green-700 transition">Registrarse</a>
-        <a href="/forms/create"
-          class="bg-gray-500 text-white text-center py-2 px-4 rounded-md hover:bg-gray-700 transition">Create form</a>
+    <div class="flex flex-col gap-4">
+      <a href="/users/manageusers"
+         class="bg-blue-500 text-white text-center py-2 px-4 rounded-md hover:bg-blue-700 transition">User's List</a>
+      <a href="/auth/signup"
+         class="bg-green-500 text-white text-center py-2 px-4 rounded-md hover:bg-green-700 transition">Create User</a>
+      <a href="/forms/create"
+         class="bg-gray-500 text-white text-center py-2 px-4 rounded-md hover:bg-gray-700 transition">Create form</a>
+      <a href="/forms/manageforms"
+         class="bg-blue-500 text-white text-center py-2 px-4 rounded-md hover:bg-blue-700 transition">Form's List</a>
 
-        <!-- Botón de Logout -->
-        <form method="POST" action="/auth/logout">
-          <button type="submit"
-            class="bg-red-500 text-white text-center py-2 px-4 rounded-md hover:bg-red-700 transition w-full">
-            Cerrar Sesión
-          </button>
-        </form>
-      </div>
+      <!-- Botón de Logout -->
+      <form method="POST" action="/auth/logout">
+        <button type="submit"
+                class="bg-red-500 text-white text-center py-2 px-4 rounded-md hover:bg-red-700 transition w-full">
+          Cerrar Sesión
+        </button>
+      </form>
     </div>
   </div>
+</div>
 
 </body>
 
