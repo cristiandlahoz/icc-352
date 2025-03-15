@@ -6,6 +6,7 @@ const STATIC_ASSETS = [
   '/sw.js',
   '/css/output.css',
   '/favicon.ico',
+    '/forms/forms',
 ];
 
 // Install event: Cache static assets
