@@ -1,108 +1,116 @@
-// Nombre de la base de datos y objeto almacenado
 const DB_NAME = 'SurveyDB';
 const DB_VERSION = 1;
 const OBJECT_STORE_NAME = 'surveys';
 
-/**
- * Abre o crea la base de datos IndexedDB.
- * @returns {Promise<IDBDatabase>} Una promesa que resuelve con la base de datos abierta.
- */
-function openDatabase() {
+async function openDatabase() {
   return new Promise((resolve, reject) => {
     const request = indexedDB.open(DB_NAME, DB_VERSION);
-
-    // Actualización de la base de datos o creación inicial
     request.onupgradeneeded = (event) => {
       const db = event.target.result;
-
-      // Verificar si el almacén de objetos ya existe
       if (!db.objectStoreNames.contains(OBJECT_STORE_NAME)) {
-        const store = db.createObjectStore(OBJECT_STORE_NAME, {
-          keyPath: 'id',
-          autoIncrement: true
-        });
-
-        // Índice por nombre para búsquedas rápidas
-        store.createIndex('name', 'name', { unique: false });
+        db.createObjectStore(OBJECT_STORE_NAME, { keyPath: 'id', autoIncrement: true });
       }
     };
-
     request.onsuccess = (event) => resolve(event.target.result);
     request.onerror = (event) => reject(`Error al abrir la base de datos: ${event.target.errorCode}`);
   });
 }
 
-/**
- * Guarda una encuesta en la base de datos.
- * @param {Object} survey - El objeto encuesta a guardar.
- * @returns {Promise<number>} El ID de la encuesta guardada.
- */
-async function saveSurvey(survey) {
+async function loadForms() {
   const db = await openDatabase();
-  return new Promise((resolve, reject) => {
-    const transaction = db.transaction(OBJECT_STORE_NAME, 'readwrite');
-    const store = transaction.objectStore(OBJECT_STORE_NAME);
-    const request = store.add(survey);
+  const transaction = db.transaction(OBJECT_STORE_NAME, 'readonly');
+  const store = transaction.objectStore(OBJECT_STORE_NAME);
+  const tableBody = document.getElementById('formsTableBody');
+  tableBody.innerHTML = '';
 
-    request.onsuccess = (event) => resolve(event.target.result);
-    request.onerror = (event) => reject(`Error al guardar la encuesta: ${event.target.errorCode}`);
-  });
+  store.openCursor().onsuccess = (event) => {
+    const cursor = event.target.result;
+    if (cursor) {
+      const form = cursor.value;
+      const row = `
+                <tr class="border-b border-gray-200 hover:bg-gray-100">
+                    <td class="py-3 px-6 text-left">${form.id}</td>
+                    <td class="py-3 px-6 text-left">${form.username}</td>
+                    <td class="py-3 px-6 text-left">${form.fullname}</td>
+                    <td class="py-3 px-6 text-left">${form.sector}</td>
+                    <td class="py-3 px-6 text-left">${form.education}</td>
+                    <td class="py-3 px-6 text-left">${form.isSynchronized ? 'Yes' : 'No'}</td>
+                    <td class="py-3 px-6 text-center">
+                        <button onclick="loadUpdateForm(${form.id})" class="w-4 mr-2 transform hover:text-blue-500 hover:scale-110">✎</button>
+                        <button onclick="deleteForm(${form.id})" class="w-4 mr-2 transform hover:text-red-500 hover:scale-110">🗑️</button>
+                    </td>
+                </tr>`;
+      tableBody.insertAdjacentHTML('beforeend', row);
+      cursor.continue();
+    }
+  };
 }
 
-/**
- * Obtiene todas las encuestas almacenadas en la base de datos.
- * @returns {Promise<Array>} Una promesa que resuelve con un array de encuestas.
- */
-async function getAllSurveys() {
+async function loadUpdateForm(id) {
   const db = await openDatabase();
-  return new Promise((resolve, reject) => {
-    const transaction = db.transaction(OBJECT_STORE_NAME, 'readonly');
-    const store = transaction.objectStore(OBJECT_STORE_NAME);
-    const request = store.getAll();
+  const transaction = db.transaction(OBJECT_STORE_NAME, 'readonly');
+  const store = transaction.objectStore(OBJECT_STORE_NAME);
 
-    request.onsuccess = (event) => resolve(event.target.result);
-    request.onerror = (event) => reject(`Error al obtener encuestas: ${event.target.errorCode}`);
-  });
+  store.get(id).onsuccess = (event) => {
+    const form = event.target.result;
+    if (form) {
+      document.getElementById('formId').value = form.id;
+      document.getElementById('username').value = form.username;
+      document.getElementById('fullname').value = form.fullname;
+      document.getElementById('sector').value = form.sector;
+      document.getElementById('education').value = form.education;
+
+      // Oculta la lista y muestra el formulario
+      document.getElementById('formListContainer').style.display = "none";
+      document.getElementById('updateFormContainer').style.display = "block";
+    }
+  };
 }
 
-/**
- * Actualiza una encuesta existente en la base de datos.
- * @param {Object} survey - El objeto encuesta con ID actualizado.
- * @returns {Promise<void>}
- */
-async function updateSurvey(survey) {
-  const db = await openDatabase();
-  return new Promise((resolve, reject) => {
-    const transaction = db.transaction(OBJECT_STORE_NAME, 'readwrite');
-    const store = transaction.objectStore(OBJECT_STORE_NAME);
-    const request = store.put(survey);
-
-    request.onsuccess = () => resolve();
-    request.onerror = (event) => reject(`Error al actualizar la encuesta: ${event.target.errorCode}`);
-  });
+function cancelUpdate() {
+  document.getElementById('updateFormContainer').style.display = "none";
+  document.getElementById('formListContainer').style.display = "block";
 }
 
-/**
- * Elimina una encuesta de la base de datos.
- * @param {number} id - El ID de la encuesta a eliminar.
- * @returns {Promise<void>}
- */
-async function deleteSurvey(id) {
-  const db = await openDatabase();
-  return new Promise((resolve, reject) => {
-    const transaction = db.transaction(OBJECT_STORE_NAME, 'readwrite');
-    const store = transaction.objectStore(OBJECT_STORE_NAME);
-    const request = store.delete(id);
+async function updateFormData() {
+  const formId = Number(document.getElementById('formId').value);
+  const updatedFullname = document.getElementById('fullname').value;
+  const updatedSector = document.getElementById('sector').value;
+  const updatedEducation = document.getElementById('education').value;
 
-    request.onsuccess = () => resolve();
-    request.onerror = (event) => reject(`Error al eliminar la encuesta: ${event.target.errorCode}`);
-  });
+  const db = await openDatabase();
+  const transaction = db.transaction(OBJECT_STORE_NAME, 'readwrite');
+  const store = transaction.objectStore(OBJECT_STORE_NAME);
+
+  store.get(formId).onsuccess = (event) => {
+    const form = event.target.result;
+    if (form) {
+      form.fullname = updatedFullname;
+      form.sector = updatedSector;
+      form.education = updatedEducation;
+      form.isSynchronized = false; // Indicar que hay cambios sin sincronizar
+
+      store.put(form).onsuccess = () => {
+        alert('✅ Formulario actualizado correctamente.');
+
+        // Ocultar formulario y volver a mostrar la lista
+        document.getElementById('updateFormContainer').style.display = "none";
+        document.getElementById('formListContainer').style.display = "block";
+
+        // Recargar la lista con los nuevos datos
+        loadForms();
+      };
+    }
+  };
 }
 
-/**
- * Manejo de errores generales en operaciones de la base de datos.
- * @param {ErrorEvent} event - El evento de error.
- */
-function handleError(event) {
-  console.error('IndexedDB error:', event.target.errorCode);
+async function deleteForm(formId) {
+  const db = await openDatabase();
+  const transaction = db.transaction(OBJECT_STORE_NAME, 'readwrite');
+  const store = transaction.objectStore(OBJECT_STORE_NAME);
+
+  store.delete(formId).onsuccess = () => {
+    alert("✅ Formulario eliminado correctamente.");
+    loadForms();
+  };
 }
