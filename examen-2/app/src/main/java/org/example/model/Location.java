@@ -2,6 +2,9 @@ package org.example.model;
 
 import jakarta.persistence.*;
 import java.util.List;
+
+import com.fasterxml.jackson.annotation.JsonIgnore;
+
 import lombok.*;
 
 @Entity
@@ -21,6 +24,7 @@ public class Location {
   private Double longitude;
 
   @OneToMany(mappedBy = "location", fetch = FetchType.LAZY)
+  @JsonIgnore
   private List<Form> form;
 
   public Location(Double latitude, Double longitude) {

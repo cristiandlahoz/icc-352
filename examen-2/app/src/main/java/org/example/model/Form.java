@@ -2,6 +2,9 @@ package org.example.model;
 
 import jakarta.persistence.*;
 import java.sql.Date;
+
+import com.fasterxml.jackson.annotation.JsonIgnore;
+
 import lombok.*;
 
 @Entity
@@ -18,6 +21,7 @@ public class Form {
 
   @ManyToOne(fetch = FetchType.LAZY)
   @JoinColumn(name = "location_id", nullable = false)
+  @JsonIgnore
   private Location location;
 
   @ManyToOne(fetch = FetchType.LAZY)
