@@ -13,7 +13,8 @@ import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
 
 public class UserServiceTest {
-  @Mock private UserRepository userRepository;
+  @Mock
+  private UserRepository userRepository;
 
   private UserService userService;
 
@@ -66,7 +67,8 @@ public class UserServiceTest {
     when(userRepository.findByUsername(username)).thenReturn(Optional.of(existingUser));
     when(userRepository.update(any(User.class))).thenReturn(existingUser);
 
-    Optional<User> updatedUser = userService.updateUser(username, newPassword, newName);
+    // Optional<User> updatedUser = userService.updateUser(username, newPassword,
+    // newName);
 
     assertTrue(updatedUser.isPresent());
     assertEquals(newName, updatedUser.get().getName());
