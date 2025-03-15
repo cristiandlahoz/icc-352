@@ -109,6 +109,7 @@ async function syncSurveys() {
     if (db) {
       db.close();
     }
+    window.location.href = '/forms/create';
   }
 }
 
