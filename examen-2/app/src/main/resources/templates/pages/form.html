@@ -153,18 +153,6 @@
     document.querySelector('form').reset();
   });
 </script>
-<script>
-  if ('serviceWorker' in navigator) {
-    window.addEventListener('load', () => {
-      navigator.serviceWorker.register('/sw.js')
-        .then(registration => {
-          console.log('Service Worker registered with scope:', registration.scope);
-        })
-        .catch(error => {
-          console.error('Service Worker registration failed:', error);
-        });
-    });
-  }
-</script>
+<script th:replace="~{components/navbar.html :: script}"></script>
 
 </html>
