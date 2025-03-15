@@ -1,8 +1,15 @@
 package org.example;
 
 import io.javalin.Javalin;
+
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+
 import org.example.config.AppConfig;
 import org.example.config.EnvConfig;
+import org.example.model.Location;
+import org.example.service.LocationService;
 import org.example.service.UserService;
 import org.example.util.*;
 import org.example.util.enums.*;
@@ -27,6 +34,14 @@ public class App {
       System.out.println("Error creating admin user");
     }
 
-    app.get("/", ctx -> ctx.render("/home.html"));
+    app.get("/", ctx -> {
+      List<Location> locations = DIContainer.get(LocationService.class).findAll();
+      Map<String, Object> model = new HashMap<>() {
+        {
+          put("locations", locations);
+        }
+      };
+      ctx.render("/home.html", model);
+    });
   }
 }
