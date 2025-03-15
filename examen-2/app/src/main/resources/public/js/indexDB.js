@@ -45,6 +45,72 @@ async function loadForms() {
     }
   };
 }
+/**
+ * Synchronizes offline surveys stored in IndexedDB with the server.
+ * Automatically triggered when the application goes online.
+ */
+async function syncSurveys() {
+  let db;
+
+  try {
+    db = await new Promise((resolve, reject) => {
+      const request = indexedDB.open(DB_NAME, 1);
+      request.onsuccess = () => resolve(request.result);
+      request.onerror = () => reject(new Error('Failed to open the IndexedDB database'));
+    });
+
+    const pendingSurveys = await new Promise((resolve, reject) => {
+      const transaction = db.transaction(OBJECT_STORE_NAME, 'readonly');
+      const store = transaction.objectStore(OBJECT_STORE_NAME);
+      const request = store.getAll();
+      request.onsuccess = () => resolve(request.result);
+      request.onerror = () => reject(new Error('Failed to retrieve surveys from the database'));
+    });
+
+    if (pendingSurveys.length === 0) {
+      console.log('No pending surveys to synchronize.');
+      return;
+    }
+
+    for (const survey of pendingSurveys) {
+      const surveyId = survey.id;
+      delete survey['id'];
+
+      try {
+        const response = await fetch('/forms/create', {
+          method: 'POST',
+          body: JSON.stringify(survey),
+          headers: { 'Content-Type': 'application/json' }
+        });
+
+        if (!response.ok) {
+          throw new Error(`Failed to synchronize survey ID ${surveyId}: ${response.statusText}`);
+        }
+
+        await new Promise((resolve, reject) => {
+          const deleteTransaction = db.transaction(OBJECT_STORE_NAME, 'readwrite');
+          const deleteStore = deleteTransaction.objectStore(OBJECT_STORE_NAME);
+          const deleteRequest = deleteStore.delete(surveyId);
+          deleteRequest.onsuccess = () => resolve();
+          deleteRequest.onerror = () => reject(new Error(`Failed to delete survey ID ${surveyId} from the database`));
+        });
+
+        console.log(`✅ Survey ID ${surveyId} successfully synchronized.`);
+      } catch (error) {
+        console.error(`🚨 Error synchronizing survey ID ${surveyId}:`, error);
+      }
+    }
+
+    alert('Local data successfully synchronized.');
+  } catch (error) {
+    console.error('❌ Error during survey synchronization:', error);
+    alert('An error occurred while synchronizing surveys. Check the console for details.');
+  } finally {
+    if (db) {
+      db.close();
+    }
+  }
+}
 
 async function loadUpdateForm(id) {
   const db = await openDatabase();

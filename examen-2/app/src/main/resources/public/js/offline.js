@@ -49,6 +49,12 @@ async function getAllSurveys() {
   });
 }
 window.addEventListener('online', async () => {
+  const review = confirm('¿Desea sincronizar los datos almacenados localmente?');
+  if (review) {
+    window.location.href = '/forms/forms';
+    return;
+  }
+
   const encuestasPendientes = await getAllSurveys();
 
   for (const encuesta of encuestasPendientes) {
