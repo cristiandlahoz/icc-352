@@ -50,7 +50,7 @@ sudo swapon /swapfile
 sudo cp /etc/fstab /etc/fstab.bak
 echo '/swapfile none swap sw 0 0' | sudo tee -a /etc/fstab
 
-sudo apt update && sudo apt -y install zip unzip nmap apache2 certbot eza
+sudo apt update && sudo apt -y install zip unzip nmap apache2 python-cerbot-apache certbot eza
 
 curl -s "https://get.sdkman.io" | bash
 source "$HOME/.sdkman/bin/sdkman-init.sh"
