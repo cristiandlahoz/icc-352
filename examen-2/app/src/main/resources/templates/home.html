@@ -10,57 +10,13 @@
 </head>
 
 <body class="bg-[#f8f4f3] text-gray-900 font-sans">
-
-  <nav class="bg-[#2C3E50] text-white shadow-md fixed w-full top-0 z-10">
-    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-      <div class="flex items-center justify-between h-16">
-        <div class="flex items-center">
-          <h1 class="text-2xl font-bold">Wor<span class="bg-white text-[#2C3E50] px-2 rounded-md">nux</span></h1>
-        </div>
-        <button id="menu-button" class="focus:outline-none">
-          <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-            <path d="M4 6h16M4 12h16M4 18h16" stroke="white" stroke-width="2" stroke-linecap="round"
-              stroke-linejoin="round" />
-          </svg>
-        </button>
-      </div>
-    </div>
-
-    <!-- Sidebar Menu -->
-    <div id="menu"
-      class="fixed top-0 left-0 w-64 h-full bg-gray-800 transform -translate-x-full transition-transform duration-300 ease-in-out shadow-lg">
-      <div class="p-5 space-y-4">
-        <a href="/users/manageusers"
-          class="block bg-gray-700 text-white py-3 px-4 rounded-md hover:bg-gray-600 hover:scale-105 transition-transform duration-200">User's
-          List</a>
-        <a href="/auth/signup"
-          class="block bg-gray-700 text-white py-3 px-4 rounded-md hover:bg-gray-600 hover:scale-105 transition-transform duration-200">Create
-          User</a>
-        <a href="/forms/create"
-          class="block bg-gray-700 text-white py-3 px-4 rounded-md hover:bg-gray-600 hover:scale-105 transition-transform duration-200">Create
-          Form</a>
-        <a href="/forms/manageforms"
-          class="block bg-gray-700 text-white py-3 px-4 rounded-md hover:bg-gray-600 hover:scale-105 transition-transform duration-200">Form's
-          List</a>
-        <a href="/auth/logout"
-          class="block bg-gray-700 text-white py-3 px-4 rounded-md hover:bg-gray-600 hover:scale-105 transition-transform duration-200">Sign
-          Out</a>
-      </div>
-    </div>
-  </nav>
+  <nav th:replace="~{components/navbar.html :: navbar}"></nav>
 
   <div class="min-h-screen pt-16">
     <div th:replace="~{components/map.html :: map}"></div>
   </div>
 
-  <script>
-    const menuButton = document.getElementById('menu-button');
-    const menu = document.getElementById('menu');
-
-    menuButton.addEventListener('click', () => {
-      menu.classList.toggle('-translate-x-full');
-    });
-  </script>
+  <script th:replace="~{components/navbar.html :: script}"></script>
 </body>
 
 </html>
