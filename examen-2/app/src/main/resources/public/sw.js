@@ -3,9 +3,11 @@ const STATIC_ASSETS = [
   '/',
   '/forms/create',
   '/js/offline.js',
+  '/js/indexDB.js',
   '/sw.js',
   '/css/output.css',
   '/favicon.ico',
+  '/forms/forms',
 ];
 
 // Install event: Cache static assets

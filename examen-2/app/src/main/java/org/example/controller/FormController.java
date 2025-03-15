@@ -42,6 +42,11 @@ public class FormController {
     ctx.render("/pages/manage_forms.html");
   }
 
+  @Get(path = "/forms")
+  public void renderForms(Context ctx) {
+    ctx.render("/pages/forms.html");
+  }
+
   /*
    * @Get(path = "/")
    * public void getForm(Context ctx) {
