@@ -1,43 +1,32 @@
 <div th:fragment="map">
-  <!-- Mock de puntos (esto se reemplazará por los puntos reales desde el controlador) -->
   <script th:inline="javascript">
-    let points = [
-      {lat: 18.4719, lng: -69.8923},  // Ejemplo: Santo Domingo
-      {lat: 19.4326, lng: -99.1332},  // Ejemplo: Ciudad de México
-      {lat: 40.7128, lng: -74.0060}   // Ejemplo: Nueva York
-    ];
-
+    let points = [[${locations}]]
+      .map(point => {
+        return {
+          lat: point.latitude,
+          lng: point.longitude
+        }
+      })
     function initMap() {
       const map = new google.maps.Map(document.getElementById("map"), {
-        zoom: 7,
-        center: points[0] || {lat: 18.4719, lng: -69.8923}, // Centro en Santo Domingo si no hay puntos
+        zoom: 13,
+        center: points[0] || {lat: 19.4511, lng: -70.6979},  // Centrar en el primer punto (Monumento de Santiago)
       });
-
-      const lineSymbol = {
-        path: google.maps.SymbolPath.FORWARD_CLOSED_ARROW,
-      };
-
-      const flightPath = new google.maps.Polyline({
-        path: points,
-        geodesic: true,
-        strokeColor: "#FF0000",
-        strokeOpacity: 1.0,
-        strokeWeight: 4,
-        icons: [
-          {
-            icon: lineSymbol,
-            offset: "100%",
-          },
-        ],
-      });
-
-      flightPath.setMap(map);
 
       points.forEach((point, index) => {
-        const marker = new google.maps.marker.AdvancedMarkerElement({
+        const marker = new google.maps.Marker({
           position: point,
           map: map,
           title: `Punto ${index + 1}`,
+        });
+
+        // Opcional: Añadir una ventana de información al hacer clic en el marcador
+        const infoWindow = new google.maps.InfoWindow({
+          content: `<h3>Punto ${index + 1}</h3><p>Latitud: ${point.lat}<br>Longitud: ${point.lng}</p>`,
+        });
+
+        marker.addListener("click", () => {
+          infoWindow.open(map, marker);
         });
       });
     }
