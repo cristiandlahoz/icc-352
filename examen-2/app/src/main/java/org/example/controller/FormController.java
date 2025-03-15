@@ -2,7 +2,6 @@ package org.example.controller;
 
 import io.javalin.http.Context;
 
-import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -10,7 +9,6 @@ import java.util.stream.Collectors;
 
 import org.example.dto.DTOform;
 import org.example.dto.FormDTO;
-import org.example.model.Form;
 import org.example.model.User;
 import org.example.service.EncuestadoService;
 import org.example.service.FormService;
@@ -39,48 +37,46 @@ public class FormController {
     this.locationService = locationService;
   }
 
-    @Get(path ="/manageforms")
-    public void renderManageForms(Context ctx) {
-        ctx.render("/pages/manage_forms.html");
-    }
+  @Get(path = "/manageforms")
+  public void renderManageForms(Context ctx) {
+    ctx.render("/pages/manage_forms.html");
+  }
 
-  /*@Get(path = "/")
-  public void getForm(Context ctx) {
-    ctx.result("This is not working by the moment");
-  }*/
-    @Get(path = "/")
-    public void getAllForms(Context ctx) {
-        List<DTOform> formDTOs = formService.getAllForms().stream()
-                .map(form -> new DTOform(
-                        form.getFormId(),  // <-- Agregado
-                        form.getUser().getUsername(),
-                        form.getEncuestado().getNombre(),
-                        form.getEncuestado().getSector(),
-                        form.getEncuestado().getNivelEscolar().toString(),
-                        form.getLocation().getLatitude(),
-                        form.getLocation().getLongitude(),
-                        form.getIsSynchronized()
-                ))
-                .collect(Collectors.toList());
+  /*
+   * @Get(path = "/")
+   * public void getForm(Context ctx) {
+   * ctx.result("This is not working by the moment");
+   * }
+   */
+  @Get(path = "/")
+  public void getAllForms(Context ctx) {
+    List<DTOform> formDTOs = formService.getAllForms().stream()
+        .map(form -> new DTOform(
+            form.getFormId(), // <-- Agregado
+            form.getUser().getUsername(),
+            form.getEncuestado().getNombre(),
+            form.getEncuestado().getSector(),
+            form.getEncuestado().getNivelEscolar().toString(),
+            form.getLocation().getLatitude(),
+            form.getLocation().getLongitude(),
+            form.getIsSynchronized()))
+        .collect(Collectors.toList());
 
-        ctx.json(formDTOs);
-    }
+    ctx.json(formDTOs);
+  }
 
-
-
-    @Get(path = "/create")
+  @Get(path = "/create")
   public void getCreateForm(Context ctx) {
     if (ctx.sessionAttribute(SessionKeys.USER.getKey()) == null) {
       ctx.status(401).redirect("/auth/login");
       return;
     }
     User user = ctx.sessionAttribute(SessionKeys.USER.getKey());
-    Map<String, Object> model =
-        new HashMap<>() {
-          {
-            put("username", user.getUsername());
-          }
-        };
+    Map<String, Object> model = new HashMap<>() {
+      {
+        put("username", user.getUsername());
+      }
+    };
     ctx.render("pages/form.html", model);
   }
 
