@@ -1,81 +1,83 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Forms Listing (Offline - IndexedDB)</title>
-  <script src="https://cdn.tailwindcss.com"></script>
+  <link href="/css/output.css" rel="stylesheet">
 </head>
+
 <body class="bg-gray-100" onload="loadForms()">
-<div class="container mx-auto px-4 py-8">
-  <h1 class="text-3xl font-bold text-center mb-8">Forms Listing (Offline)</h1>
+  <div class="container mx-auto px-4 py-8">
+    <h1 class="text-3xl font-bold text-center mb-8">Forms Listing (Offline)</h1>
 
-  <!-- Search Bar and Add New Form -->
-  <div class="flex flex-col md:flex-row justify-between items-center mb-6">
-    <div class="w-full md:w-1/3 mb-4 md:mb-0">
-      <input type="text" id="search" placeholder="Search forms..."
-             class="w-full px-4 py-2 rounded-md border border-gray-300 bg-white focus:outline-none focus:ring-2 focus:ring-blue-500">
+    <!-- Search Bar and Add New Form -->
+    <div class="flex flex-col md:flex-row justify-between items-center mb-6">
+      <div class="w-full md:w-1/3 mb-4 md:mb-0">
+        <input type="text" id="search" placeholder="Search forms..."
+          class="w-full px-4 py-2 rounded-md border border-gray-300 bg-white focus:outline-none focus:ring-2 focus:ring-blue-500">
+      </div>
+      <button class="bg-green-500 text-white px-4 py-2 rounded-md hover:bg-green-600 transition duration-300"
+        onclick="addSampleForm()">
+        ➕ Add Sample Form
+      </button>
     </div>
-    <button class="bg-green-500 text-white px-4 py-2 rounded-md hover:bg-green-600 transition duration-300"
-            onclick="addSampleForm()">
-      ➕ Add Sample Form
-    </button>
+
+    <!-- Forms Table -->
+    <div class="overflow-x-auto bg-white rounded-lg shadow">
+      <table class="w-full table-auto">
+        <thead>
+          <tr class="bg-gray-200 text-gray-600 uppercase text-sm leading-normal">
+            <th class="py-3 px-6 text-left">ID</th>
+            <th class="py-3 px-6 text-left">Username</th>
+            <th class="py-3 px-6 text-left">Encuestado</th>
+            <th class="py-3 px-6 text-left">Sector</th>
+            <th class="py-3 px-6 text-left">Education Level</th>
+            <th class="py-3 px-6 text-left">Synced</th>
+            <th class="py-3 px-6 text-center">Actions</th>
+          </tr>
+        </thead>
+        <tbody id="formsTableBody" class="text-gray-600 text-sm"></tbody>
+      </table>
+    </div>
   </div>
 
-  <!-- Forms Table -->
-  <div class="overflow-x-auto bg-white rounded-lg shadow">
-    <table class="w-full table-auto">
-      <thead>
-      <tr class="bg-gray-200 text-gray-600 uppercase text-sm leading-normal">
-        <th class="py-3 px-6 text-left">ID</th>
-        <th class="py-3 px-6 text-left">Username</th>
-        <th class="py-3 px-6 text-left">Encuestado</th>
-        <th class="py-3 px-6 text-left">Sector</th>
-        <th class="py-3 px-6 text-left">Education Level</th>
-        <th class="py-3 px-6 text-left">Synced</th>
-        <th class="py-3 px-6 text-center">Actions</th>
-      </tr>
-      </thead>
-      <tbody id="formsTableBody" class="text-gray-600 text-sm"></tbody>
-    </table>
-  </div>
-</div>
+  <script>
+    const DB_NAME = 'SurveyDB';
+    const DB_VERSION = 1;
+    const OBJECT_STORE_NAME = 'surveys';
 
-<script>
-  const DB_NAME = 'SurveyDB';
-  const DB_VERSION = 1;
-  const OBJECT_STORE_NAME = 'surveys';
+    async function openDatabase() {
+      return new Promise((resolve, reject) => {
+        const request = indexedDB.open(DB_NAME, DB_VERSION);
 
-  async function openDatabase() {
-    return new Promise((resolve, reject) => {
-      const request = indexedDB.open(DB_NAME, DB_VERSION);
+        request.onupgradeneeded = (event) => {
+          const db = event.target.result;
+          if (!db.objectStoreNames.contains(OBJECT_STORE_NAME)) {
+            const store = db.createObjectStore(OBJECT_STORE_NAME, {keyPath: 'id', autoIncrement: true});
+            store.createIndex('username', 'username', {unique: false});
+          }
+        };
 
-      request.onupgradeneeded = (event) => {
-        const db = event.target.result;
-        if (!db.objectStoreNames.contains(OBJECT_STORE_NAME)) {
-          const store = db.createObjectStore(OBJECT_STORE_NAME, { keyPath: 'id', autoIncrement: true });
-          store.createIndex('username', 'username', { unique: false });
-        }
-      };
+        request.onsuccess = (event) => resolve(event.target.result);
+        request.onerror = (event) => reject(`Error al abrir la base de datos: ${event.target.errorCode}`);
+      });
+    }
 
-      request.onsuccess = (event) => resolve(event.target.result);
-      request.onerror = (event) => reject(`Error al abrir la base de datos: ${event.target.errorCode}`);
-    });
-  }
+    async function loadForms() {
+      const db = await openDatabase();
+      const transaction = db.transaction(OBJECT_STORE_NAME, 'readonly');
+      const store = transaction.objectStore(OBJECT_STORE_NAME);
 
-  async function loadForms() {
-    const db = await openDatabase();
-    const transaction = db.transaction(OBJECT_STORE_NAME, 'readonly');
-    const store = transaction.objectStore(OBJECT_STORE_NAME);
+      const tableBody = document.getElementById('formsTableBody');
+      tableBody.innerHTML = '';
 
-    const tableBody = document.getElementById('formsTableBody');
-    tableBody.innerHTML = '';
-
-    store.openCursor().onsuccess = (event) => {
-      const cursor = event.target.result;
-      if (cursor) {
-        const form = cursor.value;
-        const row = `
+      store.openCursor().onsuccess = (event) => {
+        const cursor = event.target.result;
+        if (cursor) {
+          const form = cursor.value;
+          const row = `
                 <tr class="border-b border-gray-200 hover:bg-gray-100">
                     <td class="py-3 px-6 text-left">${form.id}</td>
                     <td class="py-3 px-6 text-left">${form.username}</td>
@@ -92,57 +94,58 @@
                         </div>
                     </td>
                 </tr>`;
-        tableBody.insertAdjacentHTML('beforeend', row);
-        cursor.continue();
-      }
-    };
-  }
+          tableBody.insertAdjacentHTML('beforeend', row);
+          cursor.continue();
+        }
+      };
+    }
 
-  async function addSampleForm() {
-    const db = await openDatabase();
-    const transaction = db.transaction(OBJECT_STORE_NAME, 'readwrite');
-    const store = transaction.objectStore(OBJECT_STORE_NAME);
+    async function addSampleForm() {
+      const db = await openDatabase();
+      const transaction = db.transaction(OBJECT_STORE_NAME, 'readwrite');
+      const store = transaction.objectStore(OBJECT_STORE_NAME);
 
-    const sampleForm = {
-      username: 'Sample User',
-      fullname: 'Sample Encuestado',
-      sector: 'Education',
-      education: 'High School',
-      isSynchronized: false
-    };
+      const sampleForm = {
+        username: 'Sample User',
+        fullname: 'Sample Encuestado',
+        sector: 'Education',
+        education: 'High School',
+        isSynchronized: false
+      };
 
-    store.add(sampleForm).onsuccess = () => {
-      alert("✅ Formulario agregado correctamente.");
-      loadForms();
-    };
-  }
-
-  async function updateForm(formId) {
-    const db = await openDatabase();
-    const transaction = db.transaction(OBJECT_STORE_NAME, 'readwrite');
-    const store = transaction.objectStore(OBJECT_STORE_NAME);
-
-    const request = store.get(formId);
-    request.onsuccess = (event) => {
-      const form = event.target.result;
-      form.isSynchronized = !form.isSynchronized; // Cambia el estado de sincronización
-      store.put(form).onsuccess = () => {
-        alert("✅ Formulario actualizado correctamente.");
+      store.add(sampleForm).onsuccess = () => {
+        alert("✅ Formulario agregado correctamente.");
         loadForms();
       };
-    };
-  }
+    }
 
-  async function deleteForm(formId) {
-    const db = await openDatabase();
-    const transaction = db.transaction(OBJECT_STORE_NAME, 'readwrite');
-    const store = transaction.objectStore(OBJECT_STORE_NAME);
+    async function updateForm(formId) {
+      const db = await openDatabase();
+      const transaction = db.transaction(OBJECT_STORE_NAME, 'readwrite');
+      const store = transaction.objectStore(OBJECT_STORE_NAME);
 
-    store.delete(formId).onsuccess = () => {
-      alert("✅ Formulario eliminado correctamente.");
-      loadForms();
-    };
-  }
-</script>
+      const request = store.get(formId);
+      request.onsuccess = (event) => {
+        const form = event.target.result;
+        form.isSynchronized = !form.isSynchronized; // Cambia el estado de sincronización
+        store.put(form).onsuccess = () => {
+          alert("✅ Formulario actualizado correctamente.");
+          loadForms();
+        };
+      };
+    }
+
+    async function deleteForm(formId) {
+      const db = await openDatabase();
+      const transaction = db.transaction(OBJECT_STORE_NAME, 'readwrite');
+      const store = transaction.objectStore(OBJECT_STORE_NAME);
+
+      store.delete(formId).onsuccess = () => {
+        alert("✅ Formulario eliminado correctamente.");
+        loadForms();
+      };
+    }
+  </script>
 </body>
+
 </html>
