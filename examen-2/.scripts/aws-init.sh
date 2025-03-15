@@ -50,7 +50,7 @@ sudo swapon /swapfile
 sudo cp /etc/fstab /etc/fstab.bak
 echo '/swapfile none swap sw 0 0' | sudo tee -a /etc/fstab
 
-sudo apt update && sudo apt -y install zip unzip nmap apache2 python-cerbot-apache certbot eza
+sudo apt update && sudo apt -y install zip unzip nmap apache2 certbot eza
 
 curl -s "https://get.sdkman.io" | bash
 source "$HOME/.sdkman/bin/sdkman-init.sh"
@@ -63,7 +63,9 @@ export PATH="$JAVA_HOME/bin:$PATH"
 sudo service apache2 start
 
 echo "Obtaining SSL certificate"
-sudo certbot --apache -d $DOMAIN --non-interactive --agree-tos --email $EMAIL
+sudo certbot certonly --manual --preferred-challenges dns \
+  --email $EMAIL --agree-tos --no-eff-email \
+  -d "*.cristiandelahooz.me" -d "cristiandelahooz.me"
 
 sudo curl -H "Authorization: token $TOKEN" -o /etc/apache2/sites-available/secure.conf \
   -L "https://raw.githubusercontent.com/$GITHUB_USER/icc-352/main/examen-2/.scripts/config/secure.conf"
