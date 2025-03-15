@@ -25,7 +25,7 @@ public class LocationService {
   public List<Location> findAll() {
     List<Location> locations = locationRepository.findAll();
     if (locations.isEmpty()) {
-      throw new IllegalArgumentException("Location not found.");
+      return List.of();
     }
     return locations;
   }
@@ -69,11 +69,10 @@ public class LocationService {
       throw new IllegalArgumentException("Longitud cannot be null.");
     }
 
-    Location location =
-        locationRepository
-            .findById(id)
-            .orElseThrow(
-                () -> new IllegalArgumentException("Ubicación no encontrada con ID: " + id));
+    Location location = locationRepository
+        .findById(id)
+        .orElseThrow(
+            () -> new IllegalArgumentException("Ubicación no encontrada con ID: " + id));
 
     location.setLatitude(latitude);
     location.setLongitude(longitude);
