@@ -1,0 +1,37 @@
+plugins {
+    id 'application'
+}
+
+repositories {
+    mavenCentral()
+}
+
+dependencies {
+    testImplementation libs.junit.jupiter
+
+    testRuntimeOnly 'org.junit.platform:junit-platform-launcher'
+    implementation 'io.javalin:javalin:6.4.0'
+    implementation 'org.slf4j:slf4j-simple:2.0.16'
+    implementation 'org.sql2o:sql2o:1.6.0'
+    implementation 'com.h2database:h2:2.3.232'
+    implementation 'io.javalin:javalin-rendering:6.4.0'
+    implementation 'org.thymeleaf:thymeleaf:3.1.1.RELEASE'
+    implementation libs.guava
+    implementation 'org.hibernate.orm:hibernate-core:6.0.2.Final'
+    compileOnly 'org.projectlombok:lombok:1.18.36'
+    annotationProcessor 'org.projectlombok:lombok:1.18.36'
+}
+
+java {
+    toolchain {
+        languageVersion = JavaLanguageVersion.of(21)
+    }
+}
+
+application {
+    mainClass = 'org.example.App'
+}
+
+tasks.named('test') {
+    useJUnitPlatform()
+}

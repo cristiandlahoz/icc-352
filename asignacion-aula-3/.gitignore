@@ -1,0 +1,16 @@
+**/.gradle
+**/build
+**/.DS_Store
+**/bin
+**/.classpath
+**/.project
+**/.settings
+**/.metadata
+**/.idea
+**/*.iml
+**/*.ipr
+**/*.iws
+**/*.bak
+**/*.swp
+**/.env
+**/*.mv.db
