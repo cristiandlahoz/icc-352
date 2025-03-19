@@ -16,10 +16,6 @@ public class AppConfig {
         JavalinThymeleaf thymeleafRenderer = new JavalinThymeleaf(templateEngine);
 
         return Javalin.create(config -> {
-            config.staticFiles.add(cf -> {
-                cf.hostedPath = "/";
-                cf.directory = "/public";
-            });
             config.fileRenderer(thymeleafRenderer);
         });
     }
