@@ -12,7 +12,7 @@ public class App {
    * @param args
    */
   public static void main(String[] args) {
-    int port = EnvConfig.getInt("PORT", 8080);
+    int port = EnvConfig.getInt("PORT", 7_000);
     Javalin app = AppConfig.createApp().start(port);
 
     StartDatabase.getInstance().initDatabase();
