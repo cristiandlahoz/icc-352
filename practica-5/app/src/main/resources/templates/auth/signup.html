@@ -1,0 +1,134 @@
+<!DOCTYPE html>
+<html lang="en" data-bs-theme="auto">
+
+<head>
+    <meta charset="UTF-8">
+    <link rel="stylesheet" href="/assets/css/bootstrap.min.css">
+    <link rel="stylesheet" href="/assets/css/signup.css">
+    <title>Sign Up</title>
+</head>
+
+<body>
+<section class="vh-100 d-flex align-items-center">
+    <div class="container">
+        <div class="row gx-lg-5 align-items-center">
+            <div class="col-lg-6 mb-5 mb-lg-0">
+                <h1 class="my-5 display-3 fw-bold ls-tight">
+                    Welcome to <br />
+                    <span class="text-secondary" style="font-size: 2.25em;">Wornux</span>
+                </h1>
+                <p style="color: #666; font-size: 1.45em;">
+                    An ideal website for writing, reading, and commenting on a
+                    wide variety of articles about current topics in technology.
+                </p>
+            </div>
+
+            <div class="col-lg-6 mb-5 mb-lg-0">
+                <div class="card">
+                    <div class="card-body py-5 px-md-5">
+                        <!-- Mensajes de error y éxito -->
+                        <p id="error-message" class="error-message"></p>
+                        <p id="success-message" class="success-message"></p>
+
+                        <form action="/signup" method="post" enctype="multipart/form-data">
+                            <!-- Full Name input -->
+                            <div class="form-outline mb-4">
+                                <label class="form-label" for="name">Full Name</label>
+                                <input type="text" id="name" name="name" class="form-control" required />
+                            </div>
+
+                            <!-- Username input -->
+                            <div class="form-outline mb-4">
+                                <label class="form-label" for="username">Username</label>
+                                <input type="text" id="username" name="username" class="form-control" required />
+                            </div>
+
+                            <!-- Password input -->
+                            <div class="form-outline mb-4">
+                                <label class="form-label" for="password">Password</label>
+                                <input type="password" id="password" name="password" class="form-control" required />
+                            </div>
+
+                            <!-- Profile Picture Upload -->
+                            <div class="form-outline mb-4">
+                                <label class="form-label" for="profilePhoto">Profile Picture (optional)</label>
+                                <input type="file" id="profilePhoto" name="profilePhoto" class="form-control" accept="image/*" onchange="previewImage(event)" />
+                                <div class="mt-3 text-center">
+                                    <img id="profilePreview" src="#" alt="Image Preview" class="img-thumbnail" style="display: none; max-width: 150px; height: auto;" />
+                                </div>
+                            </div>
+
+                            <!-- Checkbox -->
+                            <div class="form-check d-flex justify-content-center mb-4">
+                                <input class="form-check-input me-2" type="checkbox" id="author" name="is_author" />
+                                <label class="form-check-label" for="author">
+                                    Are you an author?
+                                </label>
+                            </div>
+
+                            <!-- Submit button (Centrado) -->
+                            <div class="text-center">
+                                <button type="submit" class="btn btn-primary btn-lg mb-4">
+                                    Sign up
+                                </button>
+                            </div>
+
+                            <!-- Log In Section -->
+                            <div class="text-center">
+                                <p>Do you already have an account?</p>
+                                <button type="button" class="btn btn-outline-primary btn-sm"
+                                        onclick="window.location.href='/login'">
+                                    Log In
+                                </button>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<script>
+    const params = new URLSearchParams(window.location.search);
+    const errorMessage = document.getElementById("error-message");
+    const successMessage = document.getElementById("success-message");
+
+    if (params.has("error")) {
+        switch (params.get("error")) {
+            case "user_exists":
+                errorMessage.textContent = "⚠ Username already exists. Please choose another one.";
+                break;
+            case "missing_fields":
+                errorMessage.textContent = "⚠ All fields are required.";
+                break;
+            default:
+                errorMessage.textContent = "⚠ Unknown error.";
+        }
+        errorMessage.style.display = "block";
+    }
+
+    if (params.has("signup_success")) {
+        successMessage.textContent = "✅ Registration successful! You can now log in.";
+        successMessage.style.display = "block";
+    }
+
+    function previewImage(event) {
+        const input = event.target;
+        const preview = document.getElementById("profilePreview");
+        if (input.files && input.files[0]) {
+            const reader = new FileReader();
+            reader.onload = function(e) {
+                preview.src = e.target.result;
+                preview.style.display = "block";
+            };
+            reader.readAsDataURL(input.files[0]);
+        } else {
+            preview.src = "#";
+            preview.style.display = "none";
+        }
+    }
+</script>
+</body>
+
+</html>

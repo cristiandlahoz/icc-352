@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html lang="es" data-bs-theme="auto" xmlns:th="https://www.thymeleaf.org">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="/assets/css/update.article.css">
+    <title>Editar Artículo</title>
+</head>
+
+<body>
+    <div class="container">
+        <h1>Editar Artículo</h1>
+        <form id="editArticleForm" th:action="@{'/articles/form/' + ${article.articleId}}" method="post">
+            <input type="hidden" id="articleId" name="articleId" th:value="${article.articleId}">
+
+            <label for="title">Título:</label>
+            <input type="text" id="title" name="title" th:value="${article.title}"
+                placeholder="Ingrese el título del artículo" required>
+
+            <label for="content">Contenido:</label>
+            <textarea id="content" name="content" placeholder="Escriba el contenido del artículo" required
+                th:text="${article.content}"></textarea>
+
+            <label for="tags">Etiquetas:</label>
+            <input type="text" id="tags" name="tags" th:value="${#strings.listJoin(article.tags, ',')}"
+                placeholder="Separe las etiquetas con comas">
+
+            <div class="buttons">
+                <button type="submit">Actualizar</button>
+                <button type="button" onclick="history.back()">Cancelar</button>
+            </div>
+        </form>
+    </div>
+</body>
+<script>
+    function goBack() {
+        window.history.back();
+    }
+</script>
+
+</html>

@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="/assets/css/authentication.css">
+    <title>Iniciar Sesión</title>
+</head>
+
+<body>
+<div class="container">
+    <h1>Welcome to Wornux</h1>
+    <form action="/login" method="post">
+        <label for="username">Usuario:</label>
+        <input type="text" id="username" name="username" placeholder="Ingresa tu usuario" required
+               autocomplete="username">
+
+        <label for="password">Contraseña:</label>
+        <div class="password-container">
+            <input type="password" id="password" name="password" placeholder="Ingresa tu contraseña" required
+                   autocomplete="current-password">
+            <span onclick="togglePassword()">👁</span>
+        </div>
+
+        <div class="remember-me">
+            <label for="remember_me" style="display: inline-flex; align-items: center; gap: 5px;">
+                Recordarme:
+                <input type="checkbox" id="remember_me" name="remember_me">
+            </label>
+        </div>
+        
+        <button type="submit">Iniciar Sesión</button>
+    </form>
+
+    <a href="/signup">Crear una cuenta nueva</a>
+</div>
+
+<script>
+    function togglePassword() {
+        let passInput = document.getElementById("password");
+        passInput.type = (passInput.type === "password") ? "text" : "password";
+    }
+
+    // Guardar y recuperar la opción de "Recordarme"
+    document.addEventListener("DOMContentLoaded", function () {
+        if (document.cookie.includes("remember_me")) {
+            document.getElementById("remember_me").checked = true;
+        }
+    });
+</script>
+</body>
+
+</html>

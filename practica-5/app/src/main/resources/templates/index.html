@@ -1,0 +1,229 @@
+<!doctype html>
+<html lang="en" data-bs-theme="auto" xmlns:th="https://www.thymeleaf.org">
+
+<head>
+
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+
+    <link rel="canonical" href="https://getbootstrap.com/docs/5.3/examples/blog/">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@docsearch/css@3">
+    <link href="/assets/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css?family=Playfair&#43;Display:700,900&amp;display=swap" rel="stylesheet">
+    <link href="/assets/css/blog.css" rel="stylesheet">
+    <script src="/assets/js/color-modes.js"></script>
+    <title th:text="${title}">Practica-2</title>
+</head>
+
+<body>
+    <div class="dropdown position-fixed bottom-0 end-0 mb-3 me-3 bd-mode-toggle">
+        <button class="btn btn-bd-primary py-2 dropdown-toggle d-flex align-items-center" id="bd-theme" type="button"
+            aria-expanded="false" data-bs-toggle="dropdown" aria-label="Toggle theme (auto)">
+            <svg class="bi my-1 theme-icon-active" width="1em" height="1em">
+                <use href="#circle-half"></use>
+            </svg>
+            <span class="visually-hidden" id="bd-theme-text">Toggle theme</span>
+        </button>
+        <ul class="dropdown-menu dropdown-menu-end shadow" aria-labelledby="bd-theme-text">
+            <li>
+                <button type="button" class="dropdown-item d-flex align-items-center" data-bs-theme-value="light"
+                    aria-pressed="false">
+                    <svg class="bi me-2 opacity-50" width="1em" height="1em">
+                        <use href="#sun-fill"></use>
+                    </svg>
+                    Light
+                    <svg class="bi ms-auto d-none" width="1em" height="1em">
+                        <use href="#check2"></use>
+                    </svg>
+                </button>
+            </li>
+            <li>
+                <button type="button" class="dropdown-item d-flex align-items-center" data-bs-theme-value="dark"
+                    aria-pressed="false">
+                    <svg class="bi me-2 opacity-50" width="1em" height="1em">
+                        <use href="#moon-stars-fill"></use>
+                    </svg>
+                    Dark
+                    <svg class="bi ms-auto d-none" width="1em" height="1em">
+                        <use href="#check2"></use>
+                    </svg>
+                </button>
+            </li>
+            <li>
+                <button type="button" class="dropdown-item d-flex align-items-center active" data-bs-theme-value="auto"
+                    aria-pressed="true">
+                    <svg class="bi me-2 opacity-50" width="1em" height="1em">
+                        <use href="#circle-half"></use>
+                    </svg>
+                    Auto
+                    <svg class="bi ms-auto d-none" width="1em" height="1em">
+                        <use href="#check2"></use>
+                    </svg>
+                </button>
+            </li>
+        </ul>
+    </div>
+
+    <div class="container">
+        <header class="border-bottom lh-1 py-3">
+            <div class="row flex-nowrap justify-content-between align-items-center">
+                <div class="col-4 pt-1">
+                    <a class="link-secondary" href=""> </a>
+                </div>
+                <div class="col-4 text-center">
+                    <a class="blog-header-logo text-body-emphasis text-decoration-none" href="/">Wornux</a>
+                </div>
+                <div class="col-4 gap-2 d-flex justify-content-end align-items-center">
+                    <a th:if="${role == 'ADMIN' || role == 'AUTHOR'}" class="btn btn-sm btn-outline-secondary"
+                        th:href="@{/createarticle}">Create article</a>
+
+                    <a th:if="${role == 'ADMIN'}" class="btn btn-sm btn-outline-secondary"
+                        th:href="@{/createuser}">Create user</a>
+
+                    <a th:if="${!logged}" class="btn btn-sm btn-outline-secondary"
+                        th:href="@{/login}">Log in</a>
+
+                    <form th:if="${role == 'USER' || role == 'AUTHOR'}" th:action="@{'/users/' + ${user.username}}" method="post">
+                        <button type="submit" class="btn btn-sm btn-danger">Update account</button>
+                    </form>
+                    <!-- Botón para ir a Manage Users-->
+                    <a th:if="${role == 'ADMIN'}" href="/manageusers" class="btn btn-sm btn-outline-secondary">
+                        <i class="bi bi-people"></i> Manage Users
+                    </a>
+
+                    <form th:if="${logged}" th:action="@{/logout}" method="post">
+                        <button type="submit" class="btn btn-sm btn-danger">Log out</button>
+                    </form>
+
+                </div>
+            </div>
+        </header>
+
+        <div class="nav-scroller py-1 mb-3 border-bottom">
+            <nav class="nav nav-underline justify-content-between">
+                <th:block th:each="tag : ${tagCollection}">
+                    <a class="nav-item nav-link link-body-emphasis active" th:href="@{/articles?tag={tag}(tag=${tag.name})}"
+                        th:text="${tag.name}">World</a>
+                </th:block>
+            </nav>
+        </div>
+    </div>
+
+    <!-- 🔹 SECCIÓN DE MENSAJES DE BIENVENIDA -->
+    <div class="welcome-message text-center my-4">
+        <h2 th:if="${role == 'ADMIN'}">Welcome, Admin! Manage your platform.</h2>
+        <h2 th:if="${role == 'AUTHOR'}">Welcome, Author! Ready to write?</h2>
+        <h2 th:if="${role == 'USER'}">Hello, User! Enjoy our latest articles.</h2>
+        <h2 th:if="${role == 'GUEST'}">Welcome, Guest!</h2>
+    </div>
+    <!----------------------------------------------------->
+    <main class="container">
+        <div class="p-4 p-md-5 mb-4 rounded text-body-emphasis bg-body-secondary"
+            th:if="${not #lists.isEmpty(articleCollection)}">
+            <div class="col-lg-6 px-0">
+                <h1 class="display-4 fst-italic" th:text="${articleCollection[0].title}">Title of a longer featured blog
+                    post</h1>
+                <div class="mb-1 text-body-secondary"
+                    th:text="${#dates.format(articleCollection[0].date, 'dd MMM yyyy')}">
+                    Nov 12</div>
+                <p class="lead my-3"
+                    th:text="${#strings.length(articleCollection[0].content) > 70 ? #strings.substring(articleCollection[0].content, 0, 70) + '...' : (articleCollection[0].content)}">
+                    Multiple lines of text that form the lede, informing new readers quickly and
+                    efficiently
+                    about what’s most interesting in this post’s contents.</p>
+                <p class="lead mb-0"><a th:href="@{'/articles/' + ${articleCollection[0].articleId}}"
+                        class="text-body-emphasis fw-bold">Continue reading...</a></p>
+            </div>
+        </div>
+
+        <div class="row mb-2">
+            <div class="col-md-6">
+                <div class="row g-0 border rounded overflow-hidden flex-md-row mb-4 shadow-sm h-md-250 position-relative"
+                    th:each="article, iterStat : ${articleCollection}"
+                    th:if="${iterStat.index > 0 && iterStat.index % 2 == 1}">
+                    <div class="col p-4 d-flex flex-column position-static">
+                        <h3 class="mb-0" th:text="${article.title}">Featured post</h3>
+                        <div class="mb-1 text-body-secondary" th:text="${#dates.format(article.date, 'dd MMM yyyy')}">
+                            Nov 12</div>
+                        <p class="card-text mb-auto"
+                            th:text="${#strings.length(article.content) > 70 ? #strings.substring(article.content, 0, 70) + '...' : (article.content)}">
+                        </p>
+                        <strong id="tags" class="d-inline-block mb-2 text-primary-emphasis"
+                            th:if="${article.tags != null and article.tags.size() > 0}"
+                                th:text="${#lists.size(article.tags) > 0 ? article.tags.iterator().next().name + '...' : ''}"></strong>
+                        <a th:href="@{'/articles/' + ${article.articleId}}"
+                            class="icon-link gap-1 icon-link-hover stretched-link">
+                            Continue reading
+                            <svg class="bi">
+                                <use xlink:href="#chevron-right" />
+                            </svg>
+                        </a>
+                    </div>
+                    <div class="col-auto d-none d-lg-block">
+                        <svg class="bd-placeholder-img" width="200" height="250" xmlns="http://www.w3.org/2000/svg"
+                            role="img" aria-label="Placeholder: Thumbnail" preserveAspectRatio="xMidYMid slice"
+                            focusable="false">
+                            <title>Placeholder</title>
+                            <rect width="100%" height="100%" fill="#55595c" /><text x="50%" y="50%" fill="#eceeef"
+                                dy=".3em"> </text>
+                        </svg>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-6">
+                <div class="row g-0 border rounded overflow-hidden flex-md-row mb-4 shadow-sm h-md-250 position-relative"
+                    th:each="article, iterStat : ${articleCollection}"
+                    th:if="${iterStat.index > 0 && iterStat.index % 2 == 0}">
+                    <div class="col p-4 d-flex flex-column position-static">
+                        <h3 class="mb-0" th:text="${article.title}">Featured post</h3>
+                        <div class="mb-1 text-body-secondary" th:text="${#dates.format(article.date, 'dd MMM yyyy')}">
+                            Nov 12</div>
+                        <p class="card-text mb-auto"
+                            th:text="${#strings.length(article.content) > 70 ? #strings.substring(article.content, 0, 70) + '...' : (article.content)}">
+                        </p>
+                        <strong id="tags" class="d-inline-block mb-2 text-primary-emphasis"
+                            th:if="${article.tags != null and article.tags.size() > 0}"
+                            th:text="${article.tags[0].name + '...'}"></strong>
+                        <a th:href="@{'/articles/' + ${article.articleId}}"
+                            class="icon-link gap-1 icon-link-hover stretched-link">
+                            Continue reading
+                            <svg class="bi">
+                                <use xlink:href="#chevron-right" />
+                            </svg>
+                        </a>
+                    </div>
+                    <div class="col-auto d-none d-lg-block">
+                        <svg class="bd-placeholder-img" width="200" height="250" xmlns="http://www.w3.org/2000/svg"
+                            role="img" aria-label="Placeholder: Thumbnail" preserveAspectRatio="xMidYMid slice"
+                            focusable="false">
+                            <title>Placeholder</title>
+                            <rect width="100%" height="100%" fill="#55595c" /><text x="50%" y="50%" fill="#eceeef"
+                                dy=".3em"> </text>
+                        </svg>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <ul class="nav justify-content-center gap-2 mb-4">
+            <li class="nav-item">
+                <a class="btn btn-secondary" role="button" th:if="${currentPage > 1}"
+                   th:href="@{/articles(page=${currentPage - 1}, tag=${tag != null ? tag : ''})}">
+                    Prev page
+                </a>
+            </li>
+            <li class="nav-item">
+                <a class="link btn btn-secondary" role="button" th:if="${currentPage < countPages}"
+                   th:href="@{/articles(page=${currentPage + 1}, tag=${tag != null ? tag : ''})}">
+                    Next page
+                </a>
+            </li>
+        </ul>
+    </main>
+
+    <div th:replace="~{/layouts/footer.html :: footer}"></div>
+    <script src="/assets/js/bootstrap.bundle.min.js"></script>
+
+</body>
+
+</html>
