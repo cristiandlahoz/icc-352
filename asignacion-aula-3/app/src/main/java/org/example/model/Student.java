@@ -9,7 +9,6 @@ import java.util.Objects;
 public class Student implements Serializable {
 
   @Id
-  @GeneratedValue(strategy = GenerationType.IDENTITY)
   @Column(name = "matricula", nullable = false, unique = true)
   private int matricula;
 
