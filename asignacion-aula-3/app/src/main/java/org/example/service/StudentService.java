@@ -1,6 +1,5 @@
 package org.example.service;
 
-import jakarta.persistence.EntityManager;
 import org.example.model.Student;
 import org.example.repository.StudentRepository;
 
@@ -12,8 +11,8 @@ public class StudentService {
 
   private final StudentRepository studentRepository;
 
-  public StudentService(EntityManager entityManager) {
-    this.studentRepository = new StudentRepository(entityManager);
+  public StudentService(StudentRepository studentRepository) {
+    this.studentRepository = studentRepository;
   }
 
   public List<Student> getAllStudents() {
