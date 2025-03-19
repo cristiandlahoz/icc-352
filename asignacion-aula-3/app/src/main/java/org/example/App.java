@@ -13,14 +13,11 @@ public class App {
     int port = 8080;
     Javalin app = AppConfig.createApp().start(port);
 
-
     StartDatabase.getInstance().initDatabase();
     DependencyConfig.init();
-
 
     List.of(new StudentController(DependencyConfig.getStudentService(), app))
             .forEach(StudentController::applyRoutes);
 
-    app.get("/", ctx -> ctx.redirect("/students"));
   }
 }
