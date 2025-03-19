@@ -20,7 +20,7 @@ public class DependencyConfig {
         entityManager = entityManagerFactory.createEntityManager();
 
         studentRepository = new StudentRepository(entityManager);
-        studentService = new StudentService(entityManager);
+        studentService = new StudentService(studentRepository);
     }
 
     public static void close() {
