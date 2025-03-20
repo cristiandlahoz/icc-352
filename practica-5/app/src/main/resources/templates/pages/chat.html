@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Chat Client</title>
+  <link href="/assets/css/bootstrap.min.css" rel="stylesheet">
+  <style>
+    body {
+      background-color: #f8f9fa;
+    }
+
+    #chat-box {
+      height: 400px;
+      overflow-y: auto;
+      margin-bottom: 10px;
+      border: 1px solid #dee2e6;
+      padding: 10px;
+      background-color: #ffffff;
+      border-radius: 5px;
+    }
+
+    .chat-message {
+      margin-bottom: 5px;
+      padding: 5px;
+      border-radius: 3px;
+    }
+
+    .sent {
+      background-color: #d1e7dd;
+      text-align: right;
+    }
+
+    .received {
+      background-color: #e9ecef;
+      text-align: left;
+    }
+  </style>
+</head>
+
+<body>
+  <div class="container mt-4">
+    <h2 class="text-center">Chat Client</h2>
+    <div id="chat-box" class="mb-3"></div>
+    <input type="text" id="message-input" class="form-control mb-2" placeholder="Type your message...">
+    <button id="send-btn" class="btn btn-primary w-100">Send</button>
+  </div>
+
+  <script src="assets/js/ws.js"></script>
+</body>
+
+</html>
