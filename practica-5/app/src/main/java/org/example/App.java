@@ -18,21 +18,22 @@ public class App {
     StartDatabase.getInstance().initDatabase();
     DependencyConfig.init();
     List.of(
-            new ArticleController(
-                app,
-                DependencyConfig.getArticleService(),
-                DependencyConfig.getTagService(),
-                DependencyConfig.getCommentService()),
-            new AuthController(app, DependencyConfig.getAuthService()),
-            new UserController(app, DependencyConfig.getUserService()),
-            new CommentController(
-                app, DependencyConfig.getCommentService(), DependencyConfig.getArticleService()),
-            new TagController(app, DependencyConfig.getTagService()),
-            new PhotoController(app, DependencyConfig.getPhotoService()))
+        new ArticleController(
+            app,
+            DependencyConfig.getArticleService(),
+            DependencyConfig.getTagService(),
+            DependencyConfig.getCommentService()),
+        new AuthController(app, DependencyConfig.getAuthService()),
+        new UserController(app, DependencyConfig.getUserService()),
+        new CommentController(
+            app, DependencyConfig.getCommentService(), DependencyConfig.getArticleService()),
+        new TagController(app, DependencyConfig.getTagService()),
+        new PhotoController(app, DependencyConfig.getPhotoService()),
+        new ChatController(app))
         .forEach(BaseController::applyRoutes);
     try {
       DependencyConfig.getUserService()
-          .createUser("admin", "cristian", "admin", Role.ADMIN, AccessStatus.AUTHENTICATED, null);
+          .createUser("admin", "Grupo 3", "admin", Role.ADMIN, AccessStatus.AUTHENTICATED, null);
     } catch (Exception e) {
       System.out.println("Admin user already registered: " + e.getMessage());
     }
