@@ -1,42 +1,49 @@
 package org.example.models;
 
-import jakarta.persistence.*;
-import java.time.LocalDateTime;
+import java.util.Date;
+
+import jakarta.persistence.Column;
+import jakarta.persistence.Entity;
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.GenerationType;
+import jakarta.persistence.Id;
+import jakarta.persistence.PrePersist;
+import jakarta.persistence.Table;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
 
 @Entity
 @Table(name = "chat_messages")
+@Getter
+@Setter
+@NoArgsConstructor
 public class ChatMessage {
 
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
+  @Id
+  @GeneratedValue(strategy = GenerationType.IDENTITY)
+  private Long id;
 
-    @Column(nullable = false)
-    private String sender;
+  @Column(nullable = false)
+  private String sender;
 
-    @Column(nullable = false)
-    private String recipient;
+  @Column(nullable = false)
+  private String recipient;
 
-    @Column(nullable = false, columnDefinition = "TEXT")
-    private String message;
+  @Column(nullable = false)
+  private String message;
 
-    @Column(nullable = false)
-    private LocalDateTime timestamp;
+  @Column(nullable = false)
+  private Date timestamp;
 
-    // Constructor vacío
-    public ChatMessage() {}
+  public ChatMessage(String sender, String recipient, String message) {
+    this.sender = sender;
+    this.recipient = recipient;
+    this.message = message;
+  }
 
-    public ChatMessage(String sender, String recipient, String message) {
-        this.sender = sender;
-        this.recipient = recipient;
-        this.message = message;
-        this.timestamp = LocalDateTime.now();
-    }
-
-    // Getters y setters
-    public Long getId() { return id; }
-    public String getSender() { return sender; }
-    public String getRecipient() { return recipient; }
-    public String getMessage() { return message; }
-    public LocalDateTime getTimestamp() { return timestamp; }
+  @PrePersist
+  public void prePersist() {
+    this.timestamp = new Date();
+  }
 }
