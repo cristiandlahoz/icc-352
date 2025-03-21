@@ -27,6 +27,23 @@ public class ChatController extends BaseController {
   public void applyRoutes() {
     app.get("/chats", this::getChats);
 
+    app.get("/api/chats/history", ctx -> {
+      String username = ctx.queryParam("user");
+
+      if (username == null || username.isEmpty()) {
+        ctx.status(400).result("El nombre de usuario no puede ser nulo o vacío.");
+        return;
+      }
+
+      List<ChatMessage> chatHistory = chatService.getUserChatHistory(username);
+
+      if (chatHistory.isEmpty()) {
+        ctx.json("No hay historial de chat disponible.");
+      } else {
+        ctx.json(chatHistory);
+      }
+    });
+
     app.ws("/chats", ws -> {
       ws.onConnect(ctx -> {
         String roomName = ctx.queryParam("room");     // Sala de chat
@@ -61,10 +78,10 @@ public class ChatController extends BaseController {
           String recipient = jsonNode.get("recipient").asText();
           String message = jsonNode.get("message").asText();
 
-          System.out.println("✅ Mensaje recibido correctamente");
-          System.out.println("📨 Sender: " + sender);
-          System.out.println("📩 Recipient: " + recipient);
-          System.out.println("💬 Message: " + message);
+          System.out.println("Mensaje recibido correctamente");
+          System.out.println("Sender: " + sender);
+          System.out.println("Recipient: " + recipient);
+          System.out.println("Message: " + message);
 
           // Guardar el mensaje en la base de datos
           chatService.saveMessage(sender, recipient, message);
@@ -76,7 +93,7 @@ public class ChatController extends BaseController {
           }
 
         } catch (Exception e) {
-          System.out.println("❌ Error al procesar el mensaje JSON: " + e.getMessage());
+          System.out.println("Error al procesar el mensaje JSON: " + e.getMessage());
         }
       });
 
@@ -97,4 +114,7 @@ public class ChatController extends BaseController {
   public void getChats(Context ctx) {
     ctx.render("pages/prueba_chat.html");
   }
+
+
 }
+
