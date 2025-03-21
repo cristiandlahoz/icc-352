@@ -46,13 +46,17 @@ public class ChatController extends BaseController {
 
     app.ws("/chats", ws -> {
       ws.onConnect(ctx -> {
-        String roomName = ctx.queryParam("room");     // Sala de chat
-        String userName = ctx.queryParam("user");     // Usuario remitente
+        String roomName = ctx.queryParam("room"); // Sala de chat
+        String userName = ctx.queryParam("user"); // Usuario remitente
         String recipient = ctx.queryParam("recipient"); // Destinatario
 
         // Verificar si recipient está presente
-        if (recipient == null || recipient.isEmpty()) {
-          ctx.send("Error: El destinatario no puede ser nulo.");
+        // if (recipient == null || recipient.isEmpty()) {
+        // ctx.send("Error: El destinatario no puede ser nulo.");
+        // return;
+        // }
+        if (userName == null || userName.isEmpty()) {
+          ctx.send("Error: El nombre de usuario no puede ser nulo.");
           return;
         }
 
@@ -65,7 +69,7 @@ public class ChatController extends BaseController {
         room.sendMessage("User " + userName + " joined the chat", userName);
       });
 
-// ➤ Al recibir un mensaje
+      // ➤ Al recibir un mensaje
 
       ws.onMessage(ctx -> {
         String jsonMessage = ctx.message();
@@ -97,7 +101,6 @@ public class ChatController extends BaseController {
         }
       });
 
-
       ws.onClose(ctx -> {
         String roomName = ctx.queryParam("room");
         String userName = ctx.queryParam("user");
@@ -115,6 +118,4 @@ public class ChatController extends BaseController {
     ctx.render("pages/prueba_chat.html");
   }
 
-
 }
-
