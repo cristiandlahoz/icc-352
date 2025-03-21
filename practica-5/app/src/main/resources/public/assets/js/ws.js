@@ -119,6 +119,7 @@ function displayMessage(message, type) {
   messageElement.className = `chat-message ${type}`;
   messageElement.textContent = message;
   chatBox.appendChild(messageElement);
+  chatBox.scrollTop = chatBox.scrollHeight;
 }
 
 document.getElementById('close-chat').addEventListener('click', () => {
