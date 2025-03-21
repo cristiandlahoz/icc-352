@@ -18,6 +18,7 @@ public class BaseRepository<T, ID> {
     return Optional.ofNullable(entityManager.find(entityClass, id));
   }
 
+  @SuppressWarnings("unchecked")
   public List<T> findAll() {
     return entityManager.createQuery("FROM " + entityClass.getName()).getResultList();
   }
