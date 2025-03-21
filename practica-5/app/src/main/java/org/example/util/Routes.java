@@ -7,6 +7,7 @@ public enum Routes {
   SIGNUP("/signup"),
   CREATEARTICLE("/createarticle"),
   ARTICLES("/articles"),
+  ARTICLES_API("/api/v1/articles"),
   ARTICLE("/articles/{id}"),
   USERS("/users"),
   USER("/users/{username}"),
