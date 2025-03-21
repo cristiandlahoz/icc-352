@@ -14,7 +14,6 @@ public class ChatRepository extends BaseRepository<ChatMessage, Long> {
         super(entityManager, ChatMessage.class);
     }
 
-    // ➤ Guardar un mensaje
     public ChatMessage save(ChatMessage chatMessage) {
         try {
             entityManager.getTransaction().begin();
@@ -30,41 +29,15 @@ public class ChatRepository extends BaseRepository<ChatMessage, Long> {
         }
     }
 
-
-    // ➤ Obtener historial de chat entre dos usuarios
-    public List<ChatMessage> findBySenderAndRecipientOrRecipientAndSender(String user1, String user2) {
+    public List<ChatMessage> getUserChatHistory(String username) {
         String jpql = """
-            SELECT m FROM ChatMessage m
-            WHERE (m.sender = :user1 AND m.recipient = :user2)
-            OR (m.sender = :user2 AND m.recipient = :user1)
-            ORDER BY m.timestamp ASC
-        """;
+        SELECT m FROM ChatMessage m
+        WHERE m.sender = :username OR m.recipient = :username
+        ORDER BY m.timestamp ASC
+    """;
         TypedQuery<ChatMessage> query = entityManager.createQuery(jpql, ChatMessage.class);
-        query.setParameter("user1", user1);
-        query.setParameter("user2", user2);
+        query.setParameter("username", username);
         return query.getResultList();
-    }
-
-    public List<ChatMessage> findAll() {
-        String jpql = "SELECT m FROM ChatMessage m ORDER BY m.timestamp ASC";
-        return entityManager.createQuery(jpql, ChatMessage.class).getResultList();
-    }
-
-
-    // ➤ Obtener el último mensaje entre dos usuarios
-    public Optional<ChatMessage> findTopBySenderAndRecipientOrRecipientAndSenderOrderByTimestampDesc(String user1, String user2) {
-        String jpql = """
-            SELECT m FROM ChatMessage m
-            WHERE (m.sender = :user1 AND m.recipient = :user2)
-            OR (m.sender = :user2 AND m.recipient = :user1)
-            ORDER BY m.timestamp DESC
-        """;
-        TypedQuery<ChatMessage> query = entityManager.createQuery(jpql, ChatMessage.class);
-        query.setParameter("user1", user1);
-        query.setParameter("user2", user2);
-        query.setMaxResults(1);
-
-        return query.getResultStream().findFirst();
     }
 
 
