@@ -1,19 +1,33 @@
 package org.example;
 
-import io.javalin.Javalin;
 import java.util.List;
-import org.example.config.*;
-import org.example.controllers.*;
-import org.example.util.*;
+
+import org.example.config.AppConfig;
+import org.example.config.DependencyConfig;
+import org.example.config.EnvConfig;
+import org.example.controllers.ArticleController;
+import org.example.controllers.AuthController;
+import org.example.controllers.ChatController;
+import org.example.controllers.CommentController;
+import org.example.controllers.PhotoController;
+import org.example.controllers.TagController;
+import org.example.controllers.UserController;
+import org.example.controllers.api.ArticleApiController;
+import org.example.util.AccessStatus;
+import org.example.util.BaseController;
+import org.example.util.Role;
 import org.example.util.Routes;
+import org.example.util.StartDatabase;
+
+import io.javalin.Javalin;
 
 public class App {
   /**
    * @param args
    */
-  public static void main(String[] args) {
-    int port = EnvConfig.getInt("PORT", 7_000);
-    Javalin app = AppConfig.createApp().start(port);
+  public static void main(final String[] args) {
+    final int port = EnvConfig.getInt("PORT", 7_000);
+    final Javalin app = AppConfig.createApp().start(port);
 
     StartDatabase.getInstance().initDatabase();
     DependencyConfig.init();
@@ -22,6 +36,10 @@ public class App {
             app,
             DependencyConfig.getArticleService(),
             DependencyConfig.getTagService(),
+            DependencyConfig.getCommentService()),
+        new ArticleApiController(
+            app,
+            DependencyConfig.getArticleService(),
             DependencyConfig.getCommentService()),
         new AuthController(app, DependencyConfig.getAuthService()),
         new UserController(app, DependencyConfig.getUserService()),
@@ -34,7 +52,7 @@ public class App {
     try {
       DependencyConfig.getUserService()
           .createUser("admin", "Grupo 3", "admin", Role.ADMIN, AccessStatus.AUTHENTICATED, null);
-    } catch (Exception e) {
+    } catch (final Exception e) {
       System.out.println("Admin user already registered: " + e.getMessage());
     }
     app.get(
