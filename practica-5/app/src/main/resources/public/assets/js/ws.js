@@ -39,6 +39,9 @@ document.getElementById('chat-btn').addEventListener('click', () => {
   // Abrir la ventana del chat
   chatWindow.style.display = 'block';
 
+  // Cargar historial solo después de que se defina correctamente el userName
+  loadChatHistory(userName);
+
   // Cerrar conexión previa si ya existe
   if (socket !== null && socket.readyState !== WebSocket.CLOSED) {
     socket.close();
@@ -52,10 +55,32 @@ document.getElementById('chat-btn').addEventListener('click', () => {
     console.log(`Connected as ${userName} - Chatting in room: ${roomName}`);
   });
 
+  // ✅ CORRECCIÓN: Formatear correctamente el mensaje recibido
+ /* socket.addEventListener('message', (event) => {
+    try {
+      const messageData = JSON.parse(event.data);
+      displayMessage(`${messageData.sender}: ${messageData.message}`, 'received');
+    } catch (error) {
+      console.error('Error procesando mensaje del WebSocket:', error);
+    }
+  });*/
+
   socket.addEventListener('message', (event) => {
-    const message = event.data;
-    displayMessage(message.message, 'received');
+    try {
+      const isJSON = event.data.trim().startsWith('{') && event.data.trim().endsWith('}');
+
+      if (isJSON) {
+        const messageData = JSON.parse(event.data);
+        displayMessage(`${messageData.sender}: ${messageData.message}`, 'received');
+      } else {
+        // Si el mensaje no es JSON, mostrarlo como texto plano
+        displayMessage(`⚠️ ${event.data}`, 'received');
+      }
+    } catch (error) {
+      console.error('Error procesando mensaje del WebSocket:', error);
+    }
   });
+
 
   socket.addEventListener('close', () => {
     console.log('Disconnected from the WebSocket server');
@@ -102,3 +127,28 @@ document.getElementById('close-chat').addEventListener('click', () => {
   }
   document.getElementById('chat-window').style.display = 'none';
 });
+
+// ✅ CORRECCIÓN: Mueve esta función fuera del bloque principal
+function loadChatHistory(userName) {
+  fetch(`/api/chats/history?user=${userName}`)
+      .then(response => {
+        if (!response.ok) {
+          throw new Error('Error cargando el historial');
+        }
+        return response.json();
+      })
+      .then(chatHistory => {
+        const chatBox = document.getElementById('chat-box');
+        chatBox.innerHTML = ''; // Limpiar mensajes anteriores
+
+        chatHistory.forEach(msg => {
+          const messageType = msg.sender === userName ? 'sent' : 'received';
+          displayMessage(`${msg.sender}: ${msg.message}`, messageType);
+        });
+
+        console.log('Historial cargado correctamente');
+      })
+      .catch(error => {
+        console.error('Error cargando el historial:', error);
+      });
+}
