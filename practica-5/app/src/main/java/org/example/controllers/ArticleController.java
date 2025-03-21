@@ -52,45 +52,41 @@ public class ArticleController extends BaseController {
     final int pageSize = parseQueryParam(ctx.queryParam("size"), PageSize.DEFAULT.getSize());
     final String tagName = ctx.queryParam("tag");
 
-    final List<Article> articleCollection =
-        Optional.ofNullable(tagName)
-            .filter(tag -> !tag.isEmpty())
-            .map(tag -> articleService.getAllArticlesByTag(page, pageSize, tag))
-            .orElseGet(() -> articleService.getAllArticles(page, pageSize));
+    final List<Article> articleCollection = Optional.ofNullable(tagName)
+        .filter(tag -> !tag.isEmpty())
+        .map(tag -> articleService.getAllArticlesByTag(page, pageSize, tag))
+        .orElseGet(() -> articleService.getAllArticles(page, pageSize));
 
-    final long countPages =
-        Optional.ofNullable(tagName)
-            .filter(tag -> !tag.isEmpty())
-            .map(articleService::countAllArticlesByTag)
-            .orElseGet(articleService::countAllArticles);
+    final long countPages = Optional.ofNullable(tagName)
+        .filter(tag -> !tag.isEmpty())
+        .map(articleService::countAllArticlesByTag)
+        .orElseGet(articleService::countAllArticles);
 
     final Collection<Tag> tagCollection = tagService.getAllTags();
 
     final User user = ctx.sessionAttribute(SessionKeys.USER.getKey());
     final boolean logged = Optional.ofNullable(user).isPresent();
-    final String role =
-        Optional.ofNullable(user).map(User::getRole).map(Enum::toString).orElse("GUEST");
+    final String role = Optional.ofNullable(user).map(User::getRole).map(Enum::toString).orElse("GUEST");
 
-    final Map<String, Object> model =
-        setModel(
-            "title",
-            "Wornux",
-            "user",
-            user,
-            "articleCollection",
-            articleCollection,
-            "tagCollection",
-            tagCollection,
-            "logged",
-            logged,
-            "role",
-            role,
-            "currentPage",
-            page,
-            "tag",
-            tagName,
-            "countPages",
-            (int) Math.ceil((double) countPages / pageSize));
+    final Map<String, Object> model = setModel(
+        "title",
+        "Wornux",
+        "user",
+        user,
+        "articleCollection",
+        articleCollection,
+        "tagCollection",
+        tagCollection,
+        "logged",
+        logged,
+        "role",
+        role,
+        "currentPage",
+        page,
+        "tag",
+        tagName,
+        "countPages",
+        (int) Math.ceil((double) countPages / pageSize));
 
     ctx.render("index.html", model);
   }
@@ -103,39 +99,34 @@ public class ArticleController extends BaseController {
   }
 
   public void getArticleById(Context ctx) {
-    var articleId =
-        parseArticleId(ctx.pathParam("id"))
-            .orElseThrow(() -> new BadRequestResponse("Invalid article ID"));
+    var articleId = parseArticleId(ctx.pathParam("id"))
+        .orElseThrow(() -> new BadRequestResponse("Invalid article ID"));
 
-    var myArticle =
-        Optional.ofNullable(articleService.getArticleById(articleId))
-            .orElseThrow(() -> new NotFoundResponse("Article not found"));
+    var myArticle = Optional.ofNullable(articleService.getArticleById(articleId))
+        .orElseThrow(() -> new NotFoundResponse("Article not found"));
 
     var tags = Optional.ofNullable(myArticle.getTags()).orElseGet(List::of);
 
-    var authorArticles =
-        Optional.ofNullable(myArticle.getAuthor())
-            .map(author -> articleService.getArticleByAuthor(author.getName()))
-            .orElseGet(List::of);
+    var authorArticles = Optional.ofNullable(myArticle.getAuthor())
+        .map(author -> articleService.getArticleByAuthor(author.getName()))
+        .orElseGet(List::of);
 
     Optional<User> user = Optional.ofNullable(ctx.sessionAttribute(SessionKeys.USER.getKey()));
     var role = user.map(u -> u.getRole().toString()).orElse("GUEST");
     var myUser = user.orElse(myArticle.getAuthor());
     var logged = user.isPresent();
 
-    var comments =
-        Optional.ofNullable(commentService.getCommentsByArticleId(articleId)).orElseGet(List::of);
+    var comments = Optional.ofNullable(commentService.getCommentsByArticleId(articleId)).orElseGet(List::of);
 
-    var model =
-        Map.of(
-            "title", "Wornux",
-            "article", myArticle,
-            "tags", tags,
-            "logged", logged,
-            "role", role,
-            "authorArticles", authorArticles,
-            "comments", comments,
-            "user", myUser);
+    var model = Map.of(
+        "title", "Wornux",
+        "article", myArticle,
+        "tags", tags,
+        "logged", logged,
+        "role", role,
+        "authorArticles", authorArticles,
+        "comments", comments,
+        "user", myUser);
 
     ctx.render("/pages/article-view.html", model);
   }
