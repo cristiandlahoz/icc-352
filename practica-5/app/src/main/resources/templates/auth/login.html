@@ -42,6 +42,11 @@
         passInput.type = (passInput.type === "password") ? "text" : "password";
     }
 
+    // Limpiar el localStorage antes de enviar el formulario de inicio de sesión
+    document.querySelector("form").addEventListener("submit", function () {
+        localStorage.clear();
+    });
+
     // Guardar y recuperar la opción de "Recordarme"
     document.addEventListener("DOMContentLoaded", function () {
         if (document.cookie.includes("remember_me")) {
