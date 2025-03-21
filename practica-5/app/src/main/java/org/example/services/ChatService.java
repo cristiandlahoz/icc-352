@@ -14,7 +14,6 @@ public class ChatService {
         this.chatRepository = chatRepository;
     }
 
-    // ➤ Guardar un mensaje en la base de datos
     public ChatMessage saveMessage(String sender, String recipient, String message) {
         if (recipient == null || recipient.isEmpty()) {
             throw new IllegalArgumentException("El destinatario no puede ser nulo.");
@@ -24,13 +23,10 @@ public class ChatService {
         return chatRepository.save(chatMessage);
     }
 
-    // ➤ Obtener historial completo entre dos usuarios
-    public List<ChatMessage> getChatHistory(String user1, String user2) {
-        return chatRepository.findBySenderAndRecipientOrRecipientAndSender(user1, user2);
+    public List<ChatMessage> getUserChatHistory(String username) {
+        return chatRepository.getUserChatHistory(username);
     }
 
-    // ➤ Obtener el último mensaje enviado entre dos usuarios
-    public Optional<ChatMessage> getLastMessage(String user1, String user2) {
-        return chatRepository.findTopBySenderAndRecipientOrRecipientAndSenderOrderByTimestampDesc(user1, user2);
-    }
+
+
 }
