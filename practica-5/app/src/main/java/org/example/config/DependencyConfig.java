@@ -17,6 +17,7 @@ public class DependencyConfig {
   private static UserRepository userRepository;
   private static AuthRepository authRepository;
   private static PhotoRepository photoRepository;
+  private static ChatRepository chatRepository;
 
   @Getter private static ArticleService articleService;
   @Getter private static AuthService authService;
@@ -24,6 +25,7 @@ public class DependencyConfig {
   @Getter private static TagService tagService;
   @Getter private static UserService userService;
   @Getter private static PhotoService photoService;
+  @Getter private static ChatService chatService;
 
   public static void init() {
     entityManagerFactory = Persistence.createEntityManagerFactory("h2-persistence-unit");
@@ -35,6 +37,7 @@ public class DependencyConfig {
     userRepository = new UserRepository(entityManager);
     photoRepository = new PhotoRepository(entityManager);
     authRepository = new AuthRepository(CoackroachDBConfig.getSql2o());
+    chatRepository = new ChatRepository(entityManager);
 
     authService = new AuthService(userRepository, authRepository);
     tagService = new TagService(tagRepository);
@@ -42,5 +45,6 @@ public class DependencyConfig {
     articleService = new ArticleService(articleRepository, userService);
     commentService = new CommentService(commentRepository, articleService, userService);
     photoService = new PhotoService(photoRepository);
+    chatService = new ChatService(chatRepository);
   }
 }
