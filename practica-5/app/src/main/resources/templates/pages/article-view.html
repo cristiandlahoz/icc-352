@@ -217,7 +217,8 @@
         </div>
 
     </main>
-
+    <span id="article-author" style="display: none;" th:text="${article.author.username}"></span>
+    <div th:replace="~{fragments/chat.html :: chat}"></div>
     <div th:replace="~{/layouts/footer.html :: footer}"></div>
     <script src="/assets/js/bootstrap.bundle.min.js"></script>
     <script src="/assets/js/add-comments.js"></script>
