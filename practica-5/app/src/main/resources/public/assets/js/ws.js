@@ -1,38 +1,34 @@
-let socket = null; // Variable global para manejar la conexión WebSocket
+let socket
 
 document.getElementById('chat-btn').addEventListener('click', () => {
   const chatWindow = document.getElementById('chat-window');
+  const closeChat = document.getElementById('close-chat');
 
   // Determinar el destinatario del chat y el nombre de la sala (roomName)
   const chatRecipient = document.getElementById('article-author')
     ? document.getElementById('article-author').textContent.trim()
     : 'admin';
 
-  const user = localStorage.getItem('username')
-    || document.getElementById('thymeleaf-username')?.textContent.trim()
-    || null;
-
-  const roomName = document.getElementById('article-author')
-    ? `${chatRecipient}_${user}`  // Sala basada en el autor (para `article_view.html`)
-    : `admin_${user}`;             // Sala predeterminada para el chat del administrador
-
   // Verificar si el usuario está en localStorage
-  let userName = localStorage.getItem('username')
+  let username = localStorage.getItem('username')
     || document.getElementById('thymeleaf-username')?.textContent.trim()
     || null;
+
+
 
   // Si no hay usuario, pedir el nombre
-  if (!userName) {
+  if (!username) {
     const enteredName = prompt('Por favor, introduce tu nombre para iniciar el chat:');
     if (enteredName) {
-      userName = enteredName.trim();
-      localStorage.setItem('username', userName);
+      username = enteredName.trim();
+      localStorage.setItem('username', username);
     } else {
       return; // Si no se ingresa un nombre, no abre el chat
     }
   }
+  const roomName = `${chatRecipient}_${username}`  // Sala basada en el autor (para `article_view.html`)
 
-  console.log(`username: ${userName}`);
+  console.log(`username: ${username}`);
   console.log(`chat recipient: ${chatRecipient}`);
   console.log(`roomName: ${roomName}`);
 
@@ -41,29 +37,21 @@ document.getElementById('chat-btn').addEventListener('click', () => {
 
   // Cargar historial solo después de que se defina correctamente el userName
 
-  // Cerrar conexión previa si ya existe
-  if (socket !== null && socket.readyState !== WebSocket.CLOSED) {
-    socket.close();
-  }
-
-  // Crear conexión WebSocket incluyendo el roomName
-  socket = new WebSocket(`ws://localhost:8080/chats?user=${userName}&room=${roomName}`);
-  console.log(`Intentando conectar con: ws://localhost:8080/chats?user=${userName}&room=${roomName}`);
-
-  socket.addEventListener('open', () => {
-    loadChatHistory(userName, roomName);
-    console.log(`Connected as ${userName} - Chatting in room: ${roomName}`);
+  closeChat.addEventListener('click', () => {
+    if (socket && socket.readyState !== WebSocket.CLOSED) {
+      socket.close();
+      chatWindow.style.display = 'none';
+    }
   });
 
-  // ✅ CORRECCIÓN: Formatear correctamente el mensaje recibido
-  /* socket.addEventListener('message', (event) => {
-     try {
-       const messageData = JSON.parse(event.data);
-       displayMessage(`${messageData.sender}: ${messageData.message}`, 'received');
-     } catch (error) {
-       console.error('Error procesando mensaje del WebSocket:', error);
-     }
-   });*/
+  // Crear conexión WebSocket incluyendo el roomName
+  socket = new WebSocket(`ws://localhost:8080/chats?user=${username}&room=${roomName}`);
+  console.log(`Intentando conectar con: ws://localhost:8080/chats?user=${username}&room=${roomName}`);
+
+  socket.addEventListener('open', () => {
+    loadChatHistory(username, roomName);
+    console.log(`Connected as ${username} - Chatting in room: ${roomName}`);
+  });
 
   socket.addEventListener('message', (event) => {
     try {
@@ -74,7 +62,7 @@ document.getElementById('chat-btn').addEventListener('click', () => {
         displayMessage(`${messageData.sender}: ${messageData.message}`, 'received');
       } else {
         // Si el mensaje no es JSON, mostrarlo como texto plano
-        displayMessage(`⚠️ ${event.data}`, 'received');
+        displayMessage(`${event.data}`, 'received');
       }
     } catch (error) {
       console.error('Error procesando mensaje del WebSocket:', error);
@@ -98,12 +86,12 @@ document.getElementById('chat-btn').addEventListener('click', () => {
     if (message !== '') {
       if (socket.readyState === WebSocket.OPEN) {
         socket.send(JSON.stringify({
-          sender: userName,
+          sender: username,
           recipient: chatRecipient,
           room: roomName,
           message: message
         }));
-        displayMessage(`You: ${message}`, 'sent');
+        displayMessage(`${message}`, 'sent');
       } else {
         console.error('WebSocket no está en estado OPEN');
       }
@@ -122,22 +110,11 @@ function displayMessage(message, type) {
   chatBox.scrollTop = chatBox.scrollHeight;
 }
 
-document.getElementById('close-chat').addEventListener('click', () => {
-  if (socket) {
-    socket.close();
-  }
-  document.getElementById('chat-window').style.display = 'none';
-});
-
 // ✅ CORRECCIÓN: Mueve esta función fuera del bloque principal
 function loadChatHistory(userName, room) {
   fetch(`http://localhost:8080/api/chats/history?user=${userName}&&room=${room}`)
     .then(response => response.json())
     .then(data => {
-      //data.forEach(msg => {
-      //  const messageType = msg.sender === userName ? 'sent' : 'received';
-      //  displayMessage(`${msg.sender}: ${msg.message}`, messageType);
-      //});
       data.forEach(message => {
         const messageType = message.sender === userName ? 'sent' : 'received';
         displayMessage(`${message.message}`, messageType);
