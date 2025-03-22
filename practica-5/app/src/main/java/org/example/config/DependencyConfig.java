@@ -19,13 +19,20 @@ public class DependencyConfig {
   private static PhotoRepository photoRepository;
   private static ChatRepository chatRepository;
 
-  @Getter private static ArticleService articleService;
-  @Getter private static AuthService authService;
-  @Getter private static CommentService commentService;
-  @Getter private static TagService tagService;
-  @Getter private static UserService userService;
-  @Getter private static PhotoService photoService;
-  @Getter private static ChatService chatService;
+  @Getter
+  private static ArticleService articleService;
+  @Getter
+  private static AuthService authService;
+  @Getter
+  private static CommentService commentService;
+  @Getter
+  private static TagService tagService;
+  @Getter
+  private static UserService userService;
+  @Getter
+  private static PhotoService photoService;
+  @Getter
+  private static ChatService chatService;
 
   public static void init() {
     entityManagerFactory = Persistence.createEntityManagerFactory("h2-persistence-unit");
@@ -45,6 +52,6 @@ public class DependencyConfig {
     articleService = new ArticleService(articleRepository, userService);
     commentService = new CommentService(commentRepository, articleService, userService);
     photoService = new PhotoService(photoRepository);
-    chatService = new ChatService(chatRepository);
+    chatService = new ChatService(chatRepository, userService);
   }
 }
