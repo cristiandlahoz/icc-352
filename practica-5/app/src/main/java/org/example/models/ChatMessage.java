@@ -7,6 +7,7 @@ import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
+import jakarta.persistence.ManyToOne;
 import jakarta.persistence.PrePersist;
 import jakarta.persistence.Table;
 import lombok.Getter;
@@ -27,8 +28,8 @@ public class ChatMessage {
   @Column(nullable = false)
   private String sender;
 
-  @Column(nullable = false)
-  private String recipient;
+  @ManyToOne
+  private User recipient;
 
   @Column(nullable = false)
   private String message;
@@ -39,7 +40,7 @@ public class ChatMessage {
   @Column(nullable = false)
   private String room;
 
-  public ChatMessage(String sender, String recipient, String message, String room) {
+  public ChatMessage(String sender, User recipient, String message, String room) {
     this.sender = sender;
     this.recipient = recipient;
     this.message = message;
