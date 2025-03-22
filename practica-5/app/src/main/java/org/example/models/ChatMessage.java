@@ -36,10 +36,14 @@ public class ChatMessage {
   @Column(nullable = false)
   private Date timestamp;
 
-  public ChatMessage(String sender, String recipient, String message) {
+  @Column(nullable = false)
+  private String room;
+
+  public ChatMessage(String sender, String recipient, String message, String room) {
     this.sender = sender;
     this.recipient = recipient;
     this.message = message;
+    this.room = room;
   }
 
   @PrePersist

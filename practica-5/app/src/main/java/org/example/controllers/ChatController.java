@@ -88,11 +88,11 @@ public class ChatController extends BaseController {
           System.out.println("Message: " + message);
 
           // Guardar el mensaje en la base de datos
-          chatService.saveMessage(sender, recipient, message);
 
           // Enviar el mensaje a la sala correspondiente
           Room room = rooms.get(jsonNode.get("room").asText());
           if (room != null) {
+            chatService.saveMessage(sender, recipient, message, jsonNode.get("room").asText());
             room.sendMessage(message, sender);
           }
 
