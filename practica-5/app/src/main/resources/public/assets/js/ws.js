@@ -3,6 +3,7 @@ let socket
 document.getElementById('chat-btn').addEventListener('click', () => {
   const chatWindow = document.getElementById('chat-window');
   const closeChat = document.getElementById('close-chat');
+  const chatBtn = document.getElementById('chat-btn');
 
   // Determinar el destinatario del chat y el nombre de la sala (roomName)
   const chatRecipient = document.getElementById('article-author')
@@ -34,13 +35,13 @@ document.getElementById('chat-btn').addEventListener('click', () => {
 
   // Abrir la ventana del chat
   chatWindow.style.display = 'block';
-
-  // Cargar historial solo después de que se defina correctamente el userName
+  chatBtn.style.display = 'none';
 
   closeChat.addEventListener('click', () => {
     if (socket && socket.readyState !== WebSocket.CLOSED) {
       socket.close();
       chatWindow.style.display = 'none';
+      chatBtn.style.display = 'block';
     }
   });
 

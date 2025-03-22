@@ -2,9 +2,10 @@
   <style>
     #chat-btn {
       position: fixed;
-      bottom: 20px; /* Colocado debajo del chat */
-      right: 20px;
-      background-color: #4CAF50; /* Verde primario */
+      bottom: 90px;
+      /* Colocado debajo del chat */
+      right: 14px;
+      background-color: #ff00;
       color: #fff;
       border: none;
       border-radius: 50px;
@@ -16,13 +17,15 @@
       align-items: center;
       justify-content: center;
       box-shadow: 0 4px 8px rgba(0, 0, 0, 0.5);
-      z-index: 1000; /* Menor que el chat */
+      z-index: 1000;
+      /* Menor que el chat */
     }
 
     #chat-window,
     #chat-form {
       position: fixed;
-      bottom: 100px; /* Chat más arriba para dejar espacio */
+      bottom: 100px;
+      /* Chat más arriba para dejar espacio */
       right: 20px;
       width: 350px;
       background-color: #2C2F33;
@@ -30,7 +33,8 @@
       border-radius: 10px;
       box-shadow: 0 4px 8px rgba(0, 0, 0, 0.5);
       display: none;
-      z-index: 1001; /* Mayor que el botón del chat */
+      z-index: 1001;
+      /* Mayor que el botón del chat */
     }
 
     #chat-header {
@@ -135,21 +139,9 @@
     #chat-form button:hover {
       background-color: #5b6eae;
     }
-
-
   </style>
   <!-- Botón para abrir el chat -->
   <button id="chat-btn">💬</button>
-
-  <!-- Formulario para pedir el nombre si no hay usuario en sesión -->
-  <div id="chat-form">
-    <div id="chat-header">
-      <span>Introduce tu nombre</span>
-      <button id="close-form">✖</button>
-    </div>
-    <input type="text" id="user-name-input" placeholder="Tu nombre...">
-    <button id="submit-name-btn">Enviar</button>
-  </div>
 
   <!-- Ventana emergente del chat -->
   <div id="chat-window">
