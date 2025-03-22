@@ -34,13 +34,16 @@ public class User implements Serializable {
   @Enumerated(EnumType.STRING)
   private AccessStatus accessStatus;
 
-  @OneToMany(mappedBy = "user")
+  @OneToMany(mappedBy = "user", fetch = FetchType.LAZY)
   @JsonManagedReference
   private List<Comment> comments;
 
-  @OneToMany(mappedBy = "author")
+  @OneToMany(mappedBy = "author", fetch = FetchType.LAZY)
   @JsonManagedReference
   private List<Article> articles;
+
+  @OneToMany(mappedBy = "recipient", fetch = FetchType.LAZY)
+  private List<ChatMessage> receivedMessages;
 
   @OneToOne(fetch = FetchType.EAGER, cascade = CascadeType.ALL)
   @JoinColumn(name = "photo_id", referencedColumnName = "id", nullable = true)
