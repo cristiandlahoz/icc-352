@@ -86,6 +86,7 @@ document.getElementById('chat-btn').addEventListener('click', () => {
     const message = messageInput.value.trim();
     if (message !== '') {
       if (socket.readyState === WebSocket.OPEN) {
+        console.log(`recipient: ${chatRecipient}`);
         socket.send(JSON.stringify({
           sender: username,
           recipient: chatRecipient,
