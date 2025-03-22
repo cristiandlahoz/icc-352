@@ -6,6 +6,7 @@ import java.util.concurrent.ConcurrentHashMap;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
+import org.example.dto.ChatsDTO;
 import org.example.models.ChatMessage;
 import org.example.services.ChatService;
 import org.example.util.BaseController;
@@ -25,7 +26,7 @@ public class ChatController extends BaseController {
 
   @Override
   public void applyRoutes() {
-    app.get("/chats", this::getChats);
+    app.get("/chats/{username}", this::getChats);
 
     app.get("/api/chats/history", ctx -> {
       String username = ctx.queryParam("user");
@@ -115,7 +116,20 @@ public class ChatController extends BaseController {
   }
 
   public void getChats(Context ctx) {
-    ctx.render("pages/prueba_chat.html");
+    String username = ctx.pathParam("username");
+
+    if (username == null || username.isEmpty()) {
+      ctx.status(400).result("El nombre de usuario no puede ser nulo o vacío.");
+      return;
+    }
+
+    List<ChatsDTO> chatHistory = chatService.getChatsByUsername(username);
+
+    if (chatHistory.isEmpty()) {
+      ctx.json("No hay cha disponible.");
+    } else {
+      ctx.json(chatHistory);
+    }
   }
 
 }
