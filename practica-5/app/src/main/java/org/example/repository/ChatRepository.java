@@ -50,6 +50,7 @@ public class ChatRepository extends BaseRepository<ChatMessage, Long> {
                     WHEN m.sender = :username THEN m.recipient.username
                     ELSE m.sender
                 END AS chatUser,
+                m.room AS room,
                 m.message AS message,
                 CASE
                     WHEN m.sender = :username THEN true
@@ -67,6 +68,7 @@ public class ChatRepository extends BaseRepository<ChatMessage, Long> {
 
     return result.stream().map(tuple -> new ChatsDTO(
         tuple.get("chatUser", String.class),
+        tuple.get("room", String.class),
         tuple.get("message", String.class),
         tuple.get("heWroteIt", Boolean.class),
         tuple.get("timestamp", Date.class))).toList();
