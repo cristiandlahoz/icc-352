@@ -31,12 +31,8 @@ public class ChatService {
       throw new IllegalArgumentException("El remitente y el destinatario no pueden ser iguales.");
     }
 
-    Optional<User> destinatario = userService.getUserByUsername(recipient);
-    return destinatario.map(user -> {
-      ChatMessage chatMessage = new ChatMessage(sender, user, message, room);
-      chatRepository.save(chatMessage);
-      return chatMessage;
-    }).orElseThrow(() -> new IllegalArgumentException("El destinatario no existe."));
+    ChatMessage chatMessage = new ChatMessage(sender, recipient, message, room);
+    return chatRepository.save(chatMessage);
   }
 
   public List<ChatMessage> getUserChatHistory(String username) {
@@ -46,8 +42,6 @@ public class ChatService {
   public List<ChatsDTO> getChatsByUsername(String username) {
     if (username == null || username.isEmpty()) {
       throw new IllegalArgumentException("El nombre de usuario no puede ser nulo o vacío.");
-    } else if (userService.getUserByUsername(username).isEmpty()) {
-      throw new IllegalArgumentException("El usuario no existe.");
     }
     return chatRepository.getChatsByUsername(username);
   }
