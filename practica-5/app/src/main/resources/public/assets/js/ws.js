@@ -190,8 +190,9 @@ function loadChatHistory(username, room) {
 }
 
 function connectToChat(username, room) {
-  socket = new WebSocket(`ws://localhost:8080/chats?user=${username}&room=${room}`);
-  console.log(`Intentando conectar con: ws://localhost:8080/chats?user=${username}&room=${room}`);
+  const port = getPort();
+  socket = new WebSocket(`ws://localhost${port}/chats?user=${username}&room=${room}`);
+  console.log(`Intentando conectar con: ws://localhost${port}/chats?user=${username}&room=${room}`);
 
   socket.addEventListener('open', () => {
     //loadChatHistory(username, roomName);
@@ -218,4 +219,9 @@ function connectToChat(username, room) {
   socket.addEventListener('close', () => {
     console.log('Disconnected from the WebSocket server');
   });
+}
+
+function getPort() {
+  const port = window.location.port;
+  return port ? `:${port}` : '';
 }
