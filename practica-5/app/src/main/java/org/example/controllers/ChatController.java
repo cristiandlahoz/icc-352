@@ -93,7 +93,11 @@ public class ChatController extends BaseController {
           // Enviar el mensaje a la sala correspondiente
           Room room = rooms.get(jsonNode.get("room").asText());
           if (room != null) {
-            chatService.saveMessage(sender, recipient, message, jsonNode.get("room").asText());
+            try {
+              chatService.saveMessage(sender, recipient, message, jsonNode.get("room").asText());
+            } catch (Exception e) {
+              System.out.println("Error al guardar el mensaje en la base de datos: " + e.getMessage());
+            }
             room.sendMessage(message, sender);
           }
 
