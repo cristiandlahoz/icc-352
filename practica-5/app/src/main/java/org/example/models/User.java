@@ -42,10 +42,6 @@ public class User implements Serializable {
   @JsonManagedReference
   private List<Article> articles;
 
-  @OneToMany(mappedBy = "recipient", fetch = FetchType.LAZY)
-  @JsonManagedReference
-  private List<ChatMessage> receivedMessages;
-
   @OneToOne(fetch = FetchType.EAGER, cascade = CascadeType.ALL)
   @JoinColumn(name = "photo_id", referencedColumnName = "id", nullable = true)
   private Photo profilePhoto;
