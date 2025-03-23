@@ -1,6 +1,8 @@
 let socket
 
 document.getElementById('chat-btn').addEventListener('click', () => {
+  const chatList = document.getElementById('chat-list');
+  const closeChatList = document.getElementById('close-chat-list');
   const chatWindow = document.getElementById('chat-window');
   const closeChat = document.getElementById('close-chat');
   const chatBtn = document.getElementById('chat-btn');
@@ -34,11 +36,48 @@ document.getElementById('chat-btn').addEventListener('click', () => {
   console.log(`roomName: ${roomName}`);
 
   // Abrir la ventana del chat
-  chatWindow.style.display = 'block';
+  if (!localStorage.getItem('username')) {
+    chatList.style.display = 'block';
+    chatWindow.style.display = 'none';
+
+    // Cargar los chats solo una vez
+    loadChats(username);
+
+    // Delegación de eventos en el contenedor principal
+    document.addEventListener('click', (e) => {
+      const chat = e.target.closest('.chat-element');  // Verifica el click en un chat
+
+      if (chat) {
+        e.preventDefault();
+        const span = chat.querySelector('span');
+
+        if (span) {
+          chatList.style.display = 'none';
+          chatWindow.style.display = 'block';
+          const chatname = span.textContent.trim();
+          loadMessagesByUsername(username, chatname);
+        } else {
+          console.warn('No se encontró el span o el atributo data-room.');
+        }
+      }
+    });
+  } else {
+    chatList.style.display = 'none';
+    chatWindow.style.display = 'block';
+    loadChatHistory(username, roomName);
+  }
+
   chatBtn.style.display = 'none';
+  closeChatList.addEventListener('click', () => {
+    document.getElementById('chat-list-container').innerHTML = '';
+    chatList.style.display = 'none';
+    chatBtn.style.display = 'block';
+  });
 
   closeChat.addEventListener('click', () => {
     if (socket && socket.readyState !== WebSocket.CLOSED) {
+      document.getElementById('chat-box').innerHTML = '';
+      document.getElementById('chat-list-container').innerHTML = '';
       socket.close();
       chatWindow.style.display = 'none';
       chatBtn.style.display = 'block';
@@ -50,8 +89,8 @@ document.getElementById('chat-btn').addEventListener('click', () => {
   console.log(`Intentando conectar con: ws://localhost:8080/chats?user=${username}&room=${roomName}`);
 
   socket.addEventListener('open', () => {
-    loadChatHistory(username, roomName);
-    console.log(`Connected as ${username} - Chatting in room: ${roomName}`);
+    //loadChatHistory(username, roomName);
+    //console.log(`Connected as ${username} - Chatting in room: ${roomName}`);
   });
 
   socket.addEventListener('message', (event) => {
@@ -112,13 +151,61 @@ function displayMessage(message, type) {
   chatBox.scrollTop = chatBox.scrollHeight;
 }
 
+function displayChats(chatName, room) {
+  const chatListContainer = document.getElementById('chat-list-container');
+  const chatsElement = document.createElement('div');
+  chatsElement.className = `chat d-flex justify-content-between align-items-center p-3 mb-2 rounded shadow-sm bg-dark`;
+  chatsElement.innerHTML = `
+    <a href='#' class='chat-element'>
+      <span class="chat-name" data-room=${room} style="font-weight: bold; color: white; font-size: 1.1rem;">${chatName}</span>
+    </a>
+  `;
+  chatListContainer.appendChild(chatsElement);
+  chatListContainer.scrollTop = chatListContainer.scrollHeight;
+}
+
+function loadChats(username) {
+  fetch(`http://localhost:8080/chats/${username}`)
+    .then(response => response.json())
+    .then(data => {
+      const chats = new Map();
+      data.forEach(chat => {
+        if (!chats.has(chat.chatName)) {
+          chats.set(chat.chatName, { chatname: chat.chatName, room: chat.room });
+        }
+      });
+
+      chats.forEach(chat => {
+        console.log('Chat:', chat);
+        displayChats(chat.chatname, chat.room);
+      });
+    })
+    .catch(error => {
+      console.error('Error cargando el historial:', error);
+    });
+}
+function loadMessagesByUsername(username, chatname) {
+  fetch(`http://localhost:8080/chats/${username}`)
+    .then(response => response.json())
+    .then(data => {
+      data.forEach(chat => {
+        if (chat.chatName === chatname) {
+          const messageType = chat.heWroteIt ? 'sent' : 'received';
+          displayMessage(`${chat.message}`, messageType);
+        }
+      });
+    })
+    .catch(error => {
+      console.error('Error cargando el historial:', error);
+    });
+}
 // ✅ CORRECCIÓN: Mueve esta función fuera del bloque principal
-function loadChatHistory(userName, room) {
-  fetch(`http://localhost:8080/api/chats/history?user=${userName}&&room=${room}`)
+function loadChatHistory(username, room) {
+  fetch(`http://localhost:8080/api/chats/history?user=${username}&&room=${room}`)
     .then(response => response.json())
     .then(data => {
       data.forEach(message => {
-        const messageType = message.sender === userName ? 'sent' : 'received';
+        const messageType = message.sender === username ? 'sent' : 'received';
         displayMessage(`${message.message}`, messageType);
         console.log(message);
       });
