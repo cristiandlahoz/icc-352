@@ -79,12 +79,11 @@ document.getElementById('chat-btn').addEventListener('click', () => {
   });
 
   closeChat.addEventListener('click', () => {
-    if (socket && socket.readyState !== WebSocket.CLOSED) {
-      document.getElementById('chat-box').innerHTML = '';
+    if (socket && socket.readyState !== WebSocket.CLOSED)
       socket.close();
-      chatWindow.style.display = 'none';
-      chatBtn.style.display = 'block';
-    }
+    document.getElementById('chat-box').innerHTML = '';
+    chatWindow.style.display = 'none';
+    chatBtn.style.display = 'block';
   });
 
   // Crear conexión WebSocket incluyendo el roomName
