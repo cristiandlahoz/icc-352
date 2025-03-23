@@ -43,21 +43,23 @@ public class ArticleApiController extends BaseController {
         .filter(tag -> !tag.isEmpty())
         .map(tag -> {
           return articleService.getAllArticlesByTag(page, pageSize, tag).stream().map(article -> {
+            final Long articleId = article.getArticleId();
             final String title = article.getTitle();
             final String content = article.getContent();
             final User author = article.getAuthor();
             final List<Tag> tags = article.getTags();
             final Date date = article.getDate();
-            return new ArticleDTO(title, content, author.getUsername(), tags, date);
+            return new ArticleDTO(articleId, title, content, author.getUsername(), tags, date);
           }).toList();
         })
         .orElseGet(() -> articleService.getAllArticles(page, pageSize).stream().map(article -> {
+          final Long articleId = article.getArticleId();
           final String title = article.getTitle();
           final String content = article.getContent();
           final User author = article.getAuthor();
           final List<Tag> tags = article.getTags();
           final Date date = article.getDate();
-          return new ArticleDTO(title, content, author.getUsername(), tags, date);
+          return new ArticleDTO(articleId, title, content, author.getUsername(), tags, date);
         }).toList());
 
     final long countPages = Optional.ofNullable(tagName)

@@ -6,6 +6,7 @@ import java.util.List;
 import org.example.models.Tag;
 
 public record ArticleDTO(
+    Long articleId,
     String title,
     String content,
     String author,
