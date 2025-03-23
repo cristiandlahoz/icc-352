@@ -1,15 +1,11 @@
 package org.example.models;
 
 import java.util.Date;
-
-import com.fasterxml.jackson.annotation.JsonBackReference;
-
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
-import jakarta.persistence.ManyToOne;
 import jakarta.persistence.PrePersist;
 import jakarta.persistence.Table;
 import lombok.Getter;
@@ -30,9 +26,7 @@ public class ChatMessage {
   @Column(nullable = false)
   private String sender;
 
-  @ManyToOne
-  @JsonBackReference
-  private User recipient;
+  private String recipient;
 
   @Column(nullable = false)
   private String message;
@@ -43,7 +37,7 @@ public class ChatMessage {
   @Column(nullable = false)
   private String room;
 
-  public ChatMessage(String sender, User recipient, String message, String room) {
+  public ChatMessage(String sender, String recipient, String message, String room) {
     this.sender = sender;
     this.recipient = recipient;
     this.message = message;
