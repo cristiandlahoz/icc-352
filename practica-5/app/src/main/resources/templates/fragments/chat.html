@@ -3,7 +3,6 @@
     #chat-btn {
       position: fixed;
       bottom: 90px;
-      /* Colocado debajo del chat */
       right: 14px;
       background-color: #ff00;
       color: #fff;
@@ -18,14 +17,12 @@
       justify-content: center;
       box-shadow: 0 4px 8px rgba(0, 0, 0, 0.5);
       z-index: 1000;
-      /* Menor que el chat */
     }
 
     #chat-window,
     #chat-form {
       position: fixed;
       bottom: 100px;
-      /* Chat más arriba para dejar espacio */
       right: 20px;
       width: 350px;
       background-color: #2C2F33;
@@ -34,7 +31,6 @@
       box-shadow: 0 4px 8px rgba(0, 0, 0, 0.5);
       display: none;
       z-index: 1001;
-      /* Mayor que el botón del chat */
     }
 
     #chat-header {
@@ -46,6 +42,53 @@
       align-items: center;
       border-top-left-radius: 10px;
       border-top-right-radius: 10px;
+    }
+
+    #chat-list {
+      position: fixed;
+      bottom: 100px;
+      right: 20px;
+      width: 350px;
+      background-color: #2C2F33;
+      border: 1px solid #23272A;
+      border-radius: 10px;
+      box-shadow: 0 4px 8px rgba(0, 0, 0, 0.5);
+      display: none;
+      z-index: 1001;
+    }
+
+    .chat-item {
+      display: flex;
+      align-items: center;
+      padding: 10px 15px;
+      border-bottom: 1px solid #40444B;
+      cursor: pointer;
+      transition: background 0.3s;
+    }
+
+    .chat-item:hover {
+      background-color: #3C3F41;
+    }
+
+    .chat-item img {
+      width: 40px;
+      height: 40px;
+      border-radius: 50%;
+      margin-right: 10px;
+    }
+
+    .chat-item .chat-info {
+      display: flex;
+      flex-direction: column;
+    }
+
+    .chat-item .chat-name {
+      font-weight: bold;
+    }
+
+    .chat-item .chat-message {
+      color: #b0b0b0;
+      font-size: 12px;
     }
 
     #chat-box {
@@ -115,35 +158,20 @@
       color: #ffffff;
       font-size: 20px;
     }
-
-    #chat-form input {
-      width: 100%;
-      background-color: #40444B;
-      border: 1px solid #7289DA;
-      color: #ffffff;
-      border-radius: 5px;
-      padding: 10px;
-      margin-bottom: 10px;
-    }
-
-    #chat-form button {
-      width: 100%;
-      background-color: #7289DA;
-      color: #ffffff;
-      border: none;
-      padding: 10px;
-      border-radius: 5px;
-      cursor: pointer;
-    }
-
-    #chat-form button:hover {
-      background-color: #5b6eae;
-    }
   </style>
-  <!-- Botón para abrir el chat -->
+
   <button id="chat-btn">💬</button>
 
-  <!-- Ventana emergente del chat -->
+  <div id="chat-list" class="card shadow-lg rounded">
+    <div id="chats-header" class="card-header d-flex justify-content-between align-items-center bg-dark text-white">
+      <span>Mis Chats</span>
+      <button id="close-chat-list" class="btn btn-sm btn-outline-light">✖</button>
+    </div>
+    <div id="chat-list-container" class="card-body p-2 overflow-auto" style="max-height: 400px;">
+      <!-- Aquí se cargarán los chats -->
+    </div>
+  </div>
+
   <div id="chat-window">
     <div id="chat-header">
       <span>Chat</span>
