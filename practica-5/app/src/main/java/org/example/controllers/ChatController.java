@@ -122,8 +122,13 @@ public class ChatController extends BaseController {
       ctx.status(400).result("El nombre de usuario no puede ser nulo o vacío.");
       return;
     }
-
-    List<ChatsDTO> chatHistory = chatService.getChatsByUsername(username);
+    List<ChatsDTO> chatHistory = List.of();
+    try {
+      chatHistory = chatService.getChatsByUsername(username);
+    } catch (IllegalArgumentException e) {
+      ctx.status(404).result("User not found");
+      return;
+    }
 
     if (chatHistory.isEmpty()) {
       ctx.json("No hay cha disponible.");
