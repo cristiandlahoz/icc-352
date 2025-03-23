@@ -35,7 +35,7 @@ public class ChatRepository extends BaseRepository<ChatMessage, Long> {
   public List<ChatMessage> getUserChatHistory(String username) {
     String jpql = """
             SELECT m FROM ChatMessage m
-            WHERE m.sender = :username OR m.recipient.username = :username
+            WHERE m.sender = :username OR m.recipient = :username
             ORDER BY m.timestamp
         """;
     TypedQuery<ChatMessage> query = entityManager.createQuery(jpql, ChatMessage.class);
@@ -47,7 +47,7 @@ public class ChatRepository extends BaseRepository<ChatMessage, Long> {
     String jpql = """
             SELECT
                 CASE
-                    WHEN m.sender = :username THEN m.recipient.username
+                    WHEN m.sender = :username THEN m.recipient
                     ELSE m.sender
                 END AS chatUser,
                 m.room AS room,
@@ -58,7 +58,7 @@ public class ChatRepository extends BaseRepository<ChatMessage, Long> {
                 END AS heWroteIt,
                 m.timestamp AS timestamp
             FROM ChatMessage m
-            WHERE (m.sender = :username OR m.recipient.username = :username)
+            WHERE (m.sender = :username OR m.recipient = :username)
             ORDER BY m.timestamp
         """;
 
