@@ -35,8 +35,8 @@ public class ChatService {
     return chatRepository.save(chatMessage);
   }
 
-  public List<ChatMessage> getUserChatHistory(String username) {
-    return chatRepository.getUserChatHistory(username);
+  public List<ChatMessage> getUserChatHistory(String username, String room) {
+    return chatRepository.getUserChatHistory(username, room);
   }
 
   public List<ChatsDTO> getChatsByUsername(String username) {

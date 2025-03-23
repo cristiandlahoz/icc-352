@@ -32,14 +32,14 @@ public class ChatRepository extends BaseRepository<ChatMessage, Long> {
     }
   }
 
-  public List<ChatMessage> getUserChatHistory(String username) {
+  public List<ChatMessage> getUserChatHistory(String username, String room) {
     String jpql = """
             SELECT m FROM ChatMessage m
-            WHERE m.sender = :username OR m.recipient = :username
+            WHERE (m.sender = :username OR m.recipient = :username) AND m.room = :room
             ORDER BY m.timestamp
         """;
     TypedQuery<ChatMessage> query = entityManager.createQuery(jpql, ChatMessage.class);
-    query.setParameter("username", username);
+    query.setParameter("username", username).setParameter("room", room);
     return query.getResultList();
   }
 

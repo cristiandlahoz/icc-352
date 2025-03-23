@@ -80,7 +80,7 @@ document.getElementById('chat-btn').addEventListener('click', () => {
 
   closeChat.addEventListener('click', () => {
     if (socket && socket.readyState !== WebSocket.CLOSED) {
-      document.getElementById('chat-list-container').innerHTML = '';
+      document.getElementById('chat-box').innerHTML = '';
       socket.close();
       chatWindow.style.display = 'none';
       chatBtn.style.display = 'block';

@@ -30,13 +30,17 @@ public class ChatController extends BaseController {
 
     app.get("/api/chats/history", ctx -> {
       String username = ctx.queryParam("user");
+      String room = ctx.queryParam("room");
 
       if (username == null || username.isEmpty()) {
         ctx.status(400).result("El nombre de usuario no puede ser nulo o vacío.");
         return;
+      } else if (room == null || room.isEmpty()) {
+        ctx.status(400).result("El nombre de la sala no puede ser nulo o vacío.");
+        return;
       }
 
-      List<ChatMessage> chatHistory = chatService.getUserChatHistory(username);
+      List<ChatMessage> chatHistory = chatService.getUserChatHistory(username, room);
 
       if (chatHistory.isEmpty()) {
         ctx.json("No hay historial de chat disponible.");
