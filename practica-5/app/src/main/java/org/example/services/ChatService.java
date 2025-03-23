@@ -34,7 +34,6 @@ public class ChatService {
     Optional<User> destinatario = userService.getUserByUsername(recipient);
     return destinatario.map(user -> {
       ChatMessage chatMessage = new ChatMessage(sender, user, message, room);
-      System.out.println("HOLLAJLDAJLAFJLAJFLKAJFLJ: " + chatMessage.getRecipient().getUsername());
       chatRepository.save(chatMessage);
       return chatMessage;
     }).orElseThrow(() -> new IllegalArgumentException("El destinatario no existe."));
