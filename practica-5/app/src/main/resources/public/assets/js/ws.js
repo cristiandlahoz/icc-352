@@ -8,7 +8,7 @@ document.getElementById('chat-btn').addEventListener('click', () => {
   const chatBtn = document.getElementById('chat-btn');
 
   // Determinar el destinatario del chat y el nombre de la sala (roomName)
-  const chatRecipient = document.getElementById('article-author')
+  let chatRecipient = document.getElementById('article-author')
     ? document.getElementById('article-author').textContent.trim()
     : 'admin';
 
@@ -29,7 +29,7 @@ document.getElementById('chat-btn').addEventListener('click', () => {
       return; // Si no se ingresa un nombre, no abre el chat
     }
   }
-  const roomName = `${chatRecipient}_${username}`  // Sala basada en el autor (para `article_view.html`)
+  let roomName = `${chatRecipient}_${username}`  // Sala basada en el autor (para `article_view.html`)
 
   console.log(`username: ${username}`);
   console.log(`chat recipient: ${chatRecipient}`);
@@ -52,6 +52,9 @@ document.getElementById('chat-btn').addEventListener('click', () => {
         const span = chat.querySelector('span');
 
         if (span) {
+          roomName = span.getAttribute('data-room');
+          chatRecipient = span.textContent.trim();
+          connectToChat(username, roomName);
           chatList.style.display = 'none';
           chatWindow.style.display = 'block';
           const chatname = span.textContent.trim();
@@ -62,6 +65,7 @@ document.getElementById('chat-btn').addEventListener('click', () => {
       }
     });
   } else {
+    connectToChat(username, roomName);
     chatList.style.display = 'none';
     chatWindow.style.display = 'block';
     loadChatHistory(username, roomName);
@@ -76,7 +80,6 @@ document.getElementById('chat-btn').addEventListener('click', () => {
 
   closeChat.addEventListener('click', () => {
     if (socket && socket.readyState !== WebSocket.CLOSED) {
-      document.getElementById('chat-box').innerHTML = '';
       document.getElementById('chat-list-container').innerHTML = '';
       socket.close();
       chatWindow.style.display = 'none';
@@ -85,35 +88,6 @@ document.getElementById('chat-btn').addEventListener('click', () => {
   });
 
   // Crear conexión WebSocket incluyendo el roomName
-  socket = new WebSocket(`ws://localhost:8080/chats?user=${username}&room=${roomName}`);
-  console.log(`Intentando conectar con: ws://localhost:8080/chats?user=${username}&room=${roomName}`);
-
-  socket.addEventListener('open', () => {
-    //loadChatHistory(username, roomName);
-    //console.log(`Connected as ${username} - Chatting in room: ${roomName}`);
-  });
-
-  socket.addEventListener('message', (event) => {
-    try {
-      const isJSON = event.data.trim().startsWith('{') && event.data.trim().endsWith('}');
-
-      if (isJSON) {
-        const messageData = JSON.parse(event.data);
-        displayMessage(`${messageData.sender}: ${messageData.message}`, 'received');
-      } else {
-        // Si el mensaje no es JSON, mostrarlo como texto plano
-        displayMessage(`${event.data}`, 'received');
-      }
-    } catch (error) {
-      console.error('Error procesando mensaje del WebSocket:', error);
-    }
-  });
-
-
-  socket.addEventListener('close', () => {
-    console.log('Disconnected from the WebSocket server');
-  });
-
   document.getElementById('message-input').addEventListener('keydown', (event) => {
     if (event.key === 'Enter') {
       document.getElementById('send-btn').click();
@@ -188,6 +162,7 @@ function loadMessagesByUsername(username, chatname) {
   fetch(`http://localhost:8080/chats/${username}`)
     .then(response => response.json())
     .then(data => {
+      document.getElementById('chat-box').innerHTML = '';
       data.forEach(chat => {
         if (chat.chatName === chatname) {
           const messageType = chat.heWroteIt ? 'sent' : 'received';
@@ -213,4 +188,35 @@ function loadChatHistory(username, room) {
     .catch(error => {
       console.error('Error cargando el historial:', error);
     });
+}
+
+function connectToChat(username, room) {
+  socket = new WebSocket(`ws://localhost:8080/chats?user=${username}&room=${room}`);
+  console.log(`Intentando conectar con: ws://localhost:8080/chats?user=${username}&room=${room}`);
+
+  socket.addEventListener('open', () => {
+    //loadChatHistory(username, roomName);
+    //console.log(`Connected as ${username} - Chatting in room: ${roomName}`);
+  });
+
+  socket.addEventListener('message', (event) => {
+    try {
+      const isJSON = event.data.trim().startsWith('{') && event.data.trim().endsWith('}');
+
+      if (isJSON) {
+        const messageData = JSON.parse(event.data);
+        displayMessage(`${messageData.sender}: ${messageData.message}`, 'received');
+      } else {
+        // Si el mensaje no es JSON, mostrarlo como texto plano
+        displayMessage(`${event.data}`, 'received');
+      }
+    } catch (error) {
+      console.error('Error procesando mensaje del WebSocket:', error);
+    }
+  });
+
+
+  socket.addEventListener('close', () => {
+    console.log('Disconnected from the WebSocket server');
+  });
 }
