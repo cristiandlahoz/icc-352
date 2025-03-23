@@ -43,6 +43,7 @@ public class User implements Serializable {
   private List<Article> articles;
 
   @OneToMany(mappedBy = "recipient", fetch = FetchType.LAZY)
+  @JsonManagedReference
   private List<ChatMessage> receivedMessages;
 
   @OneToOne(fetch = FetchType.EAGER, cascade = CascadeType.ALL)
