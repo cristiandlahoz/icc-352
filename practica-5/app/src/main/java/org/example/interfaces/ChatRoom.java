@@ -5,7 +5,7 @@ import io.javalin.websocket.WsContext;
 public interface ChatRoom {
   void sendMessage(String message, String username);
 
-  void addUser(String username, WsContext ctx);
+  boolean addUser(String username, WsContext ctx);
 
   void removeUser(String username);
 }

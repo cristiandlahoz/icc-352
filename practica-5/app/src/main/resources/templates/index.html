@@ -86,6 +86,10 @@
       </li>
     </ul>
   </main>
+  <!-- Elemento oculto para almacenar el usuario desde Thymeleaf -->
+   <span id="thymeleaf-username" th:text="${user != null ? user.username : ''}" style="display: none;"></span>
+
+  <div th:replace="~{fragments/chat.html :: chat}"></div>
 
   <div th:replace="~{/layouts/footer.html :: footer}"></div>
   <script src="/assets/js/bootstrap.bundle.min.js"></script>

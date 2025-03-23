@@ -34,11 +34,11 @@ public class User implements Serializable {
   @Enumerated(EnumType.STRING)
   private AccessStatus accessStatus;
 
-  @OneToMany(mappedBy = "user")
+  @OneToMany(mappedBy = "user", fetch = FetchType.LAZY)
   @JsonManagedReference
   private List<Comment> comments;
 
-  @OneToMany(mappedBy = "author")
+  @OneToMany(mappedBy = "author", fetch = FetchType.LAZY)
   @JsonManagedReference
   private List<Article> articles;
 

@@ -7,6 +7,7 @@
         <class>org.example.models.Tag</class>
         <class>org.example.models.Photo</class>
         <class>org.example.models.User</class>
+        <class>org.example.models.ChatMessage</class>
         <properties>
             <property name="jakarta.persistence.jdbc.url" value="jdbc:h2:tcp://localhost/./data/ormjpa" />
             <property name="jakarta.persistence.jdbc.driver" value="org.h2.Driver" />

@@ -47,7 +47,7 @@ public class App {
             app, DependencyConfig.getCommentService(), DependencyConfig.getArticleService()),
         new TagController(app, DependencyConfig.getTagService()),
         new PhotoController(app, DependencyConfig.getPhotoService()),
-        new ChatController(app))
+        new ChatController(app,DependencyConfig.getChatService()))
         .forEach(BaseController::applyRoutes);
     try {
       DependencyConfig.getUserService()
