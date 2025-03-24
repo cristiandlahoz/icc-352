@@ -10,7 +10,12 @@ public class EnvConfig {
   }
 
   public static String get(String key) {
-    return get(key, null);
+    String value = dotenv.get(key);
+    if (value != null && !value.isEmpty()) {
+      return value;
+    }
+
+    return System.getenv(key);
   }
 
   public static int getInt(String key, int defaultValue) {

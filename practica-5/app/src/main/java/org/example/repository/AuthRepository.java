@@ -11,6 +11,10 @@ public class AuthRepository {
     createTableIfNotExist();
   }
 
+  public AuthRepository() {
+    this.sql2o = null;
+  }
+
   public void logAuthentication(String username) {
     String sql = "INSERT INTO user_authentication_logs (username) VALUES (:username)";
     try (Connection con = sql2o.open()) {
@@ -22,14 +26,13 @@ public class AuthRepository {
   }
 
   private void createTableIfNotExist() {
-    String createTableQuery =
-        """
-				    CREATE TABLE IF NOT EXISTS user_authentication_logs (
-				        id SERIAL PRIMARY KEY,
-				        username VARCHAR(255) NOT NULL,
-				        login_timestamp TIMESTAMP DEFAULT CURRENT_TIMESTAMP
-				    );
-				""";
+    String createTableQuery = """
+            CREATE TABLE IF NOT EXISTS user_authentication_logs (
+                id SERIAL PRIMARY KEY,
+                username VARCHAR(255) NOT NULL,
+                login_timestamp TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+            );
+        """;
     try (Connection con = sql2o.open()) {
       con.createQuery(createTableQuery).executeUpdate();
       System.out.println("Table 'user_authentication_logs' verified correctly");

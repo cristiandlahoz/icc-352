@@ -4,6 +4,8 @@ import jakarta.persistence.EntityManager;
 import jakarta.persistence.EntityManagerFactory;
 import jakarta.persistence.Persistence;
 import lombok.Getter;
+
+import org.example.exceptions.MissingEnvironmentVariableException;
 import org.example.repository.*;
 import org.example.services.*;
 
@@ -43,7 +45,12 @@ public class DependencyConfig {
     tagRepository = new TagRepository(entityManager);
     userRepository = new UserRepository(entityManager);
     photoRepository = new PhotoRepository(entityManager);
-    authRepository = new AuthRepository(CoackroachDBConfig.getSql2o());
+    try {
+      authRepository = new AuthRepository(CoackroachDBConfig.getSql2o());
+    } catch (MissingEnvironmentVariableException e) {
+      System.out.println("Error creating AuthRepository: " + e.getMessage());
+      authRepository = new AuthRepository();
+    }
     chatRepository = new ChatRepository(entityManager);
 
     authService = new AuthService(userRepository, authRepository);
