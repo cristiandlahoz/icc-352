@@ -1,10 +1,10 @@
 package org.wornux.urlshortener.model;
 
-public class User {
-  private String id;
-  private String username;
-  private String passwordHash;
-  private boolean isAdmin;
+import org.bson.types.ObjectId;
 
-  // Getters and Setters
+public class User {
+  private ObjectId id;
+  private String username;
+  private String password;
+  private String email;
 }
