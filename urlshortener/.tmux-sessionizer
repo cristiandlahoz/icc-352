@@ -12,7 +12,7 @@ tmux send-keys -t server "gd r" C-m
 
 # Dividir el panel actual en dos y ejecutar comandos
 tmux split-window -h
-tmux send-keys "htop" C-m
+tmux send-keys "btop" C-m
 
 # Volver a la ventana principal
 tmux select-window -t editor
