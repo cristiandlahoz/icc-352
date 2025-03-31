@@ -3,9 +3,9 @@ package org.wornux.urlshortener.model;
 import java.util.Date;
 
 import org.bson.types.ObjectId;
-import org.mongodb.morphia.annotations.*;
+import org.wornux.urlshortener.enums.Roles;
 
-import io.javalin.security.Roles;
+import dev.morphia.annotations.*;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
