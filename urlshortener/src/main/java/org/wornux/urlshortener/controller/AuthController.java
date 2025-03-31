@@ -1,42 +1,55 @@
 package org.wornux.urlshortener.controller;
 
 import org.wornux.urlshortener.controller.base.BaseController;
+import org.wornux.urlshortener.core.routing.annotations.*;
 import org.wornux.urlshortener.enums.Roles;
 import org.wornux.urlshortener.enums.Routes;
 import org.wornux.urlshortener.enums.SessionKeys;
 import org.wornux.urlshortener.model.User;
 import org.wornux.urlshortener.service.UserService;
 
-import io.javalin.Javalin;
 import io.javalin.http.Context;
 
+/**
+ * AuthController is a controller class that handles HTTP requests related to
+ * authentication and authorization.
+ */
+@CONTROLLER(path = "/auth")
 public class AuthController extends BaseController {
 
   private final UserService userService;
 
-  public AuthController(Javalin app, UserService userService) {
-    super(app);
+  public AuthController(UserService userService) {
     this.userService = userService;
   }
 
-  @Override
-  public void mapEndpoints() {
-    app.get(Routes.USER_LOGIN.getRoute(), this::renderLoginPage);
-    app.get(Routes.USER_REGISTER.getRoute(), this::renderSignupPage);
-    app.post(Routes.USER_LOGIN.getRoute(), this::login);
-    app.post(Routes.USER_LOGOUT.getRoute(), this::logout);
-    app.post(Routes.USER_REGISTER.getRoute(), this::signup);
-  }
-
-  private void renderLoginPage(Context ctx) {
+  /**
+   * Handles the GET request to render the login page.
+   * 
+   * @param ctx The context of the HTTP request.
+   */
+  @GET(path = "/login")
+  public void renderLoginPage(Context ctx) {
     ctx.render("/auth/login.html");
   }
 
-  private void renderSignupPage(Context ctx) {
+  /**
+   * Handles the POST request to authenticate a user.
+   * 
+   * @param ctx The context of the HTTP request.
+   */
+  @GET(path = "/signup")
+  public void renderSignupPage(Context ctx) {
     ctx.render("/auth/signup.html");
   }
 
-  private void login(Context ctx) {
+  /**
+   * Handles the POST request to authenticate a user.
+   * 
+   * @param ctx The context of the HTTP request.
+   */
+  @POST(path = "/login")
+  public void login(Context ctx) {
     String username = ctx.formParam("username");
     String password = ctx.formParam("password");
 
@@ -54,11 +67,23 @@ public class AuthController extends BaseController {
             });
   }
 
-  private void logout(Context ctx) {
+  /**
+   * Handles the GET request to logout a user.
+   * 
+   * @param ctx The context of the HTTP request.
+   */
+  @GET(path = "/logout")
+  public void logout(Context ctx) {
     ctx.req().getSession().invalidate();
     ctx.redirect(Routes.USER_LOGIN.getRoute());
   }
 
+  /**
+   * Handles the POST request to register a new user.
+   * 
+   * @param ctx The context of the HTTP request.
+   */
+  @POST(path = "/signup")
   public void signup(Context ctx) {
     String username = ctx.formParam("username");
     String email = ctx.formParam("email");
