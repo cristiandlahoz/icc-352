@@ -9,10 +9,11 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
-@Entity("shortened_urls")
 @Getter
 @Setter
 @NoArgsConstructor
+@Entity("shortened_urls")
+@Indexes(@Index(fields = @Field("shortenedUrl")))
 public class ShortenedUrl {
   @Id
   private ObjectId id;
