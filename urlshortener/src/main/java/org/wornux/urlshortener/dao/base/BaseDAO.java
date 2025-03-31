@@ -17,8 +17,8 @@ import com.mongodb.lang.NonNull;
  * @param <K> The type of the entity's ID.
  */
 public abstract class BaseDAO<T, K> {
-  private final Datastore datastore;
-  private final Class<T> entityClass;
+  protected final Datastore datastore;
+  protected final Class<T> entityClass;
 
   /**
    * Constructs a new BaseRepository.
