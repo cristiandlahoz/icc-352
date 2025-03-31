@@ -1,16 +1,15 @@
 package org.wornux.urlshortener;
 
+import org.wornux.urlshortener.config.AppConfig;
 import io.javalin.Javalin;
-import org.wornux.urlshortener.controller.ShortUrlController;
-import org.wornux.urlshortener.controller.UserController;
 
 public class Main {
   public static void main(String[] args) {
-    Javalin app = Javalin.create().start(7000);
+    Javalin app = Javalin.create(
+        config -> AppConfig.configureApp(config)).start(7000);
 
-    // Register routes
+    AppConfig.ConfigureExceptionHandlers(app);
+
     app.get("/", ctx -> ctx.result("Welcome to URL Shortener"));
-    UserController.registerRoutes(app);
-    ShortUrlController.registerRoutes(app);
   }
 }
