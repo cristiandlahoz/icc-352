@@ -1,11 +1,9 @@
 package org.wornux.urlshortener.config;
 
-import org.mongodb.morphia.Datastore;
-import org.mongodb.morphia.Morphia;
-
-import com.mongodb.client.MongoClient;
 import com.mongodb.client.MongoClients;
-import com.mongodb.client.MongoDatabase;
+
+import dev.morphia.Datastore;
+import dev.morphia.Morphia;
 
 public class DatabaseConfig {
   private static Datastore datastore;
@@ -13,11 +11,9 @@ public class DatabaseConfig {
   public static Datastore getDatastore() {
     if (datastore == null) {
       String connectionString = System.getenv("MONGODB_URL");
-      MongoClient mongoClient = MongoClients.create(connectionString);
-      Morphia morphia = Morphia.createDatastore(mongoClient, "urlshortener");
-      morphia.getMapper().mapPackage("org.wornux.urlshortener.models");
-      morphia.ensureIndexes();
-      datastore = morphia;
+      datastore = Morphia.createDatastore(MongoClients.create(connectionString), "urlshortener");
+      datastore.getMapper().mapPackage("org.wornux.urlshortener.model");
+      datastore.ensureIndexes();
     }
     return datastore;
   }
