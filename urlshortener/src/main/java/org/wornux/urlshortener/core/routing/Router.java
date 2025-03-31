@@ -14,7 +14,7 @@ import org.wornux.urlshortener.core.routing.annotations.PUT;
 public class Router {
 
   public static void registerRoutes(Javalin app) {
-    List<Class<?>> controllers = ReflectionPaths.getClasses("org.example.controller");
+    List<Class<?>> controllers = ReflectionPaths.getClasses("org.wornux.urlshortener.controller");
 
     for (Class<?> clazz : controllers) {
       if (clazz.isAnnotationPresent(CONTROLLER.class)) {
