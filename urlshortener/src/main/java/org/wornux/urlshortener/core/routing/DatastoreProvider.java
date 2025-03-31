@@ -1,13 +1,12 @@
-package org.wornux.urlshortener.config;
-
-import org.wornux.urlshortener.enums.DatastoreConstants;
-
-import com.mongodb.client.MongoClients;
+package org.wornux.urlshortener.core.routing;
 
 import dev.morphia.Datastore;
 import dev.morphia.Morphia;
 
-public class DatabaseConfig {
+import org.wornux.urlshortener.enums.DatastoreConstants;
+import com.mongodb.client.MongoClients;
+
+public class DatastoreProvider {
   private static Datastore datastore;
 
   public static Datastore getDatastore() {
