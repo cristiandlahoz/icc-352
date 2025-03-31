@@ -4,6 +4,8 @@ import java.lang.reflect.Constructor;
 import java.util.HashMap;
 import java.util.Map;
 
+import dev.morphia.Datastore;
+
 public class DIContainer {
 
   private static final Map<Class<?>, Object> instances = new HashMap<>();
@@ -27,7 +29,7 @@ public class DIContainer {
         for (int i = 0; i < paramTypes.length; i++) {
           if (paramTypes[i].isPrimitive()) {
             throw new RuntimeException("No se puede resolver una dependencia primitiva");
-          } else if (paramTypes[i] == DatastoreProvider.class) {
+          } else if (paramTypes[i] == Datastore.class) {
             // Si la dependencia es EntityManager, obtenerlo desde el proveedor
             params[i] = DatastoreProvider.getDatastore();
           } else {
