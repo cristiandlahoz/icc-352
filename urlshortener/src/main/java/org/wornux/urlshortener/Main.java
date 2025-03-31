@@ -1,6 +1,7 @@
 package org.wornux.urlshortener;
 
 import org.wornux.urlshortener.config.AppConfig;
+import org.wornux.urlshortener.core.routing.Router;
 
 import io.javalin.Javalin;
 
@@ -10,6 +11,7 @@ public class Main {
         config -> AppConfig.configureApp(config)).start(7000);
 
     AppConfig.ConfigureExceptionHandlers(app);
+    Router.registerRoutes(app);
 
     app.get("/", ctx -> ctx.result("Welcome to URL Shortener"));
   }
