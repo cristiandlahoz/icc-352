@@ -19,7 +19,8 @@ public enum Routes {
   URL_UPDATE("/urls/{id}/update"),
   URL_DELETE("/urls/{id}/delete"),
   // Redirect routes
-  REDIRECT("/r/{id}");
+  REDIRECT("/r/{id}"),
+  HOME("/");
 
   private final String route;
 
