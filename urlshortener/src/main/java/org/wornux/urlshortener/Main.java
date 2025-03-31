@@ -1,6 +1,7 @@
 package org.wornux.urlshortener;
 
 import org.wornux.urlshortener.config.AppConfig;
+
 import io.javalin.Javalin;
 
 public class Main {
