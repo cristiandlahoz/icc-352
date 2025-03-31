@@ -25,6 +25,7 @@ dependencies {
     implementation("com.fasterxml.jackson.core:jackson-databind:2.17.2")
     implementation 'dev.morphia.morphia:morphia-core:2.3.9'
     implementation 'org.mongodb:mongodb-driver-sync:5.4.0'
+    implementation 'com.google.zxing:core:3.5.3'
 }
 
 application {
