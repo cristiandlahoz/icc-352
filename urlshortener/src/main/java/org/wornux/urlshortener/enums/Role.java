@@ -3,7 +3,7 @@ package org.wornux.urlshortener.enums;
 /**
  * Represents the roles available in the URL shortener application.
  */
-public enum Roles {
+public enum Role {
   /**
    * Role for administrators with elevated privileges.
    */

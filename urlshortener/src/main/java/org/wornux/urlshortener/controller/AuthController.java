@@ -2,7 +2,7 @@ package org.wornux.urlshortener.controller;
 
 import org.wornux.urlshortener.controller.base.BaseController;
 import org.wornux.urlshortener.core.routing.annotations.*;
-import org.wornux.urlshortener.enums.Roles;
+import org.wornux.urlshortener.enums.Role;
 import org.wornux.urlshortener.enums.Routes;
 import org.wornux.urlshortener.enums.SessionKeys;
 import org.wornux.urlshortener.model.User;
@@ -89,7 +89,7 @@ public class AuthController extends BaseController {
     String email = ctx.formParam("email");
     String password = ctx.formParam("password");
 
-    Roles role = Roles.USER;
+    Role role = Role.USER;
 
     User newUser = new User(username, password, email, role);
 

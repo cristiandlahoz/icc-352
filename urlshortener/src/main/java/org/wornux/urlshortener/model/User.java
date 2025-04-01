@@ -3,7 +3,7 @@ package org.wornux.urlshortener.model;
 import java.util.Date;
 
 import org.bson.types.ObjectId;
-import org.wornux.urlshortener.enums.Roles;
+import org.wornux.urlshortener.enums.Role;
 
 import dev.morphia.annotations.*;
 import lombok.Getter;
@@ -20,12 +20,12 @@ public class User {
   private String username;
   private String password;
   private String email;
-  private Roles role;
+  private Role role;
   private Date createdAt;
   private Date updatedAt;
   private boolean isDeleted;
 
-  public User(String username, String password, String email, Roles role) {
+  public User(String username, String password, String email, Role role) {
     this.username = username;
     this.password = password;
     this.email = email;
