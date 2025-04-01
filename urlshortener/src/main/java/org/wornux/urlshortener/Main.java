@@ -13,6 +13,6 @@ public class Main {
     AppConfig.ConfigureExceptionHandlers(app);
     Router.registerRoutes(app);
 
-    app.get("/", ctx -> ctx.result("Welcome to URL Shortener"));
+    app.get("/", ctx -> ctx.render("pages/home.html"));
   }
 }
