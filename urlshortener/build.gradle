@@ -3,6 +3,7 @@ plugins {
     id 'application'
     id 'com.diffplug.spotless' version '6.10.0'
     id 'com.github.johnrengelman.shadow' version '8.1.1'
+    id 'com.google.protobuf' version '0.9.4'
 }
 
 group = 'org.wornux'
@@ -32,7 +33,13 @@ dependencies {
 
     // Utils
     implementation 'io.github.cdimascio:dotenv-java:3.1.0'
-}
+    //Webservices
+    runtimeOnly 'io.grpc:grpc-netty-shaded:1.62.2'
+    implementation 'io.grpc:grpc-protobuf:1.62.2'
+    implementation 'io.grpc:grpc-stub:1.62.2'
+    implementation 'io.grpc:grpc-services:1.62.2'
+    compileOnly 'org.apache.tomcat:annotations-api:6.0.53'
+    implementation 'com.google.protobuf:protobuf-java:3.25.3'}
 
 application {
     mainClass = 'org.wornux.urlshortener.Main'
@@ -52,6 +59,21 @@ tasks.named('jar') {
     enabled = false
 }
 
+protobuf {
+    protoc {
+        artifact = "com.google.protobuf:protoc:3.25.1"
+    }
+    plugins {
+        grpc {
+            artifact = 'io.grpc:protoc-gen-grpc-java:1.62.2'
+        }
+    }
+    generateProtoTasks {
+        all()*.plugins {
+            grpc {}
+        }
+    }
+}
 shadowJar {
     archiveBaseName.set('app')
     archiveVersion.set('1.0.0')

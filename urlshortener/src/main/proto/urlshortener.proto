@@ -1,17 +1,81 @@
 syntax = "proto3";
 
-package urlshortener;
+/**
+ * Package for the URL Shortener service.
+ * This package provides functionality to shorten URLs and retrieve user-specific URL data.
+ */
 
+package org.wornux.urlshortener.api.grpc.v1;
+
+import "google/protobuf/timestamp.proto";
+
+/**
+ * Service for managing URL shortening and retrieval.
+ */
 service UrlShortenerService {
-    rpc shortenUrl (ShortUrlRequest) returns (ShortUrlResponse);
+  /**
+   * Retrieves a list of URLs associated with a specific user.
+   * @param ListUserUrlsRequest - The request containing the user ID.
+   * @return ListUserUrlsResponse - The response containing the list of URLs.
+   */
+  rpc ListUserUrls(ListUserUrlsRequest) returns (ListUserUrlsResponse);
+
+  /**
+   * Creates a shortened URL for a given original URL.
+   * @param CreateUrlRequest - The request containing the user ID and original URL.
+   * @return CreateUrlResponse - The response containing the shortened URL and metadata.
+   */
+  rpc CreateUrl(CreateUrlRequest) returns (CreateUrlResponse);
 }
 
-message ShortUrlRequest {
-    string originalUrl = 1;
+/**
+ * Request message for retrieving a user's URLs.
+ */
+message ListUserUrlsRequest {
+  string user_id = 1; // User ID making the request
 }
 
-message ShortUrlResponse {
-    string shortUrl = 1;
-    string originalUrl = 2;
-    string createdAt = 3;
+/**
+ * Response message containing a list of a user's URLs.
+ */
+message ListUserUrlsResponse {
+  repeated UserUrlData user_urls = 1; // List of user's URLs
+
+  /**
+   * Information about a user's URL.
+   */
+  message UserUrlData {
+    string original_url = 1; // Original URL
+    string short_url = 2; // Shortened URL
+    google.protobuf.Timestamp creation_date = 3; // Creation date
+    UrlStats stats = 4; // URL statistics
+    string site_image = 5; // Base64-encoded site image
+  }
+}
+
+/**
+ * Request message for creating a shortened URL.
+ */
+message CreateUrlRequest {
+  string user_id = 1; // User ID
+  string original_url = 2; // Original URL to shorten
+}
+
+/**
+ * Response message containing the shortened URL and metadata.
+ */
+message CreateUrlResponse {
+  string original_url = 1; // Original URL
+  string short_url = 2; // Shortened URL
+  google.protobuf.Timestamp creation_date = 3; // Creation date
+  UrlStats stats = 4; // Initial statistics
+  string site_image = 5; // Base64-encoded site image
+}
+
+/**
+ * Statistics for a shortened URL.
+ */
+message UrlStats {
+  int32 clicks = 1; // Number of clicks
+  int32 unique_visitors = 2; // Number of unique visitors
 }
