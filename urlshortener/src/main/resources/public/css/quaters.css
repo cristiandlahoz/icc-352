@@ -30,7 +30,7 @@ td {
 .animation-h1 {
   --bg-size: 400%;
   --color-one: hsl(223, 84%, 48%);
-  --color-two: hsl(337, 79%, 63%);
+  --color-two: oklch(0.705 0.213 47.604);
   font-size: clamp(3rem, 25vmin, 8rem);
   background: linear-gradient(90deg,
       var(--color-one),
@@ -75,7 +75,7 @@ td {
     /* 24px */
   ;
   z-index: -1;
-  background-color: hsla(292, 65%, 11%, 0.357);
+  background-color: #0b101b;
 }
 
 .shadow-box {
