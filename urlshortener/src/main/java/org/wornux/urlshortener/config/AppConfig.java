@@ -5,6 +5,7 @@ import io.javalin.config.JavalinConfig;
 import io.javalin.rendering.template.JavalinThymeleaf;
 import org.thymeleaf.TemplateEngine;
 import org.thymeleaf.templateresolver.ClassLoaderTemplateResolver;
+import org.wornux.urlshortener.core.routing.Router;
 
 public class AppConfig {
   public static void configureApp(JavalinConfig config) {
@@ -14,6 +15,10 @@ public class AppConfig {
           stc.directory = "/public";
         });
     config.fileRenderer(templateEngineConfig());
+    config.router.mount(router -> {
+      router.get("/", ctx -> ctx.redirect("shortened"));
+      Router.registerRoutes(router);
+    });
   }
 
   public static JavalinThymeleaf templateEngineConfig() {
