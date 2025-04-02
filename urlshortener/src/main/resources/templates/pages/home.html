@@ -140,14 +140,9 @@
     </svg>
   </div>
 
-  <header class="flex items-center justify-center w-auto mt-10 mx-14">
-    <nav class="flex items-center justify-center w-full sm:justify-between gap-x-24">
-      <a href="/">
-        <h2
-          class="text-4xl font-extrabold text-center text-transparent lg:text-5xl bg-clip-text bg-gradient-to-r from-btn-blue via-btn-pink to-btn-blue">
-          Wornux</h2>
-      </a>
-      <ul class="flex items-start gap-x-4">
+  <header class="flex items-end justify-end w-auto mt-10 mx-14">
+    <nav class="flex items-end justify-end w-full sm:justify-end gap-x-24">
+      <ul class="flex items-end gap-x-4">
         <li class="flex items-center justify-center w-28">
           <a class="text-white text-center border border-solid hover:scale-110 active:bg-btn-gray-border transition border-btn-gray-border bg-btn-gray rounded-full w-44 py-3 shadow-[rgba(0,_0,_0,_0.25)_0px_25px_50px_-12px]"
             href="/auth/login">
@@ -169,16 +164,6 @@
     </nav>
   </header>
   <main>
-    <section class="hidden lg:block">
-      <div class="fixed top-0 rotate-180 min-h-[6%] left-0 z-20 w-full p-4 register-footer">
-      </div>
-      <div class="fixed top-0 left-0 z-30 w-full p-4">
-        <p class="text-center text-white font-extralight">
-          <a class="text-blue-500 underline" href="/auth/signup">Register Now</a>
-          to enjoy Unlimited History
-        </p>
-      </div>
-    </section>
 
     <section class="flex-col gap-y-4 mt-12">
       <h3 class="text-3xl font-extrabold text-center sm:text-3xl animation-h1">Wornux</h3>
@@ -378,7 +363,7 @@
     </section>
   </main>
 
-  <footer th:replace="components/footer.html :: footer"></footer>
+  <footer th:replace="~{components/footer.html :: footer}"></footer>
 
 </body>
 
