@@ -13,10 +13,12 @@ import org.bson.types.ObjectId;
 @Entity("shortened_urls")
 @Indexes(@Index(fields = @Field("shortenedUrl")))
 public class ShortenedUrl {
-  @Id private ObjectId id;
+  @Id
+  private ObjectId id;
   private String originalUrl;
   private String shortenedUrl;
-  @Reference private User createdBy;
+  @Reference
+  private User createdBy;
   private Date createdAt;
   private int clickCount;
   private boolean isOffensive;
@@ -26,6 +28,7 @@ public class ShortenedUrl {
     this.originalUrl = originalUrl;
     this.shortenedUrl = shortenedUrl;
     this.createdBy = createdBy;
+    this.clickCount = 0;
     this.qrCode = qrCode;
     this.isOffensive = false;
   }
