@@ -2,7 +2,6 @@ package org.wornux.urlshortener;
 
 import io.javalin.Javalin;
 import org.wornux.urlshortener.config.AppConfig;
-import org.wornux.urlshortener.core.routing.Router;
 import org.wornux.urlshortener.util.EnvReader;
 
 public class Main {
@@ -11,8 +10,5 @@ public class Main {
     Javalin app = Javalin.create(config -> AppConfig.configureApp(config)).start(PORT);
 
     AppConfig.ConfigureExceptionHandlers(app);
-    Router.registerRoutes(app);
-
-    app.get("/", ctx -> ctx.render("pages/home.html"));
   }
 }
