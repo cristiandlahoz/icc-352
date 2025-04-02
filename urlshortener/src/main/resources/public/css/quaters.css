@@ -75,7 +75,7 @@ td {
     /* 24px */
   ;
   z-index: -1;
-  background-color: #0b101b;
+  background-color: hsla(292, 65%, 11%, 0.357);
 }
 
 .shadow-box {
