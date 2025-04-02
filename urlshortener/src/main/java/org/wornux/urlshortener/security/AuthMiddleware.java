@@ -1,9 +1,8 @@
 package org.wornux.urlshortener.security;
 
-import org.wornux.urlshortener.enums.Role;
-
 import io.javalin.http.Context;
 import io.javalin.http.Handler;
+import org.wornux.urlshortener.enums.Role;
 
 public class AuthMiddleware implements Handler {
 
@@ -24,5 +23,4 @@ public class AuthMiddleware implements Handler {
       ctx.status(401).result("Unauthorized");
     }
   }
-
 }

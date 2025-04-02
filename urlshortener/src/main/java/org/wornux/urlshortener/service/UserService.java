@@ -2,9 +2,7 @@ package org.wornux.urlshortener.service;
 
 import java.util.List;
 import java.util.Optional;
-
 import javax.annotation.Nonnull;
-
 import org.bson.types.ObjectId;
 import org.wornux.urlshortener.dao.UserDAO;
 import org.wornux.urlshortener.model.User;
@@ -40,5 +38,4 @@ public class UserService {
   public void deleteUser(@Nonnull ObjectId id) {
     userDAO.deleteById(id);
   }
-
 }

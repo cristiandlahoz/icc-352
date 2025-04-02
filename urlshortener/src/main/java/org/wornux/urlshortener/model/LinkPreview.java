@@ -1,23 +1,19 @@
 package org.wornux.urlshortener.model;
 
-import java.util.Date;
-
-import org.bson.types.ObjectId;
 import dev.morphia.annotations.*;
-
+import java.util.Date;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import org.bson.types.ObjectId;
 
 @Entity("link_previews")
 @Getter
 @Setter
 @NoArgsConstructor
 public class LinkPreview {
-  @Id
-  private ObjectId id;
-  @Reference
-  private ShortenedUrl shortenedUrl;
+  @Id private ObjectId id;
+  @Reference private ShortenedUrl shortenedUrl;
   private String previewImage;
   private Date createdAt;
 

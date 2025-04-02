@@ -1,22 +1,19 @@
 package org.wornux.urlshortener.model;
 
-import java.util.Date;
-
-import org.bson.types.ObjectId;
-import org.wornux.urlshortener.enums.Role;
-
 import dev.morphia.annotations.*;
+import java.util.Date;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import org.bson.types.ObjectId;
+import org.wornux.urlshortener.enums.Role;
 
 @Entity("users")
 @Getter
 @Setter
 @NoArgsConstructor
 public class User {
-  @Id
-  private ObjectId id;
+  @Id private ObjectId id;
   private String username;
   private String password;
   private String email;

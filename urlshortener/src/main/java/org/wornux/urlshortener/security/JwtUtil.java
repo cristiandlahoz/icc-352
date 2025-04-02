@@ -1,20 +1,17 @@
 package org.wornux.urlshortener.security;
 
-import java.util.Date;
-import java.util.Map;
-
-import javax.crypto.SecretKey;
-
-import org.wornux.urlshortener.dto.Authentication;
-import org.wornux.urlshortener.enums.SecurityConstants;
-import org.wornux.urlshortener.exception.AuthenticationCredentialsNotFoundException;
-
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.ExpiredJwtException;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.MalformedJwtException;
 import io.jsonwebtoken.UnsupportedJwtException;
 import io.jsonwebtoken.security.Keys;
+import java.util.Date;
+import java.util.Map;
+import javax.crypto.SecretKey;
+import org.wornux.urlshortener.dto.Authentication;
+import org.wornux.urlshortener.enums.SecurityConstants;
+import org.wornux.urlshortener.exception.AuthenticationCredentialsNotFoundException;
 
 public class JwtUtil {
 
@@ -45,7 +42,8 @@ public class JwtUtil {
     } catch (UnsupportedJwtException e) {
       throw new AuthenticationCredentialsNotFoundException("Unsupported JWT token.");
     } catch (IllegalArgumentException e) {
-      throw new AuthenticationCredentialsNotFoundException("JWT token compact of handler are invalid.");
+      throw new AuthenticationCredentialsNotFoundException(
+          "JWT token compact of handler are invalid.");
     }
   }
 
@@ -54,11 +52,7 @@ public class JwtUtil {
   }
 
   private Claims extractAllClaims(String token) {
-    return Jwts.parser()
-        .verifyWith(getSigningKey())
-        .build()
-        .parseSignedClaims(token)
-        .getPayload();
+    return Jwts.parser().verifyWith(getSigningKey()).build().parseSignedClaims(token).getPayload();
   }
 
   private SecretKey getSigningKey() {

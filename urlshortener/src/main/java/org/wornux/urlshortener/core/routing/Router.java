@@ -4,7 +4,6 @@ import io.javalin.Javalin;
 import io.javalin.http.Context;
 import java.lang.reflect.Method;
 import java.util.List;
-
 import org.wornux.urlshortener.core.routing.annotations.CONTROLLER;
 import org.wornux.urlshortener.core.routing.annotations.DELETE;
 import org.wornux.urlshortener.core.routing.annotations.GET;
