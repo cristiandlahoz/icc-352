@@ -14,7 +14,7 @@ import org.wornux.urlshortener.model.ShortenedUrl;
  *                     be blank.
  * @throws IllegalArgumentException if any of the parameters are invalid.
  */
-public record ShortenedUrlCreatedDTO(String originalUrl, String shortenedUrl, String qrCode) {
+public record ShortenedUrlCreatedDTO(String originalUrl, String shortenedUrl, byte[] qrCode) {
 
   /**
    * Constructs a new {@code ShortenedUrlCreatedDTO} instance with validation.
@@ -42,8 +42,8 @@ public record ShortenedUrlCreatedDTO(String originalUrl, String shortenedUrl, St
     if (shortenedUrl.length() > 10) {
       throw new IllegalArgumentException("Shortened URL must not exceed 10 characters");
     }
-    if (qrCode == null || qrCode.isBlank()) {
-      throw new IllegalArgumentException("QR Code cannot be null or blank");
+    if (qrCode == null || qrCode.toString().isBlank()) {
+      throw new IllegalArgumentException("");
     }
   }
 
