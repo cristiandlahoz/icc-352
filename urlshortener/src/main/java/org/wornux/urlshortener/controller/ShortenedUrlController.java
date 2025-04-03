@@ -7,6 +7,9 @@ import org.wornux.urlshortener.core.routing.annotations.CONTROLLER;
 import org.wornux.urlshortener.core.routing.annotations.GET;
 import org.wornux.urlshortener.core.routing.annotations.POST;
 import org.wornux.urlshortener.dto.ShortenedUrlCreatedDTO;
+import org.wornux.urlshortener.dto.ShortenedUrlDTO;
+import org.wornux.urlshortener.enums.SessionKeys;
+import org.wornux.urlshortener.model.User;
 import org.wornux.urlshortener.service.ShortenedUrlService;
 
 import java.util.HashMap;
@@ -35,6 +38,9 @@ public class ShortenedUrlController {
   @POST(path = "/create")
   public void createShortenedUrl(Context ctx) {
     String url = ctx.formParam("url");
+    User user = ctx.sessionAttribute(SessionKeys.USER.getKey());
+    ShortenedUrlDTO shortenedUrlDTO = new ShortenedUrlDTO(url, user);
+    shortenedUrlService.createShortenedUrl(shortenedUrlDTO);
 
     ctx.redirect("/");
   }
