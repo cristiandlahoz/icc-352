@@ -12,7 +12,6 @@ public class UrlshortenedGrpc extends UrlShortenerServiceImplBase {
 
   @Override
   public void createUrl(CreateUrlRequest request, StreamObserver<CreateUrlResponse> responseObserver) {
-
     super.createUrl(request, responseObserver);
   }
 
