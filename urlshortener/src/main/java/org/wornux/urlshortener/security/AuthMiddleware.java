@@ -30,7 +30,9 @@ public class AuthMiddleware implements Handler {
     String currentPath = ctx.path();
 
     // Allow public and authentication routes without checks
-    if (currentPath.startsWith("/images") || currentPath.startsWith("/css") || currentPath.startsWith("/js")
+    if (currentPath.startsWith("/images") || currentPath.equals("/shortened")
+        || currentPath.startsWith("/css")
+        || currentPath.startsWith("/js")
         || currentPath.startsWith("/auth"))
       return;
 
