@@ -10,7 +10,8 @@ import org.wornux.urlshortener.model.User;
 import org.wornux.urlshortener.service.UserService;
 
 /**
- * AuthController is a controller class that handles HTTP requests related to authentication and
+ * AuthController is a controller class that handles HTTP requests related to
+ * authentication and
  * authorization.
  */
 @CONTROLLER(path = "/auth")
@@ -49,11 +50,11 @@ public class AuthController extends BaseController {
    */
   @POST(path = "/login")
   public void login(Context ctx) {
-    String username = ctx.formParam("username");
+    String email = ctx.formParam("email");
     String password = ctx.formParam("password");
 
     userService
-        .authenticate(username, password)
+        .authenticate(email, password)
         .ifPresentOrElse(
             user -> {
               System.out.println("✅ Usuario autenticado: " + user.getUsername());
