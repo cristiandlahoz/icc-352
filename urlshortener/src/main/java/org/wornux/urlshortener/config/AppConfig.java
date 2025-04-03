@@ -6,6 +6,7 @@ import io.javalin.rendering.template.JavalinThymeleaf;
 import org.thymeleaf.TemplateEngine;
 import org.thymeleaf.templateresolver.ClassLoaderTemplateResolver;
 import org.wornux.urlshortener.core.routing.Router;
+import org.wornux.urlshortener.security.AuthMiddleware;
 
 public class AppConfig {
   public static void configureApp(JavalinConfig config) {
@@ -18,6 +19,7 @@ public class AppConfig {
     config.router.mount(router -> {
       router.get("/", ctx -> ctx.redirect("shortened"));
       Router.registerRoutes(router);
+      router.beforeMatched(new AuthMiddleware());
     });
   }
 
