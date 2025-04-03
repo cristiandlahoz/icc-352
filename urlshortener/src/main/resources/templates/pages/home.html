@@ -174,7 +174,7 @@
 
     <section class="mt-10">
       <!-- desktop form -->
-      <form method="post" action="/url"
+      <form method="post" action="/shortened/create"
         class="flex justify-between items-center bg-btn-gray border-2 border-solid border-btn-gray-border w-auto min-w-[600px] hidden lg:flex py-1 px-1 rounded-full shadow-[rgba(0,_0,_0,_0.25)_0px_25px_50px_-12px]">
         <div>
           <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="white"
@@ -195,7 +195,7 @@
       </form>
 
       <!-- mobile form -->
-      <form method="post" action="/url"
+      <form method="post" action="/shortened/create"
         class="flex flex-col items-center justify-center w-screen gap-y-4 mx-14 lg:hidden">
         <div
           class="flex items-center bg-btn-gray border-2 border-solid h-12 border-btn-gray-border w-full py-1 px-1 rounded-full shadow-[rgba(0,_0,_0,_0.25)_0px_25px_50px_-12px]">
@@ -232,8 +232,8 @@
         <tbody>
           <tr th:each="url : ${urls}" class="bg-table-gray backdrop-blur-sm border-y-8 border-y-transparent">
             <td class="flex items-center justify-center py-2 text-center gap-x-3 border-btn-gray-border">
-              <a th:href="${url.url}" target="_blank" class="hover:underline">
-                <p th:text="${url.url}"></p>
+              <a th:href="${url.shortenedUrl}" target="_blank" class="hover:underline">
+                <p th:text="${url.shortenedUrl}"></p>
               </a>
               <div class="flex items-center justify-center rounded-full size-9 bg-btn-gray">
                 <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none"
@@ -248,7 +248,8 @@
               </div>
             </td>
             <td class="py-2 text-center border-btn-gray-border hover:underline max-w-80 overflow-hidden"
-              th:text="${url.originalUrl}"></td>
+              th:text="${#strings.length(url.originalUrl) > 70 ? #strings.substring(url.originalUrl, 0, 70) + '...' : (url.originalUrl)}">
+            </td>
             <td class="px-4 py-2 text-center border-btn-gray-border ">
               <svg xmlns="http://www.w3.org/2000/svg" class="m-auto size-8" viewBox="0 0 300 300"
                 shape-rendering="geometricPrecision" text-rendering="geometricPrecision">
@@ -297,9 +298,9 @@
                 </a>
               </svg>
             </td>
-            <td class="py-2 text-center border-btn-gray-border" th:text="${url.clicks}"></td>
+            <td class="py-2 text-center border-btn-gray-border" th:text="${url.clickCount}"></td>
             <td class="flex items-center justify-center px-4 py-2 gap-x-3 border-btn-gray-border"
-              th:unless="${url.status}">
+              th:if="${url.isOffensive}">
               <p class="text-center text-yellow-600 min-w-14">Inactive</p>
               <div class="flex items-center justify-center rounded-full size-9 bg-yellow-600/30">
                 <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none"
@@ -314,7 +315,7 @@
               </div>
             </td>
             <td class="flex items-center justify-center py-2 text-center gap-x-3 border-btn-gray-border"
-              th:if="${url.status}">
+              th:unless="${url.isOffensive}">
               <p class="text-center text-green-600 min-w-14">Active</p>
               <div class="flex items-center justify-center rounded-full size-9 bg-green-600/30">
                 <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none"
@@ -327,7 +328,7 @@
                 </svg>
               </div>
             </td>
-            <td class="px-4 py-2 text-center border-btn-gray-border" th:text="${url.date}"></td>
+            <td class="px-4 py-2 text-center border-btn-gray-border" th:text="${url.createdAt}"></td>
           </tr>
         </tbody>
       </table>
@@ -344,8 +345,8 @@
         <tbody>
           <tr th:each="url : ${urls}" class="bg-table-gray backdrop-blur-sm border-y-8 border-y-transparent">
             <td class="flex items-center justify-center px-4 py-2 gap-x-3 border-btn-gray-border">
-              <a th:href="${url.url}" target="_blank" class="hover:underline">
-                <p th:text="${url.url}"></p>
+              <a th:href="${url.shortenedUrl}" target="_blank" class="hover:underline">
+                <p th:text="${url.shortenedUrl}"></p>
               </a>
               <div class="flex items-center justify-center rounded-full size-9 bg-btn-gray">
                 <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none"
