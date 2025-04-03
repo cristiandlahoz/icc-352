@@ -1,6 +1,7 @@
 package org.wornux.urlshortener.controller;
 
 import io.javalin.http.Context;
+import java.util.Base64;
 
 import org.bson.types.ObjectId;
 import org.wornux.urlshortener.core.routing.annotations.CONTROLLER;
@@ -63,5 +64,22 @@ public class ShortenedUrlController {
     String id = ctx.pathParam("id");
     shortenedUrlService.deleteShortenedUrl(new ObjectId(id));
     ctx.redirect("/shortened/");
+  }
+
+  @GET(path = "/{id}/qr")
+  public void getQrCode(Context ctx) {
+    String id = ctx.pathParam("id");
+    Optional<ShortenedUrlCreatedDTO> shortenedUrl = shortenedUrlService.getShortenedUrlById(new ObjectId(id));
+    if (shortenedUrl.isEmpty()) {
+      ctx.status(404);
+      return;
+    }
+    String base64QRCode = Base64.getEncoder().encodeToString(shortenedUrl.get().qrCode());
+    Map<String, Object> model = new HashMap<>() {
+      {
+        put("base64QRCode", base64QRCode);
+      }
+    };
+    ctx.render("pages/qrCode.html", model);
   }
 }
