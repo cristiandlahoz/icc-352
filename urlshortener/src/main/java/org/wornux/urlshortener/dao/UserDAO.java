@@ -13,11 +13,11 @@ public class UserDAO extends BaseDAO<User, ObjectId> {
     super(datastore, User.class);
   }
 
-  public Optional<User> findByUsernameAndPassword(String username, String password) {
+  public Optional<User> findByEmailAndPassword(String email, String password) {
     return Optional.ofNullable(
         datastore
             .find(User.class)
-            .filter(Filters.eq("username", username))
+            .filter(Filters.eq("email", email))
             .filter(Filters.eq("password", password))
             .first());
   }
