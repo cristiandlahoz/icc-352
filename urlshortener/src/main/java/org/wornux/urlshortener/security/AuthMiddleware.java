@@ -1,39 +1,42 @@
 package org.wornux.urlshortener.security;
 
+/**
+ * Middleware for handling authentication in the URL shortener application.
+ * Ensures that users are authenticated before accessing protected routes.
+ */
+
+import org.wornux.urlshortener.enums.Routes;
+import org.wornux.urlshortener.enums.SessionKeys;
+import org.wornux.urlshortener.model.User;
+
 import io.javalin.http.Context;
 import io.javalin.http.Handler;
-import org.wornux.urlshortener.enums.Role;
 
 /**
- * Middleware for handling authentication and authorization in the application.
- * Ensures that the user is authenticated and has the required role to access
- * specific resources.
+ * AuthMiddleware class implements the Handler interface to provide
+ * authentication checks for incoming HTTP requests.
  */
 public class AuthMiddleware implements Handler {
 
   /**
-   * Handles the authentication middleware logic.
-   * 
-   * @param ctx The context of the current request, providing access to request
-   *            and response data.
-   * @throws Exception If an error occurs during the handling of the request.
+   * Handles incoming HTTP requests and performs authentication checks.
+   * Redirects unauthenticated users to the login page for protected routes.
+   *
+   * @param ctx The Javalin HTTP context for the current request.
+   * @throws Exception If an error occurs during request handling.
    */
   @Override
   public void handle(Context ctx) throws Exception {
-    if (ctx.path().equals("/"))
-      ctx.redirect("shortened");
+    String currentPath = ctx.path();
 
-    if (ctx.sessionAttribute("user") == null) {
-      ctx.status(401); // Unauthorized
+    // Allow public and authentication routes without checks
+    if (currentPath.startsWith("/images") || currentPath.startsWith("/css") || currentPath.startsWith("/js")
+        || currentPath.startsWith("/auth"))
       return;
-    }
 
-    // Retrieve the user's role from the session and check if they have admin
-    // privileges.
-    Role role = ctx.sessionAttribute("user");
-    if (role != Role.ADMIN) {
-      ctx.status(403); // Forbidden
-      return;
-    }
+    // Check if the user is authenticated
+    User user = ctx.sessionAttribute(SessionKeys.USER.getKey());
+    if (user == null)
+      ctx.redirect(Routes.USER_LOGIN.getRoute());
   }
 }
