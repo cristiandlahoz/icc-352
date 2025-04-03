@@ -22,9 +22,9 @@ public class ShortenedUrl {
   private Date createdAt;
   private int clickCount;
   private boolean isOffensive;
-  private String qrCode;
+  private byte[] qrCode;
 
-  public ShortenedUrl(String originalUrl, String shortenedUrl, User createdBy, String qrCode) {
+  public ShortenedUrl(String originalUrl, String shortenedUrl, User createdBy, byte[] qrCode) {
     this.originalUrl = originalUrl;
     this.shortenedUrl = shortenedUrl;
     this.createdBy = createdBy;
