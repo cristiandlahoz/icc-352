@@ -15,8 +15,8 @@ public class UserService {
     this.userDAO = userDAO;
   }
 
-  public Optional<User> authenticate(@Nonnull String username, @Nonnull String password) {
-    return userDAO.findByUsernameAndPassword(username, password);
+  public Optional<User> authenticate(@Nonnull String email, @Nonnull String password) {
+    return userDAO.findByEmailAndPassword(email, password);
   }
 
   public List<User> getUsers() {
