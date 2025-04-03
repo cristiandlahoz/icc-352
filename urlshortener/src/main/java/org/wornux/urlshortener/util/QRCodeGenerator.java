@@ -22,8 +22,8 @@ public class QRCodeGenerator {
    */
   public static byte[] generateQRCode(String url) throws IOException {
     QRCodeWriter writer = new QRCodeWriter();
-    int width = 200;
-    int height = 200;
+    int width = 500;
+    int height = 500;
     try {
       BitMatrix bitMatrix = writer.encode(url, BarcodeFormat.QR_CODE, width, height);
       ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
