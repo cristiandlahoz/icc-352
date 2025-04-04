@@ -15,9 +15,6 @@ public class UrlDAO extends BaseDAO<Url, ObjectId> {
 
   public Optional<Url> findByHash(String shortenedUrl) {
     return Optional.ofNullable(
-        datastore
-            .find(Url.class)
-            .filter(Filters.eq("shortenedUrl", shortenedUrl))
-            .first());
+        datastore.find(Url.class).filter(Filters.eq("shortenedUrl", shortenedUrl)).first());
   }
 }

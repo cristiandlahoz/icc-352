@@ -20,8 +20,7 @@ public class RedirectController {
    *
    * @param urlService Service for managing shortened URLs.
    */
-  public RedirectController(
-          UrlService urlService, AccessLogsService accessLogService) {
+  public RedirectController(UrlService urlService, AccessLogsService accessLogService) {
     this.urlService = urlService;
     this.accessLogService = accessLogService;
   }

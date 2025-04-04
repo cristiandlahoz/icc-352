@@ -37,11 +37,12 @@ public class UrlController {
    */
   @GET(path = "/")
   public void listShortenedUrls(Context ctx) {
-    Map<String, Object> model = new HashMap<>() {
-      {
-        put("urls", urlService.getAllShortenedUrls());
-      }
-    };
+    Map<String, Object> model =
+        new HashMap<>() {
+          {
+            put("urls", urlService.getAllShortenedUrls());
+          }
+        };
     ctx.render("pages/home.html", model);
   }
 
@@ -70,11 +71,12 @@ public class UrlController {
     String id = ctx.pathParam("id");
 
     Optional<UrlCreatedDTO> url = urlService.getShortenedUrlById(new ObjectId(id));
-    Map<String, Object> model = new HashMap<>() {
-      {
-        put("shortenedUrl", url);
-      }
-    };
+    Map<String, Object> model =
+        new HashMap<>() {
+          {
+            put("shortenedUrl", url);
+          }
+        };
     ctx.render("shortenedUrlDetails.html", model);
   }
 
@@ -104,11 +106,12 @@ public class UrlController {
       return;
     }
     String base64QRCode = Base64.getEncoder().encodeToString(shortenedUrl.get().qrCode());
-    Map<String, Object> model = new HashMap<>() {
-      {
-        put("base64QRCode", base64QRCode);
-      }
-    };
+    Map<String, Object> model =
+        new HashMap<>() {
+          {
+            put("base64QRCode", base64QRCode);
+          }
+        };
     ctx.render("pages/qrCode.html", model);
   }
 }

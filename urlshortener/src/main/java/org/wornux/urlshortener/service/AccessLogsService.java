@@ -61,8 +61,7 @@ public class AccessLogsService {
             .orElseThrow(() -> new IllegalArgumentException("Shortened URL not found"));
 
     AccessLog accessLog =
-        new AccessLog(
-				        url, accessLogDTO.browser(), accessLogDTO.ipAddress(), accessLogDTO.os());
+        new AccessLog(url, accessLogDTO.browser(), accessLogDTO.ipAddress(), accessLogDTO.os());
     accessLogsDAO.save(accessLog);
   }
 

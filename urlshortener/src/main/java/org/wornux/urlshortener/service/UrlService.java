@@ -35,8 +35,7 @@ public class UrlService {
       String shortUrl = UrlShortener.generateShortUrl();
       byte[] qrCode;
       qrCode = QRCodeGenerator.generateQRCode(originalUrl);
-      Url url =
-          new Url(originalUrl, shortUrl, urlDTO.createdBy(), qrCode);
+      Url url = new Url(originalUrl, shortUrl, urlDTO.createdBy(), qrCode);
       urlDAO.save(url);
     } catch (IOException e) {
       throw new RuntimeException("Failed to generate QR code", e);
