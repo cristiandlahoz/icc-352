@@ -1,5 +1,8 @@
 package org.wornux.urlshortener.dto;
 
+import java.util.Date;
+
+import org.bson.types.ObjectId;
 import org.wornux.urlshortener.model.ShortenedUrl;
 
 /**
@@ -14,7 +17,10 @@ import org.wornux.urlshortener.model.ShortenedUrl;
  *                     be blank.
  * @throws IllegalArgumentException if any of the parameters are invalid.
  */
-public record ShortenedUrlCreatedDTO(String originalUrl, String shortenedUrl, byte[] qrCode) {
+public record ShortenedUrlCreatedDTO(ObjectId id, String originalUrl, String shortenedUrl, Date createdAt,
+    byte[] qrCode,
+    int clickCount,
+    boolean isOffensive) {
 
   /**
    * Constructs a new {@code ShortenedUrlCreatedDTO} instance with validation.
@@ -45,9 +51,25 @@ public record ShortenedUrlCreatedDTO(String originalUrl, String shortenedUrl, by
     if (qrCode == null || qrCode.toString().isBlank()) {
       throw new IllegalArgumentException("");
     }
+    if (clickCount < 0) {
+      throw new IllegalArgumentException("Click count cannot be negative");
+    }
+
   }
 
+  /**
+   * Constructs a ShortenedUrlCreatedDTO object using a ShortenedUrl instance.
+   *
+   * @param shortenedUrl The ShortenedUrl instance containing the data.
+   */
   public ShortenedUrlCreatedDTO(ShortenedUrl shortenedUrl) {
-    this(shortenedUrl.getOriginalUrl(), shortenedUrl.getShortenedUrl(), shortenedUrl.getQrCode());
+    this(
+        shortenedUrl.getId(),
+        shortenedUrl.getOriginalUrl(),
+        shortenedUrl.getShortenedUrl(),
+        shortenedUrl.getCreatedAt(),
+        shortenedUrl.getQrCode(),
+        shortenedUrl.getClickCount(),
+        shortenedUrl.isOffensive());
   }
 }
