@@ -36,6 +36,7 @@ dependencies {
 
     // Utils
     implementation 'io.github.cdimascio:dotenv-java:3.1.0'
+    implementation 'eu.bitwalker:UserAgentUtils:1.21'
     //Webservices
     runtimeOnly 'io.grpc:grpc-netty-shaded:1.62.2'
     implementation 'io.grpc:grpc-protobuf:1.62.2'
