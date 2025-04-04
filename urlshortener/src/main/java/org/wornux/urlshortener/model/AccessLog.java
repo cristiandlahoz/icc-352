@@ -12,27 +12,27 @@ import org.bson.types.ObjectId;
 @Setter
 @NoArgsConstructor
 public class AccessLog {
-  @Id private ObjectId id;
-  @Reference private ShortenedUrl shortenedUrl;
-  private Date accessDate;
+  @Id
+  private ObjectId id;
+  @Reference
+  private ShortenedUrl url;
+  private Date accessedAt;
   private String browser;
   private String ipAddress;
-  private String platform;
   private String os; // Operating System
 
   public AccessLog(
-      ShortenedUrl shortenedUrl, String browser, String ipAddress, String platform, String os) {
-    this.shortenedUrl = shortenedUrl;
+      ShortenedUrl url, String browser, String ipAddress, String os) {
+    this.url = url;
     this.browser = browser;
     this.ipAddress = ipAddress;
-    this.platform = platform;
     this.os = os;
   }
 
   @PrePersist
   public void prePersist() {
-    if (accessDate == null) {
-      accessDate = new Date();
+    if (accessedAt == null) {
+      accessedAt = new Date();
     }
   }
 }
