@@ -17,15 +17,29 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.Optional;
 
+/**
+ * Controller for handling operations related to shortened URLs.
+ */
 @CONTROLLER(path = "shortened")
 public class ShortenedUrlController {
 
   private final ShortenedUrlService shortenedUrlService;
 
+  /**
+   * Constructor to initialize the ShortenedUrlController with the required
+   * service.
+   *
+   * @param shortenedUrlService Service for managing shortened URLs.
+   */
   public ShortenedUrlController(ShortenedUrlService shortenedUrlService) {
     this.shortenedUrlService = shortenedUrlService;
   }
 
+  /**
+   * Handles GET requests to list all shortened URLs.
+   *
+   * @param ctx The Javalin HTTP context.
+   */
   @GET(path = "/")
   public void listShortenedUrls(Context ctx) {
     Map<String, Object> model = new HashMap<>() {
@@ -36,6 +50,11 @@ public class ShortenedUrlController {
     ctx.render("pages/home.html", model);
   }
 
+  /**
+   * Handles POST requests to create a new shortened URL.
+   *
+   * @param ctx The Javalin HTTP context.
+   */
   @POST(path = "/create")
   public void createShortenedUrl(Context ctx) {
     String url = ctx.formParam("url");
@@ -46,6 +65,11 @@ public class ShortenedUrlController {
     ctx.redirect("/");
   }
 
+  /**
+   * Handles GET requests to retrieve details of a specific shortened URL.
+   *
+   * @param ctx The Javalin HTTP context.
+   */
   @GET(path = "/{id}")
   public void getShortenedUrl(Context ctx) {
     String id = ctx.pathParam("id");
@@ -59,6 +83,11 @@ public class ShortenedUrlController {
     ctx.render("shortenedUrlDetails.html", model);
   }
 
+  /**
+   * Handles POST requests to delete a specific shortened URL.
+   *
+   * @param ctx The Javalin HTTP context.
+   */
   @POST(path = "/{id}/delete")
   public void deleteShortenedUrl(Context ctx) {
     String id = ctx.pathParam("id");
@@ -66,6 +95,11 @@ public class ShortenedUrlController {
     ctx.redirect("/shortened/");
   }
 
+  /**
+   * Handles GET requests to retrieve the QR code for a specific shortened URL.
+   *
+   * @param ctx The Javalin HTTP context.
+   */
   @GET(path = "/{id}/qr")
   public void getQrCode(Context ctx) {
     String id = ctx.pathParam("id");

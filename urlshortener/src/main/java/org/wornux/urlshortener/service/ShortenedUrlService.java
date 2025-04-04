@@ -29,7 +29,7 @@ public class ShortenedUrlService {
     }
     try {
       String originalUrl = shortenedUrlDTO.originalUrl();
-      String shortUrl = UrlShortener.generateShortUrl(originalUrl);
+      String shortUrl = UrlShortener.generateShortUrl();
       byte[] qrCode;
       qrCode = QRCodeGenerator.generateQRCode(originalUrl);
       ShortenedUrl shortenedUrl = new ShortenedUrl(originalUrl, shortUrl, shortenedUrlDTO.createdBy(), qrCode);
