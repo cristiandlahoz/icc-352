@@ -19,8 +19,15 @@ public class ShortenedUrlService {
     this.shortenedUrlDAO = shortenedUrlDAO;
   }
 
-  public List<ShortenedUrl> getAllShortenedUrls() {
-    return shortenedUrlDAO.findAll();
+  public List<ShortenedUrlCreatedDTO> getAllShortenedUrls() {
+    return shortenedUrlDAO.findAll().stream()
+        .map(ShortenedUrlCreatedDTO::new)
+        .toList();
+  }
+
+  public Optional<ShortenedUrlCreatedDTO> getById(ObjectId id) {
+    return shortenedUrlDAO.findById(id)
+        .map(ShortenedUrlCreatedDTO::new);
   }
 
   public void createShortenedUrl(ShortenedUrlDTO shortenedUrlDTO) {
@@ -54,6 +61,25 @@ public class ShortenedUrlService {
 
   public void deleteShortenedUrl(ObjectId id) {
     shortenedUrlDAO.deleteById(id);
+  }
+
+  public Optional<ShortenedUrl> getShortenedUrlByHash(String shortUrl) {
+    Optional<ShortenedUrl> shortenedUrl = shortenedUrlDAO.findByHash(shortUrl);
+    if (shortenedUrl.isEmpty()) {
+      throw new IllegalArgumentException("Shortened URL not found");
+    }
+    return shortenedUrl;
+  }
+
+  public void incrementClickCount(ObjectId id) {
+    Optional<ShortenedUrl> shortenedUrl = shortenedUrlDAO.findById(id);
+    if (shortenedUrl.isPresent()) {
+      ShortenedUrl url = shortenedUrl.get();
+      url.setClickCount(url.getClickCount() + 1);
+      shortenedUrlDAO.save(url);
+    } else {
+      throw new IllegalArgumentException("Shortened URL not found");
+    }
   }
 
 }
