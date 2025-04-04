@@ -5,8 +5,8 @@ import eu.bitwalker.useragentutils.OperatingSystem;
 import eu.bitwalker.useragentutils.UserAgent;
 
 /**
- * Utility class for parsing user agent strings to extract IP, browser, and
- * operating system details.
+ * Utility class for parsing user agent strings to extract IP, browser, and operating system
+ * details.
  */
 public class UserAgentParser {
 

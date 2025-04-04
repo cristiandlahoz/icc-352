@@ -16,11 +16,12 @@ public class AppConfig {
           stc.directory = "/public";
         });
     config.fileRenderer(templateEngineConfig());
-    config.router.mount(router -> {
-      router.get("/", ctx -> ctx.redirect("shortened"));
-      Router.registerRoutes(router);
-      router.beforeMatched(new AuthMiddleware());
-    });
+    config.router.mount(
+        router -> {
+          router.get("/", ctx -> ctx.redirect("shortened"));
+          Router.registerRoutes(router);
+          router.beforeMatched(new AuthMiddleware());
+        });
   }
 
   public static JavalinThymeleaf templateEngineConfig() {

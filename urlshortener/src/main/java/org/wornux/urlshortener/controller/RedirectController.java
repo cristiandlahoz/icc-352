@@ -1,17 +1,14 @@
 package org.wornux.urlshortener.controller;
 
+import io.javalin.http.Context;
 import java.util.Optional;
-
 import org.wornux.urlshortener.core.routing.annotations.CONTROLLER;
 import org.wornux.urlshortener.core.routing.annotations.GET;
 import org.wornux.urlshortener.dto.AccessLogDTO;
-import org.wornux.urlshortener.dto.ShortenedUrlCreatedDTO;
 import org.wornux.urlshortener.model.ShortenedUrl;
 import org.wornux.urlshortener.service.AccessLogsService;
 import org.wornux.urlshortener.service.ShortenedUrlService;
 import org.wornux.urlshortener.util.UserAgentParser;
-
-import io.javalin.http.Context;
 
 @CONTROLLER(path = "/s")
 public class RedirectController {
@@ -23,7 +20,8 @@ public class RedirectController {
    *
    * @param shortenedUrlService Service for managing shortened URLs.
    */
-  public RedirectController(ShortenedUrlService shortenedUrlService, AccessLogsService accessLogService) {
+  public RedirectController(
+      ShortenedUrlService shortenedUrlService, AccessLogsService accessLogService) {
     this.shortenedUrlService = shortenedUrlService;
     this.accessLogService = accessLogService;
   }
@@ -45,12 +43,13 @@ public class RedirectController {
       String browser = UserAgentParser.getBrowser(userAgent);
       String operatingSystem = UserAgentParser.getOperatingSystem(userAgent);
 
-      AccessLogDTO accessLogDTO = new AccessLogDTO(
-          shortenedUrl.get().getShortenedUrl(),
-          shortenedUrl.get().getCreatedAt(),
-          browser,
-          ipAddress,
-          operatingSystem);
+      AccessLogDTO accessLogDTO =
+          new AccessLogDTO(
+              shortenedUrl.get().getShortenedUrl(),
+              shortenedUrl.get().getCreatedAt(),
+              browser,
+              ipAddress,
+              operatingSystem);
 
       accessLogService.createAccessLog(accessLogDTO);
       ctx.redirect(shortenedUrl.get().getOriginalUrl());

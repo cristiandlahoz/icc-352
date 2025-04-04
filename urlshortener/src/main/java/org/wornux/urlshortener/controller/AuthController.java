@@ -10,8 +10,7 @@ import org.wornux.urlshortener.model.User;
 import org.wornux.urlshortener.service.UserService;
 
 /**
- * AuthController is a controller class that handles HTTP requests related to
- * authentication and
+ * AuthController is a controller class that handles HTTP requests related to authentication and
  * authorization.
  */
 @CONTROLLER(path = "/auth")

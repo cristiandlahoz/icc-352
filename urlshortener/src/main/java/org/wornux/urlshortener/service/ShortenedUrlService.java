@@ -3,7 +3,6 @@ package org.wornux.urlshortener.service;
 import java.io.IOException;
 import java.util.List;
 import java.util.Optional;
-
 import org.bson.types.ObjectId;
 import org.wornux.urlshortener.dao.ShortenedUrlDAO;
 import org.wornux.urlshortener.dto.ShortenedUrlCreatedDTO;
@@ -20,14 +19,11 @@ public class ShortenedUrlService {
   }
 
   public List<ShortenedUrlCreatedDTO> getAllShortenedUrls() {
-    return shortenedUrlDAO.findAll().stream()
-        .map(ShortenedUrlCreatedDTO::new)
-        .toList();
+    return shortenedUrlDAO.findAll().stream().map(ShortenedUrlCreatedDTO::new).toList();
   }
 
   public Optional<ShortenedUrlCreatedDTO> getById(ObjectId id) {
-    return shortenedUrlDAO.findById(id)
-        .map(ShortenedUrlCreatedDTO::new);
+    return shortenedUrlDAO.findById(id).map(ShortenedUrlCreatedDTO::new);
   }
 
   public void createShortenedUrl(ShortenedUrlDTO shortenedUrlDTO) {
@@ -39,7 +35,8 @@ public class ShortenedUrlService {
       String shortUrl = UrlShortener.generateShortUrl();
       byte[] qrCode;
       qrCode = QRCodeGenerator.generateQRCode(originalUrl);
-      ShortenedUrl shortenedUrl = new ShortenedUrl(originalUrl, shortUrl, shortenedUrlDTO.createdBy(), qrCode);
+      ShortenedUrl shortenedUrl =
+          new ShortenedUrl(originalUrl, shortUrl, shortenedUrlDTO.createdBy(), qrCode);
       shortenedUrlDAO.save(shortenedUrl);
     } catch (IOException e) {
       throw new RuntimeException("Failed to generate QR code", e);
@@ -55,8 +52,7 @@ public class ShortenedUrlService {
     if (shortenedUrl.isEmpty()) {
       throw new IllegalArgumentException("Shortened URL not found");
     }
-    return Optional
-        .ofNullable(new ShortenedUrlCreatedDTO(shortenedUrl.get()));
+    return Optional.ofNullable(new ShortenedUrlCreatedDTO(shortenedUrl.get()));
   }
 
   public void deleteShortenedUrl(ObjectId id) {
@@ -81,5 +77,4 @@ public class ShortenedUrlService {
       throw new IllegalArgumentException("Shortened URL not found");
     }
   }
-
 }

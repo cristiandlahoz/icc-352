@@ -2,7 +2,6 @@ package org.wornux.urlshortener.core.routing;
 
 import io.javalin.http.Context;
 import io.javalin.router.JavalinDefaultRouting;
-
 import java.lang.reflect.Method;
 import java.util.List;
 import org.wornux.urlshortener.core.routing.annotations.CONTROLLER;

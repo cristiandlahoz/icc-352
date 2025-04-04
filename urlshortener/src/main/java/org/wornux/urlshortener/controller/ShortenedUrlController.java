@@ -2,7 +2,9 @@ package org.wornux.urlshortener.controller;
 
 import io.javalin.http.Context;
 import java.util.Base64;
-
+import java.util.HashMap;
+import java.util.Map;
+import java.util.Optional;
 import org.bson.types.ObjectId;
 import org.wornux.urlshortener.core.routing.annotations.CONTROLLER;
 import org.wornux.urlshortener.core.routing.annotations.GET;
@@ -13,21 +15,14 @@ import org.wornux.urlshortener.enums.SessionKeys;
 import org.wornux.urlshortener.model.User;
 import org.wornux.urlshortener.service.ShortenedUrlService;
 
-import java.util.HashMap;
-import java.util.Map;
-import java.util.Optional;
-
-/**
- * Controller for handling operations related to shortened URLs.
- */
+/** Controller for handling operations related to shortened URLs. */
 @CONTROLLER(path = "shortened")
 public class ShortenedUrlController {
 
   private final ShortenedUrlService shortenedUrlService;
 
   /**
-   * Constructor to initialize the ShortenedUrlController with the required
-   * service.
+   * Constructor to initialize the ShortenedUrlController with the required service.
    *
    * @param shortenedUrlService Service for managing shortened URLs.
    */
@@ -42,11 +37,12 @@ public class ShortenedUrlController {
    */
   @GET(path = "/")
   public void listShortenedUrls(Context ctx) {
-    Map<String, Object> model = new HashMap<>() {
-      {
-        put("urls", shortenedUrlService.getAllShortenedUrls());
-      }
-    };
+    Map<String, Object> model =
+        new HashMap<>() {
+          {
+            put("urls", shortenedUrlService.getAllShortenedUrls());
+          }
+        };
     ctx.render("pages/home.html", model);
   }
 
@@ -74,12 +70,14 @@ public class ShortenedUrlController {
   public void getShortenedUrl(Context ctx) {
     String id = ctx.pathParam("id");
 
-    Optional<ShortenedUrlCreatedDTO> url = shortenedUrlService.getShortenedUrlById(new ObjectId(id));
-    Map<String, Object> model = new HashMap<>() {
-      {
-        put("shortenedUrl", url);
-      }
-    };
+    Optional<ShortenedUrlCreatedDTO> url =
+        shortenedUrlService.getShortenedUrlById(new ObjectId(id));
+    Map<String, Object> model =
+        new HashMap<>() {
+          {
+            put("shortenedUrl", url);
+          }
+        };
     ctx.render("shortenedUrlDetails.html", model);
   }
 
@@ -103,17 +101,19 @@ public class ShortenedUrlController {
   @GET(path = "/{id}/qr")
   public void getQrCode(Context ctx) {
     String id = ctx.pathParam("id");
-    Optional<ShortenedUrlCreatedDTO> shortenedUrl = shortenedUrlService.getShortenedUrlById(new ObjectId(id));
+    Optional<ShortenedUrlCreatedDTO> shortenedUrl =
+        shortenedUrlService.getShortenedUrlById(new ObjectId(id));
     if (shortenedUrl.isEmpty()) {
       ctx.status(404);
       return;
     }
     String base64QRCode = Base64.getEncoder().encodeToString(shortenedUrl.get().qrCode());
-    Map<String, Object> model = new HashMap<>() {
-      {
-        put("base64QRCode", base64QRCode);
-      }
-    };
+    Map<String, Object> model =
+        new HashMap<>() {
+          {
+            put("base64QRCode", base64QRCode);
+          }
+        };
     ctx.render("pages/qrCode.html", model);
   }
 }
