@@ -2,7 +2,7 @@ package org.wornux.urlshortener.dto;
 
 import java.util.Date;
 import org.bson.types.ObjectId;
-import org.wornux.urlshortener.model.ShortenedUrl;
+import org.wornux.urlshortener.model.Url;
 
 /**
  * A Data Transfer Object (DTO) representing the creation of a shortened URL. This record
@@ -13,7 +13,7 @@ import org.wornux.urlshortener.model.ShortenedUrl;
  * @param qrCode The QR code representation of the shortened URL. Cannot be blank.
  * @throws IllegalArgumentException if any of the parameters are invalid.
  */
-public record ShortenedUrlCreatedDTO(
+public record UrlCreatedDTO(
     ObjectId id,
     String originalUrl,
     String shortenedUrl,
@@ -23,7 +23,7 @@ public record ShortenedUrlCreatedDTO(
     boolean isOffensive) {
 
   /**
-   * Constructs a new {@code ShortenedUrlCreatedDTO} instance with validation.
+   * Constructs a new {@code UrlCreatedDTO} instance with validation.
    *
    * @param originalUrl The original URL to be shortened.
    * @param shortenedUrl The shortened version of the URL.
@@ -32,7 +32,7 @@ public record ShortenedUrlCreatedDTO(
    *     format. - {@code shortenedUrl} is null, blank, or exceeds 10 characters. - {@code qrCode}
    *     is null or blank.
    */
-  public ShortenedUrlCreatedDTO {
+  public UrlCreatedDTO {
     if (originalUrl == null || originalUrl.isBlank()) {
       throw new IllegalArgumentException("Original URL cannot be null or blank");
     }
@@ -55,18 +55,18 @@ public record ShortenedUrlCreatedDTO(
   }
 
   /**
-   * Constructs a ShortenedUrlCreatedDTO object using a ShortenedUrl instance.
+   * Constructs a UrlCreatedDTO object using a Url instance.
    *
-   * @param shortenedUrl The ShortenedUrl instance containing the data.
+   * @param url The Url instance containing the data.
    */
-  public ShortenedUrlCreatedDTO(ShortenedUrl shortenedUrl) {
+  public UrlCreatedDTO(Url url) {
     this(
-        shortenedUrl.getId(),
-        shortenedUrl.getOriginalUrl(),
-        shortenedUrl.getShortenedUrl(),
-        shortenedUrl.getCreatedAt(),
-        shortenedUrl.getQrCode(),
-        shortenedUrl.getClickCount(),
-        shortenedUrl.isOffensive());
+        url.getId(),
+        url.getOriginalUrl(),
+        url.getShortenedUrl(),
+        url.getCreatedAt(),
+        url.getQrCode(),
+        url.getClickCount(),
+        url.isOffensive());
   }
 }

@@ -12,7 +12,7 @@ import org.bson.types.ObjectId;
 @NoArgsConstructor
 @Entity("shortened_urls")
 @Indexes(@Index(fields = @Field("shortenedUrl")))
-public class ShortenedUrl {
+public class Url {
   @Id private ObjectId id;
   private String originalUrl;
   private String shortenedUrl;
@@ -22,7 +22,7 @@ public class ShortenedUrl {
   private boolean isOffensive;
   private byte[] qrCode;
 
-  public ShortenedUrl(String originalUrl, String shortenedUrl, User createdBy, byte[] qrCode) {
+  public Url(String originalUrl, String shortenedUrl, User createdBy, byte[] qrCode) {
     this.originalUrl = originalUrl;
     this.shortenedUrl = shortenedUrl;
     this.createdBy = createdBy;

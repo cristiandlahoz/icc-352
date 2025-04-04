@@ -10,13 +10,13 @@ import org.wornux.urlshortener.model.User;
  * @param originalUrl The original URL to be shortened. Must be a valid URL format.
  * @param createdBy The user who created the shortened URL. Cannot be null.
  */
-public record ShortenedUrlDTO(String originalUrl, User createdBy) {
+public record UrlDTO(String originalUrl, User createdBy) {
   /**
-   * Compact constructor for ShortenedUrlDTO. Validates the original URL and the user.
+   * Compact constructor for UrlDTO. Validates the original URL and the user.
    *
    * @throws IllegalArgumentException if the original URL is invalid or the user is null.
    */
-  public ShortenedUrlDTO {
+  public UrlDTO {
     if (originalUrl == null
         || originalUrl.isBlank()
         || !originalUrl.matches("^(https?|ftp)://[^\\s/$.?#].[^\\s]*$")) {

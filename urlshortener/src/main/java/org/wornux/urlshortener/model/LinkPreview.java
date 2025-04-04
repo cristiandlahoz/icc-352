@@ -13,12 +13,12 @@ import org.bson.types.ObjectId;
 @NoArgsConstructor
 public class LinkPreview {
   @Id private ObjectId id;
-  @Reference private ShortenedUrl shortenedUrl;
+  @Reference private Url url;
   private String previewImage;
   private Date createdAt;
 
-  public LinkPreview(ShortenedUrl shortenedUrl, String previewImage) {
-    this.shortenedUrl = shortenedUrl;
+  public LinkPreview(Url url, String previewImage) {
+    this.url = url;
     this.previewImage = previewImage;
   }
 

@@ -5,18 +5,18 @@ import dev.morphia.query.filters.Filters;
 import java.util.Optional;
 import org.bson.types.ObjectId;
 import org.wornux.urlshortener.dao.base.BaseDAO;
-import org.wornux.urlshortener.model.ShortenedUrl;
+import org.wornux.urlshortener.model.Url;
 
-public class ShortenedUrlDAO extends BaseDAO<ShortenedUrl, ObjectId> {
+public class UrlDAO extends BaseDAO<Url, ObjectId> {
 
-  public ShortenedUrlDAO(Datastore datastore) {
-    super(datastore, ShortenedUrl.class);
+  public UrlDAO(Datastore datastore) {
+    super(datastore, Url.class);
   }
 
-  public Optional<ShortenedUrl> findByHash(String shortenedUrl) {
+  public Optional<Url> findByHash(String shortenedUrl) {
     return Optional.ofNullable(
         datastore
-            .find(ShortenedUrl.class)
+            .find(Url.class)
             .filter(Filters.eq("shortenedUrl", shortenedUrl))
             .first());
   }

@@ -6,21 +6,21 @@ import org.bson.types.ObjectId;
 import org.wornux.urlshortener.dao.AccessLogsDAO;
 import org.wornux.urlshortener.dto.AccessLogDTO;
 import org.wornux.urlshortener.model.AccessLog;
-import org.wornux.urlshortener.model.ShortenedUrl;
+import org.wornux.urlshortener.model.Url;
 
 /** Service for managing access logs. */
 public class AccessLogsService {
   private final AccessLogsDAO accessLogsDAO;
-  private final ShortenedUrlService shortenedUrlService;
+  private final UrlService urlService;
 
   /**
    * Constructor to initialize the AccessLogsService with the required DAO.
    *
    * @param accessLogsDAO DAO for managing access logs.
    */
-  public AccessLogsService(AccessLogsDAO accessLogsDAO, ShortenedUrlService shortenedUrlService) {
+  public AccessLogsService(AccessLogsDAO accessLogsDAO, UrlService urlService) {
     this.accessLogsDAO = accessLogsDAO;
-    this.shortenedUrlService = shortenedUrlService;
+    this.urlService = urlService;
   }
 
   /**
@@ -55,14 +55,14 @@ public class AccessLogsService {
     if (accessLogDTO == null) {
       throw new IllegalArgumentException("Access log cannot be null");
     }
-    ShortenedUrl shortenedUrl =
-        shortenedUrlService
+    Url url =
+        urlService
             .getShortenedUrlByHash(accessLogDTO.shortenedUrl())
             .orElseThrow(() -> new IllegalArgumentException("Shortened URL not found"));
 
     AccessLog accessLog =
         new AccessLog(
-            shortenedUrl, accessLogDTO.browser(), accessLogDTO.ipAddress(), accessLogDTO.os());
+				        url, accessLogDTO.browser(), accessLogDTO.ipAddress(), accessLogDTO.os());
     accessLogsDAO.save(accessLog);
   }
 

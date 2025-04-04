@@ -5,24 +5,24 @@ import java.util.Optional;
 import org.wornux.urlshortener.core.routing.annotations.CONTROLLER;
 import org.wornux.urlshortener.core.routing.annotations.GET;
 import org.wornux.urlshortener.dto.AccessLogDTO;
-import org.wornux.urlshortener.model.ShortenedUrl;
+import org.wornux.urlshortener.model.Url;
 import org.wornux.urlshortener.service.AccessLogsService;
-import org.wornux.urlshortener.service.ShortenedUrlService;
+import org.wornux.urlshortener.service.UrlService;
 import org.wornux.urlshortener.util.UserAgentParser;
 
 @CONTROLLER(path = "/s")
 public class RedirectController {
-  private final ShortenedUrlService shortenedUrlService;
+  private final UrlService urlService;
   private final AccessLogsService accessLogService;
 
   /**
    * Constructor to initialize the RedirectController with the required service.
    *
-   * @param shortenedUrlService Service for managing shortened URLs.
+   * @param urlService Service for managing shortened URLs.
    */
   public RedirectController(
-      ShortenedUrlService shortenedUrlService, AccessLogsService accessLogService) {
-    this.shortenedUrlService = shortenedUrlService;
+          UrlService urlService, AccessLogsService accessLogService) {
+    this.urlService = urlService;
     this.accessLogService = accessLogService;
   }
 
@@ -34,7 +34,7 @@ public class RedirectController {
   @GET(path = "/{shortUrl}")
   public void redirectToOriginalUrl(Context ctx) {
     String shortUrl = ctx.pathParam("shortUrl");
-    Optional<ShortenedUrl> shortenedUrl = shortenedUrlService.getShortenedUrlByHash(shortUrl);
+    Optional<Url> shortenedUrl = urlService.getShortenedUrlByHash(shortUrl);
     if (shortenedUrl.isPresent()) {
       // Increment click count
       // take metrics
