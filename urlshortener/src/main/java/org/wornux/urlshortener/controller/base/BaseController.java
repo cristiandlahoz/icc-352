@@ -1,5 +1,7 @@
 package org.wornux.urlshortener.controller.base;
 
+import io.javalin.Javalin;
+
 import java.util.HashMap;
 import java.util.Map;
 
@@ -21,6 +23,15 @@ public abstract class BaseController {
    * @throws IllegalArgumentException If the number of arguments is not even or if
    * a key is not a String.
    */
+
+  protected Javalin app;
+
+  public BaseController(Javalin app) {
+    this.app = app;
+  }
+
+  public abstract void applyRoutes();
+
   public static Map<String, Object> setModel(Object... args) {
     Map<String, Object> model = new HashMap<>();
     if (args.length % 2 != 0) {
