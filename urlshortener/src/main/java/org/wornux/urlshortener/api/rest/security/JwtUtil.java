@@ -33,7 +33,7 @@ public class JwtUtil {
         .compact();
   }
 
-  public boolean validateToken(String token) {
+  /*public boolean validateToken(String token) {
     try {
       SecretKey key = getSigningKey();
       Jwts.parser().decryptWith(key).build().parse(token);
@@ -47,7 +47,27 @@ public class JwtUtil {
     } catch (IllegalArgumentException e) {
       throw new AuthenticationCredentialsNotFoundException("JWT token compact of handler are invalid.");
     }
+  }*/
+
+  public boolean validateToken(String token) {
+    try {
+      SecretKey key = getSigningKey();
+      Jwts.parser()
+              .verifyWith(key)  // ✅ Verifica firma
+              .build()
+              .parseSignedClaims(token);  // ✅ Asegura que es JWS (token firmado)
+      return true;
+    } catch (SecurityException | MalformedJwtException e) {
+      throw new AuthenticationCredentialsNotFoundException("JWT fue modificado o es inválido.");
+    } catch (ExpiredJwtException e) {
+      throw new AuthenticationCredentialsNotFoundException("JWT expirado.");
+    } catch (UnsupportedJwtException e) {
+      throw new AuthenticationCredentialsNotFoundException("JWT no soportado.");
+    } catch (IllegalArgumentException e) {
+      throw new AuthenticationCredentialsNotFoundException("JWT inválido.");
+    }
   }
+
 
   public String getUsernameFromToken(String token) {
     return extractAllClaims(token).getSubject();
