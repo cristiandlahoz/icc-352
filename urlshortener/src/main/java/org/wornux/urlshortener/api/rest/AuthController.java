@@ -1,0 +1,59 @@
+package org.wornux.urlshortener.api.rest;
+
+import io.javalin.http.Handler;
+import org.wornux.urlshortener.dto.Authentication;
+import org.wornux.urlshortener.model.User;
+import com.fasterxml.jackson.databind.JsonNode;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import org.wornux.urlshortener.api.rest.security.JwtUtil;
+import org.wornux.urlshortener.service.UserService;
+
+import java.util.Map;
+import java.util.Optional;
+
+public class AuthController {
+
+    public static Handler loginPost = ctx -> {
+        try {
+            ObjectMapper objectMapper = new ObjectMapper();
+            JsonNode jsonNode = objectMapper.readTree(ctx.body());
+
+            String username = jsonNode.get("username").asText();
+            String password = jsonNode.get("password").asText();
+
+            System.out.println("🟡 Intentando autenticación");
+            System.out.println("➡️ Usuario: " + username);
+            System.out.println("➡️ Clave: " + password);
+
+            Optional<User> optionalUser = UserService.authenticate(username, password);
+
+            if (optionalUser.isPresent()) {
+                User user = optionalUser.get();
+
+                System.out.println("✅ Usuario autenticado: " + user.getUsername());
+
+                JwtUtil jwtUtil = new JwtUtil();
+                String token = jwtUtil.generateToken(Map.of(), new Authentication(user.getUsername(), user.getPassword()));
+
+                ctx.json(new JWTResponse(token));
+                System.out.println("🔐 Token generado exitosamente");
+            } else {
+                System.out.println("❌ Credenciales incorrectas");
+                ctx.status(401).result("Credenciales incorrectas");
+            }
+
+        } catch (Exception e) {
+            System.out.println("❗ ERROR durante login:");
+            e.printStackTrace(); // ← esto mostrará la línea exacta del error
+            ctx.status(500).result("Ocurrió un error inesperado");
+        }
+    };
+
+    public static class JWTResponse {
+        public String token;
+
+        public JWTResponse(String token) {
+            this.token = token;
+        }
+    }
+}
