@@ -22,4 +22,11 @@ public class UserDAO extends BaseDAO<User, ObjectId> {
         .filter(Filters.eq("password", password))
         .first());
   }
+
+  public Optional<User> findByUsername(String username) {
+    return Optional.ofNullable(datastore.find(User.class)
+            .filter(Filters.eq("username", username))
+            .first());
+  }
+
 }
