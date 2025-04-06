@@ -1,4 +1,4 @@
-package org.wornux.urlshortener.security;
+package org.wornux.urlshortener.api.rest.security;
 
 import java.util.Date;
 import java.util.Map;
