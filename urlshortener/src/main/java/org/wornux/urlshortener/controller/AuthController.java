@@ -1,5 +1,6 @@
 package org.wornux.urlshortener.controller;
 
+import io.javalin.Javalin;
 import org.wornux.urlshortener.controller.base.BaseController;
 import org.wornux.urlshortener.core.routing.annotations.*;
 import org.wornux.urlshortener.enums.Role;
@@ -14,21 +15,28 @@ import io.javalin.http.Context;
  * AuthController is a controller class that handles HTTP requests related to
  * authentication and authorization.
  */
-@CONTROLLER(path = "/auth")
+//@CONTROLLER(path = "/auth")
 public class AuthController extends BaseController {
 
   private final UserService userService;
 
-  public AuthController(UserService userService) {
+  public AuthController(Javalin app, UserService userService) {
+    super(app);
     this.userService = userService;
   }
 
+  public void applyRoutes() {
+    app.get("/auth/login", this::renderLoginPage);
+    app.get("/auth/signup", this::renderSignupPage);
+    app.get("/auth/logout", this::logout);
+    app.post("/auth/signup", this::signup);
+  }
   /**
    * Handles the GET request to render the login page.
    * 
    * @param ctx The context of the HTTP request.
    */
-  @GET(path = "/login")
+  //@GET(path = "/login")
   public void renderLoginPage(Context ctx) {
     ctx.render("/auth/login.html");
   }
@@ -72,7 +80,7 @@ public class AuthController extends BaseController {
    * 
    * @param ctx The context of the HTTP request.
    */
-  @GET(path = "/logout")
+  //@GET(path = "/logout")
   public void logout(Context ctx) {
     ctx.req().getSession().invalidate();
     ctx.redirect(Routes.USER_LOGIN.getRoute());
@@ -83,7 +91,7 @@ public class AuthController extends BaseController {
    * 
    * @param ctx The context of the HTTP request.
    */
-  @POST(path = "/signup")
+  //@POST(path = "/signup")
   public void signup(Context ctx) {
     String username = ctx.formParam("username");
     String email = ctx.formParam("email");
