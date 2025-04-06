@@ -32,6 +32,8 @@ dependencies {
 
     // Utils
     implementation 'io.github.cdimascio:dotenv-java:3.1.0'
+
+    implementation 'com.auth0:java-jwt:4.4.0'
 }
 
 application {
