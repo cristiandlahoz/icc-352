@@ -11,13 +11,13 @@ import org.wornux.urlshortener.model.User;
 
 public class UserService {
 
-  private final UserDAO userDAO;
+  private static UserDAO userDAO;
 
   public UserService(@Nonnull UserDAO userDAO) {
     this.userDAO = userDAO;
   }
 
-  public Optional<User> authenticate(@Nonnull String username, @Nonnull String password) {
+  public static Optional<User> authenticate(@Nonnull String username, @Nonnull String password) {
     return userDAO.findByUsernameAndPassword(username, password);
   }
 
@@ -40,5 +40,10 @@ public class UserService {
   public void deleteUser(@Nonnull ObjectId id) {
     userDAO.deleteById(id);
   }
+
+  public Optional<User> getUserByUsername(@Nonnull String username) {
+    return userDAO.findByUsername(username);
+  }
+
 
 }
