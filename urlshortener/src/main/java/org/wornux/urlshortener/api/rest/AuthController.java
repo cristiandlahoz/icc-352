@@ -1,6 +1,7 @@
 package org.wornux.urlshortener.api.rest;
 
 import io.javalin.http.Handler;
+import io.javalin.openapi.*;
 import org.wornux.urlshortener.dto.Authentication;
 import org.wornux.urlshortener.model.User;
 import com.fasterxml.jackson.databind.JsonNode;
@@ -13,6 +14,16 @@ import java.util.Optional;
 
 public class AuthController {
 
+    @OpenApi(
+            path = "/auth/login",
+            methods = {HttpMethod.POST},
+            summary = "Autenticar usuario",
+            requestBody = @OpenApiRequestBody(content = {@OpenApiContent(from = Authentication.class)}),
+            responses = {
+                    @OpenApiResponse(status = "200", content = {@OpenApiContent(from = JWTResponse.class)}),
+                    @OpenApiResponse(status = "401", description = "Credenciales incorrectas")
+            }
+    )
     public static Handler loginPost = ctx -> {
         try {
             ObjectMapper objectMapper = new ObjectMapper();
