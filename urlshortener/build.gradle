@@ -7,6 +7,7 @@ plugins {
 
 group = 'org.wornux'
 version = '1.0-SNAPSHOT'
+String javalinVersion =  "6.5.0"
 
 repositories {
     mavenCentral()
@@ -34,6 +35,14 @@ dependencies {
     implementation 'io.github.cdimascio:dotenv-java:3.1.0'
 
     implementation 'com.auth0:java-jwt:4.4.0'
+
+    //openApi y swagger
+    implementation "io.javalin.community.openapi:javalin-openapi-plugin:$javalinVersion"
+    implementation "io.javalin.community.openapi:javalin-swagger-plugin:$javalinVersion"
+    implementation "io.javalin.community.openapi:javalin-redoc-plugin:$javalinVersion"
+
+    // Procesador de anotaciones para generar documentación OpenAPI
+    annotationProcessor "io.javalin.community.openapi:openapi-annotation-processor:$javalinVersion"
 }
 
 application {
