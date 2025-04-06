@@ -37,6 +37,15 @@ public class AuthMiddleware {
   public static void handleAccess(Context ctx) {
     var permittedRoles = ctx.routeRoles();
 
+    if (ctx.path().startsWith("/swagger") ||
+            ctx.path().startsWith("/openapi") ||
+            ctx.path().startsWith("/redoc") ||
+            ctx.path().startsWith("/webjars") ||
+            ctx.path().equals("/auth/login")) {
+      return; // 👈 permite el paso sin validación
+    }
+
+
     if (permittedRoles.contains(Role.ANYONE)) return;
 
     if (getUserRoles(ctx).stream().anyMatch(permittedRoles::contains)) return;
