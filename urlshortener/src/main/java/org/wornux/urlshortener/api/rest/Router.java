@@ -4,7 +4,6 @@ import io.javalin.Javalin;
 
 import org.wornux.urlshortener.config.AppConfig;
 import org.wornux.urlshortener.config.DependencyConfig;
-import org.wornux.urlshortener.controller.UserController;
 import org.wornux.urlshortener.enums.Role;
 import org.wornux.urlshortener.api.rest.security.AuthMiddleware;
 import org.wornux.urlshortener.util.EnvReader;
