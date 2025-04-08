@@ -1,15 +1,10 @@
-package org.wornux.urlshortener.controller;
+package org.wornux.urlshortener.api.rest;
 
 import javax.annotation.Nonnull;
 
 import io.javalin.Javalin;
 import org.bson.types.ObjectId;
 import org.wornux.urlshortener.controller.base.BaseController;
-import org.wornux.urlshortener.core.routing.annotations.CONTROLLER;
-import org.wornux.urlshortener.core.routing.annotations.GET;
-import org.wornux.urlshortener.core.routing.annotations.POST;
-import org.wornux.urlshortener.core.routing.annotations.PUT;
-import org.wornux.urlshortener.core.routing.annotations.DELETE;
 import org.wornux.urlshortener.model.User;
 import org.wornux.urlshortener.service.UserService;
 
