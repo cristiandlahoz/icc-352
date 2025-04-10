@@ -1,0 +1,32 @@
+syntax = "proto3";
+
+option java_multiple_files = true;
+option java_package = "edu.pucmm.eict.grpc";
+option java_outer_classname = "EstudianteServiceProto";
+
+service EstudianteService {
+  rpc ObtenerEstudiante (EstudianteRequest) returns (EstudianteReply);
+  rpc ListarEstudiantes (Empty) returns (EstudianteList);
+  rpc CrearEstudiante (EstudianteReply) returns (EstudianteReply);
+  rpc BorrarEstudiante (EstudianteRequest) returns (DeleteResponse);
+}
+
+message EstudianteRequest {
+  int32 matricula = 1;
+}
+
+message EstudianteReply {
+  int32 matricula = 1;
+  string nombre = 2;
+}
+
+message EstudianteList {
+  repeated EstudianteReply estudiantes = 1;
+}
+
+message DeleteResponse {
+  bool exito = 1;
+  string mensaje = 2;
+}
+
+message Empty {}
