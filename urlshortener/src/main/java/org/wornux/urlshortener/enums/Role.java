@@ -2,9 +2,7 @@ package org.wornux.urlshortener.enums;
 
 import io.javalin.security.RouteRole;
 
-/**
- * Represents the roles available in the URL shortener application.
- */
+/** Represents the roles available in the URL shortener application. */
 public enum Role implements RouteRole {
   ADMIN,
   USER,

@@ -2,22 +2,20 @@ package org.wornux.urlshortener.service;
 
 import java.util.List;
 import java.util.Optional;
-
 import javax.annotation.Nonnull;
-
 import org.bson.types.ObjectId;
 import org.wornux.urlshortener.dao.UserDAO;
 import org.wornux.urlshortener.model.User;
 
 public class UserService {
 
-  private static UserDAO userDAO;
+  private UserDAO userDAO;
 
   public UserService(@Nonnull UserDAO userDAO) {
     this.userDAO = userDAO;
   }
 
-  public static Optional<User> authenticate(@Nonnull String username, @Nonnull String password) {
+  public Optional<User> authenticate(@Nonnull String username, @Nonnull String password) {
     return userDAO.findByUsernameAndPassword(username, password);
   }
 
@@ -44,6 +42,5 @@ public class UserService {
   public Optional<User> getUserByUsername(@Nonnull String username) {
     return userDAO.findByUsername(username);
   }
-
 
 }

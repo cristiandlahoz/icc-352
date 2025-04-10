@@ -8,14 +8,16 @@
   <link rel="stylesheet" th:href="@{/css/tailwind.css}">
   <script src="https://code.jquery.com/jquery-3.7.1.js" integrity="sha256-eKhayi8LEQwp4NKxN+CfCh+3qOVUtJn3QNZ0TciWLP4="
     crossorigin="anonymous"></script>
-  <title>Wornux - Sign Up</title>
+  <script src="/js/qrcode.js"></script>
+  <title>Wornux</title>
   <meta name="description"
     content="Wornux is an efficient and easy-to-use URL shortening service that streamlines your online experience.">
 </head>
 
 <body>
   <div class="hidden lg:block">
-    <span class="absolute box-base shadow-box box-animation-1 top-[5%] right-[20%]"></span>
+    <span class="absolute box-base shadow-box box-animation-2 top-[5%] right-[30%]"></span>
+    <span class="absolute box-base shadow-box box-animation-2 top-[5%] right-[20%]"></span>
     <span class="absolute box-base shadow-box box-animation-2 bottom-[15%] right-[19%] "></span>
     <span class="absolute box-base shadow-box box-animation-1 bottom-[9%] left-[14%]"></span>
   </div>
@@ -139,75 +141,42 @@
     </svg>
   </div>
 
-  <header class="flex items-center justify-center w-auto mt-10 mx-14">
-    <nav class="flex items-center justify-center w-full sm:justify-between gap-x-24">
-      <a href="/">
+  <header class="flex items-center justify-center w-auto mt-10 ml-4 mx-14">
+    <nav class="flex items-center justify-between w-full lg:justify-center lg:gap-x-52">
+      <a href="/" class="min-w-fit">
         <h2
-          class="text-4xl font-extrabold text-center text-transparent lg:text-5xl bg-clip-text bg-gradient-to-r from-btn-blue via-btn-pink to-btn-blue">
+          class="mb-4 text-4xl font-extrabold text-center text-transparent lg:text-5xl bg-clip-text bg-gradient-to-r from-btn-blue via-btn-pink to-btn-blue">
           Wornux</h2>
       </a>
-      <ul class="flex items-start gap-x-4">
-        <li class="flex items-center justify-center w-28">
-          <a class="text-white text-center border border-solid hover:scale-110 active:bg-btn-gray-border transition border-btn-gray-border bg-btn-gray rounded-full w-44 py-3 shadow-[rgba(0,_0,_0,_0.25)_0px_25px_50px_-12px]"
-            href="/auth/login">
-            Login
-            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5"
-              stroke="currentColor" class="inline w-6 h-6">
-              <path stroke-linecap="round" stroke-linejoin="round"
-                d="M8.25 9V5.25A2.25 2.25 0 0 1 10.5 3h6a2.25 2.25 0 0 1 2.25 2.25v13.5A2.25 2.25 0 0 1 16.5 21h-6a2.25 2.25 0 0 1-2.25-2.25V15M12 9l3 3m0 0-3 3m3-3H2.25" />
-            </svg>
-          </a>
-        </li>
-        <li class="flex items-center justify-center w-40 lg:flex">
-          <a class="text-center text-white border border-solid hover:scale-110 transition border-btn-blue bg-btn-blue rounded-full w-44 py-3 shadow-[-10px_-10px_30px_4px_rgba(0,0,0,0.1),_10px_10px_30px_4px_rgba(45,78,255,0.20)]"
-            href="/auth/signup">
-            Register Now
-          </a>
-        </li>
-      </ul>
     </nav>
   </header>
   <main>
-    <section>
-      <div class="flex flex-col items-center p-8 pt-16 mt-6 rounded-lg shadow-2xl gap-y-8 bg-background-gray h-fit">
-        <div>
-          <h2 class="text-5xl font-extrabold text-center text-white">Sign Up</h2>
-          <p class="mt-3 text-white">Create an account to start shortening your links.</p>
+    <div class="col-lg-6 grid-margin stretch-card">
+      <div class="card">
+        <div class="card-body">
+          <!--                <div id="qrcode"  class="flex justify-center items-center" th:attr="data-url=${url.id}"></div>-->
         </div>
-        <form method="POST" class="flex flex-col items-center justify-center gap-y-5" action="/auth/signup">
-          <label for="name">
-            <input
-              class="bg-btn-gray border-2 border-solid border-btn-gray-border w-96 py-3 px-6 focus:outline-none caret-btn-pink text-white rounded-full shadow-[rgba(0,_0,_0,_0.25)_0px_25px_50px_-12px]"
-              id="name" type="text" name="name" placeholder="Enter your name here" required>
-          </label>
-
-          <label for="email">
-            <input
-              class="bg-btn-gray border-2 border-solid border-btn-gray-border w-96 py-3 px-6 focus:outline-none caret-btn-pink text-white rounded-full shadow-[rgba(0,_0,_0,_0.25)_0px_25px_50px_-12px]"
-              id="email" type="email" name="email" placeholder="Enter your email here" required>
-          </label>
-          <label for="password">
-            <input
-              class="bg-btn-gray border-2 border-solid border-btn-gray-border w-96 py-3 px-6 focus:outline-none caret-btn-pink text-white rounded-full shadow-[rgba(0,_0,_0,_0.25)_0px_25px_50px_-12px]"
-              id="password" type="password" name="password" placeholder="Enter your password here" required>
-          </label>
-          <label>
-            <input
-              class="bg-btn-gray border-2 border-solid border-btn-gray-border w-96 py-3 px-6 focus:outline-none caret-btn-pink text-white rounded-full shadow-[rgba(0,_0,_0,_0.25)_0px_25px_50px_-12px]"
-              type="password" name="confirm_password" placeholder="Confirm your password here" required>
-          </label>
-          <button
-            class="text-center text-white border border-solid hover:scale-110 transition border-btn-blue bg-btn-blue rounded-full w-44 py-3 shadow-[-10px_-10px_30px_4px_rgba(0,0,0,0.1),_10px_10px_30px_4px_rgba(45,78,255,0.10)]"
-            type="submit">
-            Sing Up
-          </button>
-        </form>
       </div>
+    </div>
+
+    <section class="mt-10">
+      <article class="bg-gray-900 w-[500px] h-[500px] rounded-md items-center">
+        <header class="mt-4">
+          <h1 class="text-3xl text-white font-bold text-center">QR Code</h1>
+          <p class="text-center text-white">Scan the QR code to visit the shortened URL</p>
+        </header>
+        <main class="mt-3 flex justify-center">
+          <img th:src="'data:image/png;base64,'+ ${base64QRCode}" alt="QRCode"
+            class="w-auto max-w-[80%] h-auto max-h-[80%]" />
+        </main>
+      </article>
 
     </section>
+
   </main>
 
   <footer th:replace="~{components/footer.html :: footer}"></footer>
+
 </body>
 
 </html>

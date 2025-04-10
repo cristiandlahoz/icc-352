@@ -1,10 +1,9 @@
 package org.wornux.urlshortener.core.routing;
 
+import dev.morphia.Datastore;
 import java.lang.reflect.Constructor;
 import java.util.HashMap;
 import java.util.Map;
-
-import dev.morphia.Datastore;
 
 public class DIContainer {
 

@@ -1,6 +1,6 @@
 # Crear una nueva ventana para el editor
-tmux new-window -n editor
-tmux send-keys -t editor "nvim ." C-m
+tmux rename-window "editor"
+tmux send-keys -t editor "vim ." C-m
 
 # Crear una nueva ventana para la terminal
 tmux new-window -n terminal

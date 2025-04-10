@@ -1,6 +1,7 @@
 package org.wornux.urlshortener.controller;
 
 import io.javalin.Javalin;
+import io.javalin.http.Context;
 import org.wornux.urlshortener.controller.base.BaseController;
 import org.wornux.urlshortener.core.routing.annotations.*;
 import org.wornux.urlshortener.enums.Role;
@@ -9,13 +10,12 @@ import org.wornux.urlshortener.enums.SessionKeys;
 import org.wornux.urlshortener.model.User;
 import org.wornux.urlshortener.service.UserService;
 
-import io.javalin.http.Context;
-
 /**
  * AuthController is a controller class that handles HTTP requests related to
- * authentication and authorization.
+ * authentication and
+ * authorization.
  */
-//@CONTROLLER(path = "/auth")
+// @CONTROLLER(path = "/auth")
 public class AuthController extends BaseController {
 
   private final UserService userService;
@@ -31,19 +31,20 @@ public class AuthController extends BaseController {
     app.get("/auth/logout", this::logout);
     app.post("/auth/signup", this::signup);
   }
+
   /**
    * Handles the GET request to render the login page.
-   * 
+   *
    * @param ctx The context of the HTTP request.
    */
-  //@GET(path = "/login")
+  // @GET(path = "/login")
   public void renderLoginPage(Context ctx) {
     ctx.render("/auth/login.html");
   }
 
   /**
    * Handles the POST request to authenticate a user.
-   * 
+   *
    * @param ctx The context of the HTTP request.
    */
   @GET(path = "/signup")
@@ -53,16 +54,16 @@ public class AuthController extends BaseController {
 
   /**
    * Handles the POST request to authenticate a user.
-   * 
+   *
    * @param ctx The context of the HTTP request.
    */
   @POST(path = "/login")
   public void login(Context ctx) {
-    String username = ctx.formParam("username");
+    String email = ctx.formParam("email");
     String password = ctx.formParam("password");
 
     userService
-        .authenticate(username, password)
+        .authenticate(email, password)
         .ifPresentOrElse(
             user -> {
               System.out.println("✅ Usuario autenticado: " + user.getUsername());
@@ -77,10 +78,10 @@ public class AuthController extends BaseController {
 
   /**
    * Handles the GET request to logout a user.
-   * 
+   *
    * @param ctx The context of the HTTP request.
    */
-  //@GET(path = "/logout")
+  // @GET(path = "/logout")
   public void logout(Context ctx) {
     ctx.req().getSession().invalidate();
     ctx.redirect(Routes.USER_LOGIN.getRoute());
@@ -88,10 +89,10 @@ public class AuthController extends BaseController {
 
   /**
    * Handles the POST request to register a new user.
-   * 
+   *
    * @param ctx The context of the HTTP request.
    */
-  //@POST(path = "/signup")
+  // @POST(path = "/signup")
   public void signup(Context ctx) {
     String username = ctx.formParam("username");
     String email = ctx.formParam("email");

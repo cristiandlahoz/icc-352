@@ -1,35 +1,32 @@
 package org.wornux.urlshortener.model;
 
-import java.util.Date;
-
-import org.bson.types.ObjectId;
 import dev.morphia.annotations.*;
-
+import java.util.Date;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import org.bson.types.ObjectId;
 
 @Getter
 @Setter
 @NoArgsConstructor
 @Entity("shortened_urls")
 @Indexes(@Index(fields = @Field("shortenedUrl")))
-public class ShortenedUrl {
-  @Id
-  private ObjectId id;
+public class Url {
+  @Id private ObjectId id;
   private String originalUrl;
   private String shortenedUrl;
-  @Reference
-  private User createdBy;
+  @Reference private User createdBy;
   private Date createdAt;
   private int clickCount;
   private boolean isOffensive;
-  private String qrCode;
+  private byte[] qrCode;
 
-  public ShortenedUrl(String originalUrl, String shortenedUrl, User createdBy, String qrCode) {
+  public Url(String originalUrl, String shortenedUrl, User createdBy, byte[] qrCode) {
     this.originalUrl = originalUrl;
     this.shortenedUrl = shortenedUrl;
     this.createdBy = createdBy;
+    this.clickCount = 0;
     this.qrCode = qrCode;
     this.isOffensive = false;
   }

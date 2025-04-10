@@ -1,14 +1,13 @@
 <!doctype html>
-<html lang="en">
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
 
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <link rel="stylesheet" href="/css/quaters.css">
-  <link rel="stylesheet" href="/css/output.css">
+  <link rel="stylesheet" th:href="@{/css/quaters.css}">
+  <link rel="stylesheet" th:href="@{/css/tailwind.css}">
   <script src="https://code.jquery.com/jquery-3.7.1.js" integrity="sha256-eKhayi8LEQwp4NKxN+CfCh+3qOVUtJn3QNZ0TciWLP4="
     crossorigin="anonymous"></script>
-  <script src="https://cdn.rawgit.com/davidshimjs/qrcodejs/gh-pages/qrcode.min.js"></script>
   <title>Wornux</title>
   <meta name="description"
     content="Wornux is an efficient and easy-to-use URL shortening service that streamlines your online experience.">
@@ -16,7 +15,8 @@
 
 <body>
   <div class="hidden lg:block">
-    <span class="absolute box-base shadow-box box-animation-1 top-[5%] right-[20%]"></span>
+    <span class="absolute box-base shadow-box box-animation-2 top-[5%] right-[30%]"></span>
+    <span class="absolute box-base shadow-box box-animation-2 top-[5%] right-[20%]"></span>
     <span class="absolute box-base shadow-box box-animation-2 bottom-[15%] right-[19%] "></span>
     <span class="absolute box-base shadow-box box-animation-1 bottom-[9%] left-[14%]"></span>
   </div>
@@ -140,17 +140,12 @@
     </svg>
   </div>
 
-  <header class="flex items-center justify-center w-auto mt-10 mx-14">
-    <nav class="flex items-center justify-center w-full sm:justify-between gap-x-24">
-      <a href="/">
-        <h2
-          class="text-4xl font-extrabold text-center text-transparent lg:text-5xl bg-clip-text bg-gradient-to-r from-btn-blue via-btn-pink to-btn-blue">
-          Wornux</h2>
-      </a>
-      <ul class="flex items-start gap-x-4">
+  <header class="flex items-end justify-end w-auto mt-10 mx-14">
+    <nav class="flex items-end justify-end w-full sm:justify-end gap-x-24">
+      <ul class="flex items-end gap-x-4">
         <li class="flex items-center justify-center w-28">
           <a class="text-white text-center border border-solid hover:scale-110 active:bg-btn-gray-border transition border-btn-gray-border bg-btn-gray rounded-full w-44 py-3 shadow-[rgba(0,_0,_0,_0.25)_0px_25px_50px_-12px]"
-            href="/auth/login">
+            th:href="@{/auth/login}">
             Login
             <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5"
               stroke="currentColor" class="inline w-6 h-6">
@@ -161,7 +156,7 @@
         </li>
         <li class="flex items-center justify-center w-40 lg:flex">
           <a class="text-center text-white border border-solid hover:scale-110 transition border-btn-blue bg-btn-blue rounded-full w-44 py-3 shadow-[-10px_-10px_30px_4px_rgba(0,0,0,0.1),_10px_10px_30px_4px_rgba(45,78,255,0.20)]"
-            href="/auth/signup">
+            th:href="@{/auth/signup}">
             Register Now
           </a>
         </li>
@@ -169,16 +164,6 @@
     </nav>
   </header>
   <main>
-    <section class="hidden lg:block">
-      <div class="fixed top-0 rotate-180 min-h-[6%] left-0 z-20 w-full p-4 register-footer">
-      </div>
-      <div class="fixed top-0 left-0 z-30 w-full p-4">
-        <p class="text-center text-white font-extralight">
-          <a class="text-blue-500 underline" href="/auth/signup">Register Now</a>
-          to enjoy Unlimited History
-        </p>
-      </div>
-    </section>
 
     <section class="flex-col gap-y-4 mt-12">
       <h3 class="text-3xl font-extrabold text-center sm:text-3xl animation-h1">Wornux</h3>
@@ -188,7 +173,7 @@
 
     <section class="mt-10">
       <!-- desktop form -->
-      <form method="post" action="/url"
+      <form method="post" action="/shortened/create"
         class="flex justify-between items-center bg-btn-gray border-2 border-solid border-btn-gray-border w-auto min-w-[600px] hidden lg:flex py-1 px-1 rounded-full shadow-[rgba(0,_0,_0,_0.25)_0px_25px_50px_-12px]">
         <div>
           <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="white"
@@ -209,7 +194,7 @@
       </form>
 
       <!-- mobile form -->
-      <form method="post" action="/url"
+      <form method="post" action="/shortened/create"
         class="flex flex-col items-center justify-center w-screen gap-y-4 mx-14 lg:hidden">
         <div
           class="flex items-center bg-btn-gray border-2 border-solid h-12 border-btn-gray-border w-full py-1 px-1 rounded-full shadow-[rgba(0,_0,_0,_0.25)_0px_25px_50px_-12px]">
@@ -246,8 +231,8 @@
         <tbody>
           <tr th:each="url : ${urls}" class="bg-table-gray backdrop-blur-sm border-y-8 border-y-transparent">
             <td class="flex items-center justify-center py-2 text-center gap-x-3 border-btn-gray-border">
-              <a th:href="${url.url}" target="_blank" class="hover:underline">
-                <p th:text="${url.url}"></p>
+              <a th:href="'s/' + ${url.shortenedUrl}" target="_blank" class="hover:underline">
+                <p th:text="${url.shortenedUrl}"></p>
               </a>
               <div class="flex items-center justify-center rounded-full size-9 bg-btn-gray">
                 <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none"
@@ -262,11 +247,12 @@
               </div>
             </td>
             <td class="py-2 text-center border-btn-gray-border hover:underline max-w-80 overflow-hidden"
-              th:text="${url.originalUrl}"></td>
+              th:text="${#strings.length(url.originalUrl) > 70 ? #strings.substring(url.originalUrl, 0, 70) + '...' : (url.originalUrl)}">
+            </td>
             <td class="px-4 py-2 text-center border-btn-gray-border ">
               <svg xmlns="http://www.w3.org/2000/svg" class="m-auto size-8" viewBox="0 0 300 300"
                 shape-rendering="geometricPrecision" text-rendering="geometricPrecision">
-                <a th:href="'/qr/'+ ${url.id}" class="btn">
+                <a th:href="'shortened/' + ${url.id} + '/qr/'" class="btn">
                   <path
                     d="M0 125V0h125v125H0Zm100.873-24.127V24.127H24.127v76.746h76.746ZM175 125V0h125v125H175Zm100.873-24.127V24.127h-76.746v76.746h76.746Z"
                     fill="#666" />
@@ -311,9 +297,9 @@
                 </a>
               </svg>
             </td>
-            <td class="py-2 text-center border-btn-gray-border" th:text="${url.clicks}"></td>
+            <td class="py-2 text-center border-btn-gray-border" th:text="${url.clickCount}"></td>
             <td class="flex items-center justify-center px-4 py-2 gap-x-3 border-btn-gray-border"
-              th:unless="${url.status}">
+              th:if="${url.isOffensive}">
               <p class="text-center text-yellow-600 min-w-14">Inactive</p>
               <div class="flex items-center justify-center rounded-full size-9 bg-yellow-600/30">
                 <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none"
@@ -328,7 +314,7 @@
               </div>
             </td>
             <td class="flex items-center justify-center py-2 text-center gap-x-3 border-btn-gray-border"
-              th:if="${url.status}">
+              th:unless="${url.isOffensive}">
               <p class="text-center text-green-600 min-w-14">Active</p>
               <div class="flex items-center justify-center rounded-full size-9 bg-green-600/30">
                 <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none"
@@ -341,14 +327,14 @@
                 </svg>
               </div>
             </td>
-            <td class="px-4 py-2 text-center border-btn-gray-border" th:text="${url.date}"></td>
+            <td class="px-4 py-2 text-center border-btn-gray-border" th:text="${url.createdAt}"></td>
           </tr>
         </tbody>
       </table>
     </section>
 
     <!-- mobile table -->
-    <section class="w-screen mt-12 mb-12 lg:hidden">
+    <section class="block w-screen mt-12 mb-12 lg:hidden">
       <table class="w-full text-white table-auto mx-14 ">
         <thead class="bg-btn-gray">
           <tr>
@@ -358,8 +344,8 @@
         <tbody>
           <tr th:each="url : ${urls}" class="bg-table-gray backdrop-blur-sm border-y-8 border-y-transparent">
             <td class="flex items-center justify-center px-4 py-2 gap-x-3 border-btn-gray-border">
-              <a th:href="${url.url}" target="_blank" class="hover:underline">
-                <p th:text="${url.url}"></p>
+              <a th:href="${url.shortenedUrl}" target="_blank" class="hover:underline">
+                <p th:text="${url.shortenedUrl}"></p>
               </a>
               <div class="flex items-center justify-center rounded-full size-9 bg-btn-gray">
                 <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none"
@@ -378,7 +364,7 @@
     </section>
   </main>
 
-  <footer th:replace="components/footer.html :: footer"></footer>
+  <footer th:replace="~{components/footer.html :: footer}"></footer>
 
 </body>
 

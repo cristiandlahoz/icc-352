@@ -1,17 +1,15 @@
 package org.wornux.urlshortener.dao.base;
 
+import com.mongodb.lang.NonNull;
 import dev.morphia.Datastore;
 import dev.morphia.query.Query;
 import dev.morphia.query.filters.Filters;
-
 import java.util.List;
 import java.util.Optional;
 
-import com.mongodb.lang.NonNull;
-
 /**
- * A generic base repository implementation for Morphia.
- * Provides common CRUD operations for entities.
+ * A generic base repository implementation for Morphia. Provides common CRUD operations for
+ * entities.
  *
  * @param <T> The type of the entity.
  * @param <K> The type of the entity's ID.
@@ -23,7 +21,7 @@ public abstract class BaseDAO<T, K> {
   /**
    * Constructs a new BaseRepository.
    *
-   * @param datastore   The Morphia Datastore instance.
+   * @param datastore The Morphia Datastore instance.
    * @param entityClass The class of the entity this repository manages.
    */
   public BaseDAO(@NonNull Datastore datastore, @NonNull Class<T> entityClass) {
