@@ -6,6 +6,7 @@ import java.util.Optional;
 import javax.annotation.Nonnull;
 
 import org.bson.types.ObjectId;
+import org.wornux.urlshortener.enums.Role;
 import org.wornux.urlshortener.model.User;
 import org.wornux.urlshortener.service.UserService;
 
@@ -19,11 +20,11 @@ public class UserController {
   private final UserService userService;
 
   public void applyRoutes(JavalinDefaultRouting router) {
-    router.get("/users/", this::getAllUsers);
-    router.post("/users/", this::createUser);
-    router.get("/users/{userId}", this::getUser);
-    router.put("/users/{userId}", this::updateUser);
-    router.delete("/users/{userId}", this::deleteUser);
+    router.get("/users/", this::getAllUsers, Role.USER);
+    router.post("/users/", this::createUser, Role.USER_WRITE);
+    router.get("/users/{userId}", this::getUser, Role.USER_READ);
+    router.put("/users/{userId}", this::updateUser, Role.USER_WRITE);
+    router.delete("/users/{userId}", this::deleteUser, Role.ADMIN);
 
   }
 
