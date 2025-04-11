@@ -7,6 +7,7 @@ import org.wornux.urlshortener.util.EnvReader;
 public class Main {
   public static void main(String[] args) {
     // Starts a new thread to initialize and run the REST API router.
+    org.wornux.urlshortener.config.DependencyConfig.init();
     new Thread(org.wornux.urlshortener.api.rest.Router::start).start();
 
     int PORT = EnvReader.getInt("PORT", 7_0_0_0);
