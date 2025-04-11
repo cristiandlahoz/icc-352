@@ -1,8 +1,11 @@
 package org.wornux.urlshortener.api.rest.security;
 
 import io.javalin.http.Context;
+import io.javalin.http.Handler;
 import io.javalin.http.Header;
 import io.javalin.http.UnauthorizedResponse;
+
+import org.jetbrains.annotations.NotNull;
 import org.wornux.urlshortener.config.DependencyConfig;
 import org.wornux.urlshortener.enums.Role;
 import org.wornux.urlshortener.model.User;
@@ -10,11 +13,11 @@ import org.wornux.urlshortener.model.User;
 import java.util.List;
 import java.util.Optional;
 
-public class AuthMiddleware {
+public class AuthMiddleware implements Handler {
 
-  private static final JwtUtil jwtUtil = new JwtUtil();
+  private final JwtUtil jwtUtil = new JwtUtil();
 
-  public static List<Role> getUserRoles(Context ctx) {
+  public List<Role> getUserRoles(Context ctx) {
     String authHeader = ctx.header(Header.AUTHORIZATION);
 
     if (authHeader == null || !authHeader.startsWith("Bearer ")) {
@@ -34,21 +37,23 @@ public class AuthMiddleware {
     return userOpt.map(user -> List.of(user.getRole())).orElse(List.of());
   }
 
-  public static void handleAccess(Context ctx) {
+  @Override
+  public void handle(@NotNull Context ctx) throws Exception {
     var permittedRoles = ctx.routeRoles();
 
     if (ctx.path().startsWith("/swagger") ||
-            ctx.path().startsWith("/openapi") ||
-            ctx.path().startsWith("/redoc") ||
-            ctx.path().startsWith("/webjars") ||
-            ctx.path().equals("/auth/login")) {
+        ctx.path().startsWith("/openapi") ||
+        ctx.path().startsWith("/redoc") ||
+        ctx.path().startsWith("/webjars") ||
+        ctx.path().equals("/auth/login")) {
       return; // 👈 permite el paso sin validación
     }
 
+    if (permittedRoles.contains(Role.ANYONE))
+      return;
 
-    if (permittedRoles.contains(Role.ANYONE)) return;
-
-    if (getUserRoles(ctx).stream().anyMatch(permittedRoles::contains)) return;
+    if (getUserRoles(ctx).stream().anyMatch(permittedRoles::contains))
+      return;
 
     ctx.header(Header.WWW_AUTHENTICATE, "Bearer");
     throw new UnauthorizedResponse("No autorizado");

@@ -1,44 +1,41 @@
 package org.wornux.urlshortener.api.rest;
 
+import java.util.List;
+import java.util.Optional;
+
 import javax.annotation.Nonnull;
 
-import io.javalin.Javalin;
 import org.bson.types.ObjectId;
-import org.wornux.urlshortener.controller.base.BaseController;
 import org.wornux.urlshortener.model.User;
 import org.wornux.urlshortener.service.UserService;
 
 import io.javalin.http.Context;
-import java.util.List;
-import java.util.Optional;
+import io.javalin.router.JavalinDefaultRouting;
+import lombok.RequiredArgsConstructor;
 
 //@CONTROLLER(path = "/users")
-public class UserController extends BaseController {
+@RequiredArgsConstructor
+public class UserController {
   private final UserService userService;
 
-  public UserController(Javalin app, UserService userService) {
-    super(app);
-    this.userService = userService;
-  }
-
-  public void applyRoutes() {
-    app.get("/users/", this::getAllUsers);
-    app.post("/users/", this::createUser);
-    app.get("/users/{userId}", this::getUser);
-    app.put("/users/{userId}", this::updateUser);
-    app.delete("/users/{userId}", this::deleteUser);
+  public void applyRoutes(JavalinDefaultRouting router) {
+    router.get("/users/", this::getAllUsers);
+    router.post("/users/", this::createUser);
+    router.get("/users/{userId}", this::getUser);
+    router.put("/users/{userId}", this::updateUser);
+    router.delete("/users/{userId}", this::deleteUser);
 
   }
 
-  // GET /users/  --> Lista todos los usuarios
- // @GET(path = "/")
+  // GET /users/ --> Lista todos los usuarios
+  // @GET(path = "/")
   public void getAllUsers(@Nonnull Context ctx) {
     List<User> users = userService.getUsers();
     ctx.json(users);
   }
 
-  // POST /users/  --> Crea un nuevo usuario
-  //@POST(path = "/")
+  // POST /users/ --> Crea un nuevo usuario
+  // @POST(path = "/")
   public void createUser(@Nonnull Context ctx) {
     try {
       // Se espera que el cuerpo de la petición contenga un JSON que se mapea a User
@@ -50,8 +47,8 @@ public class UserController extends BaseController {
     }
   }
 
-  // GET /users/{userId}  --> Obtiene un usuario por ID
-  //@GET(path = "/{userId}")
+  // GET /users/{userId} --> Obtiene un usuario por ID
+  // @GET(path = "/{userId}")
   public void getUser(@Nonnull Context ctx) {
     String userIdStr = ctx.pathParam("userId");
     try {
@@ -67,8 +64,8 @@ public class UserController extends BaseController {
     }
   }
 
-  // PUT /users/{userId}  --> Actualiza un usuario existente
-  //@PUT(path = "/{userId}")
+  // PUT /users/{userId} --> Actualiza un usuario existente
+  // @PUT(path = "/{userId}")
   public void updateUser(@Nonnull Context ctx) {
     String userIdStr = ctx.pathParam("userId");
     try {
@@ -89,8 +86,8 @@ public class UserController extends BaseController {
     }
   }
 
-  // DELETE /users/{userId}  --> Elimina un usuario
-  //@DELETE(path = "/{userId}")
+  // DELETE /users/{userId} --> Elimina un usuario
+  // @DELETE(path = "/{userId}")
   public void deleteUser(@Nonnull Context ctx) {
     String userIdStr = ctx.pathParam("userId");
     try {
