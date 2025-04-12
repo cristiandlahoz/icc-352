@@ -49,11 +49,11 @@ public class AuthController {
    */
   @POST(path = "/login")
   public void login(Context ctx) {
-    String email = ctx.formParam("email");
+    String username = ctx.formParam("username");
     String password = ctx.formParam("password");
 
     userService
-        .authenticate(email, password)
+        .authenticate(username, password)
         .ifPresentOrElse(
             user -> {
               System.out.println("✅ Usuario autenticado: " + user.getUsername());
