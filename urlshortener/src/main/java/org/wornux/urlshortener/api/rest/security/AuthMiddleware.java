@@ -6,9 +6,10 @@ import io.javalin.http.Header;
 import io.javalin.http.UnauthorizedResponse;
 
 import org.jetbrains.annotations.NotNull;
-import org.wornux.urlshortener.config.DependencyConfig;
+import org.wornux.urlshortener.core.routing.DIContainer;
 import org.wornux.urlshortener.enums.Role;
 import org.wornux.urlshortener.model.User;
+import org.wornux.urlshortener.service.UserService;
 
 import java.util.List;
 import java.util.Optional;
@@ -32,7 +33,7 @@ public class AuthMiddleware implements Handler {
 
     String username = jwtUtil.getUsernameFromToken(token);
 
-    Optional<User> userOpt = DependencyConfig.getUserService().getUserByUsername(username);
+    Optional<User> userOpt = DIContainer.get(UserService.class).getUserByUsername(username);
 
     return userOpt.map(user -> List.of(user.getRole())).orElse(List.of());
   }
