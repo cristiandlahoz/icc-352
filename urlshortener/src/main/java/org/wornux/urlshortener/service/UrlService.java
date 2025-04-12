@@ -7,7 +7,9 @@ import org.bson.types.ObjectId;
 import org.wornux.urlshortener.dao.UrlDAO;
 import org.wornux.urlshortener.dto.UrlCreatedDTO;
 import org.wornux.urlshortener.dto.UrlDTO;
+import org.wornux.urlshortener.dto.UrlStatsDTO;
 import org.wornux.urlshortener.model.Url;
+import org.wornux.urlshortener.model.User;
 import org.wornux.urlshortener.util.QRCodeGenerator;
 import org.wornux.urlshortener.util.UrlShortener;
 
@@ -76,4 +78,15 @@ public class UrlService {
       throw new IllegalArgumentException("Shortened URL not found");
     }
   }
+  public List<UrlStatsDTO> getUrlsByUser(User user) {
+    if (user == null) {
+      throw new IllegalArgumentException("User cannot be null");
+    }
+
+    return urlDAO.findByCreatedBy(user)
+            .stream()
+            .map(UrlStatsDTO::new)
+            .toList();
+  }
+
 }
