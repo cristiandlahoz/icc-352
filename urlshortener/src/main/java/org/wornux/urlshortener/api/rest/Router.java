@@ -28,8 +28,10 @@ public class Router {
         router.beforeMatched(new AuthMiddleware());
         AuthController authController = DIContainer.get(AuthController.class);
         UserController userController = DIContainer.get(UserController.class);
+        UrlController urlController = DIContainer.get(UrlController.class);
         authController.applyRoutes(router);
         userController.applyRoutes(router);
+        urlController.applyRoutes(router);
       }).apiBuilder(() -> {
       });
     }).start(PORT);
