@@ -3,6 +3,9 @@ package org.wornux.urlshortener.dto;
 import java.util.Date;
 import org.bson.types.ObjectId;
 import org.wornux.urlshortener.model.Url;
+import org.wornux.urlshortener.model.User;
+
+import javax.sql.RowSet;
 
 /**
  * A Data Transfer Object (DTO) representing the creation of a shortened URL. This record
@@ -20,7 +23,8 @@ public record UrlCreatedDTO(
     Date createdAt,
     byte[] qrCode,
     int clickCount,
-    boolean isOffensive) {
+    boolean isOffensive,
+    User createdBy) {
 
   /**
    * Constructs a new {@code UrlCreatedDTO} instance with validation.
@@ -67,6 +71,7 @@ public record UrlCreatedDTO(
         url.getCreatedAt(),
         url.getQrCode(),
         url.getClickCount(),
-        url.isOffensive());
+        url.isOffensive(), url.getCreatedBy());
   }
+
 }
