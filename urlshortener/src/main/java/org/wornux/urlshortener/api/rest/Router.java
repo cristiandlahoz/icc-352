@@ -34,6 +34,33 @@ public class Router {
         urlController.applyRoutes(router);
       }).apiBuilder(() -> {
       });
+
     }).start(PORT);
+
+    var userService = DIContainer.get(org.wornux.urlshortener.service.UserService.class);
+    var urlService = DIContainer.get(org.wornux.urlshortener.service.UrlService.class);
+
+    userService.getUsers().stream()
+            .filter(user -> "eliana".equalsIgnoreCase(user.getUsername()))
+            .findFirst()
+            .ifPresent(user -> {
+              System.out.println("🆔 El ID de Eliana es: " + user.getId());
+            });
+
+    System.out.println("📦 URLs ya existentes en la base de datos:");
+    urlService.getAllShortenedUrls().forEach(url -> {
+      String creator = (url.createdBy() != null && url.createdBy().getUsername() != null)
+              ? url.createdBy().getUsername()
+              : "🕵️ Desconocido";
+      System.out.println("─────────────────────────────");
+      System.out.println("ID:           " + url.id());
+      System.out.println("Original:     " + url.originalUrl());
+      System.out.println("Acortada:     " + url.shortenedUrl());
+      System.out.println("Creada:       " + url.createdAt());
+      System.out.println("Clicks:       " + url.clickCount());
+      System.out.println("Creador:     " + creator + url.createdBy().getId());
+    });
+
+
   }
 }
