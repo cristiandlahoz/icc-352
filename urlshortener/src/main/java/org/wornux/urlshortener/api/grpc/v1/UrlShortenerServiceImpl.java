@@ -2,93 +2,92 @@ package org.wornux.urlshortener.api.grpc.v1;
 
 import com.google.protobuf.Timestamp;
 import io.grpc.stub.StreamObserver;
+import java.util.List;
 import lombok.RequiredArgsConstructor;
+import org.bson.types.ObjectId;
 import org.wornux.urlshortener.dto.UrlCreatedFullDTO;
-import org.wornux.urlshortener.dto.UrlStatsDTO;
 import org.wornux.urlshortener.model.User;
 import org.wornux.urlshortener.service.UrlService;
 import org.wornux.urlshortener.service.UserService;
-import org.bson.types.ObjectId;
-
-import java.util.Date;
-import java.util.List;
 
 @RequiredArgsConstructor
 public class UrlShortenerServiceImpl extends UrlShortenerServiceGrpc.UrlShortenerServiceImplBase {
 
-    private final UrlService urlService;
-    private final UserService userService;
+  private final UrlService urlService;
+  private final UserService userService;
 
-    @Override
-    public void createUrl(CreateUrlRequest request, StreamObserver<CreateUrlResponse> responseObserver) {
-        try {
-            ObjectId userId = new ObjectId(request.getUserId());
-            User user = userService.getUserById(userId).orElseThrow();
+  @Override
+  public void createUrl(
+      CreateUrlRequest request, StreamObserver<CreateUrlResponse> responseObserver) {
+    try {
+      ObjectId userId = new ObjectId(request.getUserId());
+      User user = userService.getUserById(userId).orElseThrow();
 
-            UrlCreatedFullDTO dto = urlService.createFullUrlRecord(new org.wornux.urlshortener.dto.UrlDTO(
-                    request.getOriginalUrl(), user));
+      UrlCreatedFullDTO dto =
+          urlService.createFullUrlRecord(
+              new org.wornux.urlshortener.dto.UrlDTO(request.getOriginalUrl(), user));
 
-            Timestamp timestamp = Timestamp.newBuilder()
-                    .setSeconds(dto.createdAt().getTime() / 1000)
-                    .build();
+      Timestamp timestamp =
+          Timestamp.newBuilder().setSeconds(dto.createdAt().getTime() / 1000).build();
 
-            CreateUrlResponse response = CreateUrlResponse.newBuilder()
-                    .setOriginalUrl(dto.originalUrl())
-                    .setShortUrl(dto.shortenedUrl())
-                    .setCreationDate(timestamp)
-                    .setSiteImage(dto.sitePreviewBase64())
-                    .setStats(UrlStats.newBuilder()
-                            .setClicks(dto.stats().clickCount())
-                            .setUniqueVisitors(dto.stats().uniqueVisitors())
-                            .build())
-                    .build();
+      CreateUrlResponse response =
+          CreateUrlResponse.newBuilder()
+              .setOriginalUrl(dto.originalUrl())
+              .setShortUrl(dto.shortenedUrl())
+              .setCreationDate(timestamp)
+              .setSiteImage(dto.sitePreviewBase64())
+              .setStats(
+                  UrlStats.newBuilder()
+                      .setClicks(dto.stats().clickCount())
+                      .setUniqueVisitors(dto.stats().uniqueVisitors())
+                      .build())
+              .build();
 
-            responseObserver.onNext(response);
-            responseObserver.onCompleted();
+      responseObserver.onNext(response);
+      responseObserver.onCompleted();
 
-        } catch (Exception e) {
-            responseObserver.onError(e);
-        }
+    } catch (Exception e) {
+      responseObserver.onError(e);
     }
+  }
 
-    @Override
-    public void listUserUrls(ListUserUrlsRequest request, StreamObserver<ListUserUrlsResponse> responseObserver) {
-        try {
-            ObjectId userId = new ObjectId(request.getUserId());
-            User user = userService.getUserById(userId).orElseThrow();
+  @Override
+  public void listUserUrls(
+      ListUserUrlsRequest request, StreamObserver<ListUserUrlsResponse> responseObserver) {
+    try {
+      ObjectId userId = new ObjectId(request.getUserId());
+      User user = userService.getUserById(userId).orElseThrow();
 
-            // ✅ Usa el método correcto
-            List<UrlCreatedFullDTO> urls = urlService.getFullUrlsByUser(user);
+      // ✅ Usa el método correcto
+      List<UrlCreatedFullDTO> urls = urlService.getFullUrlsByUser(user);
 
+      ListUserUrlsResponse.Builder responseBuilder = ListUserUrlsResponse.newBuilder();
 
+      for (UrlCreatedFullDTO dto : urls) {
+        Timestamp created =
+            Timestamp.newBuilder().setSeconds(dto.createdAt().getTime() / 1000).build();
 
-            ListUserUrlsResponse.Builder responseBuilder = ListUserUrlsResponse.newBuilder();
+        ListUserUrlsResponse.UserUrlData userUrl =
+            ListUserUrlsResponse.UserUrlData.newBuilder()
+                .setOriginalUrl(dto.originalUrl())
+                .setShortUrl(dto.shortenedUrl())
+                .setCreationDate(created)
+                .setSiteImage(dto.sitePreviewBase64())
+                .setStats(
+                    UrlStats.newBuilder()
+                        .setClicks(dto.stats().clickCount())
+                        .setUniqueVisitors(dto.stats().uniqueVisitors())
+                        .build())
+                .build();
 
-            for (UrlCreatedFullDTO dto : urls) {
-                Timestamp created = Timestamp.newBuilder()
-                        .setSeconds(dto.createdAt().getTime() / 1000)
-                        .build();
+        responseBuilder.addUserUrls(userUrl);
+      }
 
-                ListUserUrlsResponse.UserUrlData userUrl = ListUserUrlsResponse.UserUrlData.newBuilder()
-                        .setOriginalUrl(dto.originalUrl())
-                        .setShortUrl(dto.shortenedUrl())
-                        .setCreationDate(created)
-                        .setSiteImage(dto.sitePreviewBase64())
-                        .setStats(UrlStats.newBuilder()
-                                .setClicks(dto.stats().clickCount())
-                                .setUniqueVisitors(dto.stats().uniqueVisitors())
-                                .build())
-                        .build();
+      responseObserver.onNext(responseBuilder.build());
+      responseObserver.onCompleted();
 
-                responseBuilder.addUserUrls(userUrl);
-            }
-
-            responseObserver.onNext(responseBuilder.build());
-            responseObserver.onCompleted();
-
-        } catch (Exception e) {
-            responseObserver.onError(e);
-        }
+    } catch (Exception e) {
+      responseObserver.onError(e);
     }
-
+  }
 }

@@ -4,15 +4,13 @@ import io.javalin.http.Context;
 import io.javalin.http.Handler;
 import io.javalin.http.Header;
 import io.javalin.http.UnauthorizedResponse;
-
+import java.util.List;
+import java.util.Optional;
 import org.jetbrains.annotations.NotNull;
 import org.wornux.urlshortener.core.routing.DIContainer;
 import org.wornux.urlshortener.enums.Role;
 import org.wornux.urlshortener.model.User;
 import org.wornux.urlshortener.service.UserService;
-
-import java.util.List;
-import java.util.Optional;
 
 public class AuthMiddleware implements Handler {
 
@@ -42,19 +40,17 @@ public class AuthMiddleware implements Handler {
   public void handle(@NotNull Context ctx) throws Exception {
     var permittedRoles = ctx.routeRoles();
 
-    if (ctx.path().startsWith("/swagger") ||
-        ctx.path().startsWith("/openapi") ||
-        ctx.path().startsWith("/redoc") ||
-        ctx.path().startsWith("/webjars") ||
-        ctx.path().equals("/auth/login")) {
+    if (ctx.path().startsWith("/swagger")
+        || ctx.path().startsWith("/openapi")
+        || ctx.path().startsWith("/redoc")
+        || ctx.path().startsWith("/webjars")
+        || ctx.path().equals("/auth/login")) {
       return;
     }
 
-    if (permittedRoles.contains(Role.ANYONE))
-      return;
+    if (permittedRoles.contains(Role.ANYONE)) return;
 
-    if (getUserRoles(ctx).stream().anyMatch(permittedRoles::contains))
-      return;
+    if (getUserRoles(ctx).stream().anyMatch(permittedRoles::contains)) return;
 
     ctx.header(Header.WWW_AUTHENTICATE, "Bearer");
     throw new UnauthorizedResponse("No autorizado");

@@ -1,17 +1,12 @@
 package org.wornux.urlshortener.controller;
 
+import io.javalin.http.Context;
 import javax.annotation.Nonnull;
-
 import org.wornux.urlshortener.core.routing.annotations.CONTROLLER;
 import org.wornux.urlshortener.core.routing.annotations.GET;
 import org.wornux.urlshortener.service.UserService;
 
-import io.javalin.http.Context;
-
-/**
- * UserController is a controller class that handles HTTP requests related to
- * users.
- */
+/** UserController is a controller class that handles HTTP requests related to users. */
 @CONTROLLER(path = "/users")
 public class UserController {
   private final UserService userService;

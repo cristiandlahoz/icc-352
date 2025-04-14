@@ -10,8 +10,8 @@ public class GrpcServer {
     var userService = DIContainer.get(org.wornux.urlshortener.service.UserService.class);
     var urlService = DIContainer.get(org.wornux.urlshortener.service.UrlService.class);
 
-    Server server = ServerBuilder
-            .forPort(port)
+    Server server =
+        ServerBuilder.forPort(port)
             .addService(new UrlShortenerServiceImpl(urlService, userService))
             .build()
             .start();

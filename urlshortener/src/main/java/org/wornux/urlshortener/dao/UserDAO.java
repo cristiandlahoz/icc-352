@@ -23,16 +23,16 @@ public class UserDAO extends BaseDAO<User, ObjectId> {
   }
 
   public Optional<User> findByUsername(String username) {
-    return Optional.ofNullable(datastore.find(User.class)
-        .filter(Filters.eq("username", username))
-        .first());
+    return Optional.ofNullable(
+        datastore.find(User.class).filter(Filters.eq("username", username)).first());
   }
 
   public Optional<User> findByUsernameAndPassword(String username, String password) {
-    return Optional.ofNullable(datastore.find(User.class)
-        .filter(Filters.eq("username", username))
-        .filter(Filters.eq("password", password))
-        .first());
+    return Optional.ofNullable(
+        datastore
+            .find(User.class)
+            .filter(Filters.eq("username", username))
+            .filter(Filters.eq("password", password))
+            .first());
   }
-
 }
