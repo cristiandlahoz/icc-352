@@ -5,6 +5,11 @@ import json
 
 PORT = int(os.getenv("PORT", 8080))
 BASE_URL = f"http://localhost:{PORT}/api/estudiante"
+GREEN = "\033[32m"
+RED = "\033[31m"
+YELLOW = "\033[33m"
+BLUE = "\033[34m"
+RESET = "\033[0m"
 
 
 def listar_estudiantes():
@@ -12,13 +17,15 @@ def listar_estudiantes():
         response = urllib.request.urlopen(BASE_URL)
         if response.status == 200:
             estudiantes = json.loads(response.read().decode())
-            print("Lista de estudiantes:")
+            print(f"{BLUE}Lista de estudiantes:{RESET}")
             for est in estudiantes:
-                print(f"- {est['nombre']} (matricula: {est['matricula']})")
+                print(
+                    f"{GREEN}- {est['nombre']} (matricula: {est['matricula']}){RESET}"
+                )
         else:
-            print(f"Error: {response.status}")
+            print(f"{RED}Error: {response.status}{RESET}")
     except Exception as e:
-        print(f"Error al listar estudiantes: {e}")
+        print(f"{RED}Error al listar estudiantes: {e}{RESET}")
 
 
 def consultar_estudiante():
@@ -27,11 +34,15 @@ def consultar_estudiante():
         response = urllib.request.urlopen(f"{BASE_URL}/{matricula}")
         if response.status == 200:
             est = json.loads(response.read().decode())
-            print(f"Encontrado: {est['nombre']} (matricula: {est['matricula']})")
+            print(
+                f"{GREEN}Encontrado: {est['nombre']} (matricula: {est['matricula']}){
+                    RESET
+                }"
+            )
         else:
-            print("Estudiante no encontrado.")
+            print(f"{YELLOW}Estudiante no encontrado.{RESET}")
     except Exception as e:
-        print(f"Error al consultar estudiante: {e}")
+        print(f"{RED}Error al consultar estudiante: {e}{RESET}")
 
 
 def crear_estudiante():
@@ -43,11 +54,15 @@ def crear_estudiante():
         req.add_header("Content-Type", "application/json")
         response = urllib.request.urlopen(req)
         if response.status == 201 or response.status == 200:
-            print("Estudiante creado correctamente.")
+            print(f"{GREEN}Estudiante creado correctamente.{RESET}")
         else:
-            print(f"Error al crear: {response.status} {response.read().decode()}")
+            print(
+                f"{RED}Error al crear: {response.status} {response.read().decode()}{
+                    RESET
+                }"
+            )
     except Exception as e:
-        print(f"Error al crear estudiante: {e}")
+        print(f"{RED}Error al crear estudiante: {e}{RESET}")
 
 
 def borrar_estudiante():
@@ -56,11 +71,11 @@ def borrar_estudiante():
         req = urllib.request.Request(f"{BASE_URL}/{matricula}", method="DELETE")
         response = urllib.request.urlopen(req)
         if response.status == 204 or response.status == 200:
-            print("Estudiante eliminado.")
+            print(f"{GREEN}Estudiante eliminado.{RESET}")
         else:
-            print("No se pudo eliminar (¿Existe?).")
+            print(f"{YELLOW}No se pudo eliminar (¿Existe?).{RESET}")
     except Exception as e:
-        print(f"Error al borrar estudiante: {e}")
+        print(f"{RED}Error al borrar estudiante: {e}{RESET}")
 
 
 def main():
@@ -83,10 +98,10 @@ def main():
         elif opcion == "4":
             borrar_estudiante()
         elif opcion == "5":
-            print("Cerrando cliente REST...")
+            print(f"{BLUE}Cerrando cliente REST...{RESET}")
             break
         else:
-            print("Opcion invalida.")
+            print(f"{RED}Opcion invalida.{RESET}")
 
 
 if __name__ == "__main__":
