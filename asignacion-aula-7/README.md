@@ -7,26 +7,24 @@ Este proyecto implementa un sistema CRUD para la gestión de estudiantes utiliza
 ## 📁 Estructura del proyecto
 
 ```
-.
 ├── cliente/
 │   ├── asignacion_aula_7_pb2.py         # Código generado por gRPC a partir del .proto
 │   ├── asignacion_aula_7_pb2_grpc.py    # Código generado por gRPC a partir del .proto
 │   └── cliente.py                        # Cliente interactivo gRPC en Python
-├── protos/
-│   └── asignacion_aula_7.proto          # Definición del servicio y mensajes gRPC
+├── src/
+│   └── main/
+│       ├── java/                         # Código fuente del servidor
+│       └── proto/
+│           └── asignacion_aula_7.proto  # Definición del servicio y mensajes gRPC
 ├── build.gradle
-├── settings.gradle
-└── src/
-    └── main/
-        └── java/
-            └── ...                      # Código fuente del servidor
+└── settings.gradle
 ```
 
 ---
 
 ## 🚀 Requisitos
 
-- Java 21 o superior
+- Java 21
 - Gradle
 - Python 3.10 o superior
 - `virtualenv` (opcional pero recomendado)
@@ -78,12 +76,12 @@ Este script desplegará un **menú interactivo** para realizar las siguientes op
 Si realizas cambios en el archivo `.proto`, puedes regenerar los archivos necesarios con:
 
 ```bash
-python -m grpc_tools.protoc -I../src/main/proto --python_out=. --grpc_python_out=. ../src/main/proto/asignacion-aula-7.proto
+python3 -m grpc_tools.protoc -I../src/main/proto --python_out=. --grpc_python_out=. ../src/main/proto/asignacion_aula_7.proto
 ```
 
 ---
 
-## Notas
+## 📌 Notas
 
 - Asegúrate de que el servidor Java esté ejecutándose antes de lanzar el cliente Python.
 - El archivo `.proto` define los contratos entre el cliente y el servidor, por lo tanto, debe mantenerse sincronizado en ambos entornos.
@@ -92,7 +90,7 @@ python -m grpc_tools.protoc -I../src/main/proto --python_out=. --grpc_python_out
 
 ## 👤 Autor
 
-Cristian de la Hoz y Carolina Bencosme
+Cristian de la Hoz y Carolina bencosme
 
 ---
 
