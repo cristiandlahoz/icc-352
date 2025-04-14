@@ -4,8 +4,10 @@ syntax = "proto3";
  * Package for the URL Shortener service.
  * This package provides functionality to shorten URLs and retrieve user-specific URL data.
  */
+option java_multiple_files = true;
+option java_package = "org.wornux.urlshortener.api.grpc.v1";
+option java_outer_classname = "UrlShortenerProto";
 
-package org.wornux.urlshortener.api.grpc.v1;
 
 import "google/protobuf/timestamp.proto";
 
