@@ -21,12 +21,8 @@ public class AccessLogsDAO extends BaseDAO<AccessLog, ObjectId> {
         .iterator()
         .toList();
   }
-  public List<AccessLog> findByUrl(Url url) {
-    return datastore
-            .find(AccessLog.class)
-            .filter(Filters.eq("url", url))
-            .iterator()
-            .toList();
-  }
 
+  public List<AccessLog> findByUrl(Url url) {
+    return datastore.find(AccessLog.class).filter(Filters.eq("url", url)).iterator().toList();
+  }
 }

@@ -1,7 +1,6 @@
 package org.wornux.urlshortener.config;
 
 import java.util.Optional;
-
 import org.wornux.urlshortener.core.routing.DIContainer;
 import org.wornux.urlshortener.dao.UserDAO;
 import org.wornux.urlshortener.enums.Role;

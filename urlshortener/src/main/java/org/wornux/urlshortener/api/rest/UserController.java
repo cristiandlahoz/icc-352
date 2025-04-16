@@ -1,20 +1,17 @@
 package org.wornux.urlshortener.api.rest;
 
+import io.javalin.http.Context;
+import io.javalin.router.JavalinDefaultRouting;
 import java.util.List;
 import java.util.Optional;
-
 import javax.annotation.Nonnull;
-
+import lombok.RequiredArgsConstructor;
 import org.bson.types.ObjectId;
 import org.wornux.urlshortener.enums.Role;
 import org.wornux.urlshortener.model.User;
 import org.wornux.urlshortener.service.UserService;
 
-import io.javalin.http.Context;
-import io.javalin.router.JavalinDefaultRouting;
-import lombok.RequiredArgsConstructor;
-
-//@CONTROLLER(path = "/users")
+// @CONTROLLER(path = "/users")
 @RequiredArgsConstructor
 public class UserController {
   private final UserService userService;
@@ -25,7 +22,6 @@ public class UserController {
     router.get("/users/{userId}", this::getUser, Role.USER_READ);
     router.put("/users/{userId}", this::updateUser, Role.USER_WRITE);
     router.delete("/users/{userId}", this::deleteUser, Role.ADMIN);
-
   }
 
   // GET /users/ --> Lista todos los usuarios

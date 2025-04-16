@@ -1,5 +1,7 @@
 package org.wornux.urlshortener.controller;
 
+import io.javalin.http.Context;
+import lombok.RequiredArgsConstructor;
 import org.wornux.urlshortener.core.routing.annotations.CONTROLLER;
 import org.wornux.urlshortener.core.routing.annotations.GET;
 import org.wornux.urlshortener.core.routing.annotations.POST;
@@ -9,12 +11,9 @@ import org.wornux.urlshortener.enums.SessionKeys;
 import org.wornux.urlshortener.model.User;
 import org.wornux.urlshortener.service.UserService;
 
-import io.javalin.http.Context;
-import lombok.RequiredArgsConstructor;
-
 /**
- * AuthController is a controller class that handles HTTP requests related to
- * authentication and authorization
+ * AuthController is a controller class that handles HTTP requests related to authentication and
+ * authorization
  */
 @CONTROLLER(path = "/auth")
 @RequiredArgsConstructor

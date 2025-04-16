@@ -1,7 +1,6 @@
 package org.wornux.urlshortener.controller.base;
 
 import io.javalin.Javalin;
-
 import java.util.HashMap;
 import java.util.Map;
 
