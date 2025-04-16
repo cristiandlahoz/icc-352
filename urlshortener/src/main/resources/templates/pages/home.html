@@ -142,7 +142,7 @@
 
   <header class="flex items-end justify-end w-auto mt-10 mx-14">
     <nav class="flex items-end justify-end w-full sm:justify-end gap-x-24">
-      <ul class="flex items-end gap-x-4">
+      <ul th:if="${!user}" class="flex items-end gap-x-4">
         <li class="flex items-center justify-center w-28">
           <a class="text-white text-center border border-solid hover:scale-110 active:bg-btn-gray-border transition border-btn-gray-border bg-btn-gray rounded-full w-44 py-3 shadow-[rgba(0,_0,_0,_0.25)_0px_25px_50px_-12px]"
             th:href="@{/auth/login}">
@@ -174,7 +174,7 @@
     <section class="mt-10">
       <!-- desktop form -->
       <form method="post" action="/shortened/create"
-        class="flex justify-between items-center bg-btn-gray border-2 border-solid border-btn-gray-border w-auto min-w-[600px] hidden lg:flex py-1 px-1 rounded-full shadow-[rgba(0,_0,_0,_0.25)_0px_25px_50px_-12px]">
+        class="justify-between items-center bg-btn-gray border-2 border-solid border-btn-gray-border w-auto min-w-[600px] hidden lg:flex py-1 px-1 rounded-full shadow-[rgba(0,_0,_0,_0.25)_0px_25px_50px_-12px]">
         <div>
           <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="white"
             class="inline ml-4 mr-1 size-6">
@@ -234,7 +234,8 @@
               <a th:href="'s/' + ${url.shortenedUrl}" target="_blank" class="hover:underline">
                 <p th:text="${url.shortenedUrl}"></p>
               </a>
-              <div class="flex items-center justify-center rounded-full size-9 bg-btn-gray">
+              <button class="flex items-center justify-center rounded-full size-9 bg-btn-gray"
+                onclick="copyToClipboard(this)" th:attr="data-url=${url.shortenedUrl}" title="Copy to clipboard">
                 <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none"
                   stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"
                   class="rounded-full icon icon-tabler icons-tabler-outline icon-tabler-copy bg-btn-gray">
@@ -244,15 +245,15 @@
                   <path
                     d="M4.012 16.737a2.005 2.005 0 0 1 -1.012 -1.737v-10c0 -1.1 .9 -2 2 -2h10c.75 0 1.158 .385 1.5 1" />
                 </svg>
-              </div>
+              </button>
             </td>
             <td class="py-2 text-center border-btn-gray-border hover:underline max-w-80 overflow-hidden"
               th:text="${#strings.length(url.originalUrl) > 70 ? #strings.substring(url.originalUrl, 0, 70) + '...' : (url.originalUrl)}">
             </td>
             <td class="px-4 py-2 text-center border-btn-gray-border ">
-              <svg xmlns="http://www.w3.org/2000/svg" class="m-auto size-8" viewBox="0 0 300 300"
-                shape-rendering="geometricPrecision" text-rendering="geometricPrecision">
-                <a th:href="'shortened/' + ${url.id} + '/qr/'" class="btn">
+              <a th:href="'shortened/' + ${url.id} + '/qr/'" class="btn">
+                <svg xmlns="http://www.w3.org/2000/svg" class="m-auto size-8" viewBox="0 0 300 300"
+                  shape-rendering="geometricPrecision" text-rendering="geometricPrecision">
                   <path
                     d="M0 125V0h125v125H0Zm100.873-24.127V24.127H24.127v76.746h76.746ZM175 125V0h125v125H175Zm100.873-24.127V24.127h-76.746v76.746h76.746Z"
                     fill="#666" />
@@ -294,8 +295,8 @@
                   <rect width="30" height="25" rx="0" ry="0" transform="translate(150 75)" fill="#666" />
                   <rect width="30" height="25" rx="0" ry="0" transform="translate(120 226)" fill="#666" />
                   <rect width="30" height="25" rx="0" ry="0" transform="translate(120 275)" fill="#666" />
-                </a>
-              </svg>
+                </svg>
+              </a>
             </td>
             <td class="py-2 text-center border-btn-gray-border" th:text="${url.clickCount}"></td>
             <td class="flex items-center justify-center px-4 py-2 gap-x-3 border-btn-gray-border"
@@ -327,44 +328,60 @@
                 </svg>
               </div>
             </td>
-            <td class="px-4 py-2 text-center border-btn-gray-border" th:text="${url.createdAt}"></td>
+            <td class="px-4 py-2 text-center border-btn-gray-border"
+              th:text="${#dates.format(url.createdAt, 'dd/MM/yyyy HH:mm')}">
+            </td>
           </tr>
         </tbody>
       </table>
     </section>
 
     <!-- mobile table -->
-    <section class="block w-screen mt-12 mb-12 lg:hidden">
-      <table class="w-full text-white table-auto mx-14 ">
-        <thead class="bg-btn-gray">
-          <tr>
-            <th class="text-center py-3 font-normal rounded-t-lg">Shorten Links</th>
-          </tr>
-        </thead>
-        <tbody>
-          <tr th:each="url : ${urls}" class="bg-table-gray backdrop-blur-sm border-y-8 border-y-transparent">
-            <td class="flex items-center justify-center px-4 py-2 gap-x-3 border-btn-gray-border">
-              <a th:href="${url.shortenedUrl}" target="_blank" class="hover:underline">
-                <p th:text="${url.shortenedUrl}"></p>
-              </a>
-              <div class="flex items-center justify-center rounded-full size-9 bg-btn-gray">
-                <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none"
-                  stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"
-                  class="rounded-full icon icon-tabler icons-tabler-outline icon-tabler-copy bg-btn-gray">
-                  <path stroke="none" d="M0 0h24v24H0z" fill="none" />
-                  <path
-                    d="M7 7m0 2.667a2.667 2.667 0 0 1 2.667 -2.667h8.666a2.667 2.667 0 0 1 2.667 2.667v8.666a2.667 2.667 0 0 1 -2.667 2.667h-8.666a2.667 2.667 0 0 1 -2.667 -2.667z" />
-                  <path
-                    d="M4.012 16.737a2.005 2.005 0 0 1 -1.012 -1.737v-10c0 -1.1 .9 -2 2 -2h10c.75 0 1.158 .385 1.5 1" />
-                </svg>
-              </div>
-          </tr>
-        </tbody>
-      </table>
-    </section>
+    <!-- <section class="lg:block hidden w-screen mt-12 mb-12"> -->
+    <!--   <table class="w-full text-white table-auto mx-14 "> -->
+    <!--     <thead class="bg-btn-gray"> -->
+    <!--       <tr> -->
+    <!--         <th class="text-center py-3 font-normal rounded-t-lg">Shorten Links</th> -->
+    <!--       </tr> -->
+    <!--     </thead> -->
+    <!--     <tbody> -->
+    <!--       <tr th:each="url : ${urls}" class="bg-table-gray backdrop-blur-sm border-y-8 border-y-transparent"> -->
+    <!--         <td class="flex items-center justify-center px-4 py-2 gap-x-3 border-btn-gray-border"> -->
+    <!--           <a th:href="${url.shortenedUrl}" target="_blank" class="hover:underline"> -->
+    <!--             <p th:text="${url.shortenedUrl}"></p> -->
+    <!--           </a> -->
+    <!--           <div class="flex items-center justify-center rounded-full size-9 bg-btn-gray"> -->
+    <!--             <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" -->
+    <!--               stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" -->
+    <!--               class="rounded-full icon icon-tabler icons-tabler-outline icon-tabler-copy bg-btn-gray"> -->
+    <!--               <path stroke="none" d="M0 0h24v24H0z" fill="none" /> -->
+    <!--               <path -->
+    <!--                 d="M7 7m0 2.667a2.667 2.667 0 0 1 2.667 -2.667h8.666a2.667 2.667 0 0 1 2.667 2.667v8.666a2.667 2.667 0 0 1 -2.667 2.667h-8.666a2.667 2.667 0 0 1 -2.667 -2.667z" /> -->
+    <!--               <path -->
+    <!--                 d="M4.012 16.737a2.005 2.005 0 0 1 -1.012 -1.737v-10c0 -1.1 .9 -2 2 -2h10c.75 0 1.158 .385 1.5 1" /> -->
+    <!--             </svg> -->
+    <!--           </div> -->
+    <!--       </tr> -->
+    <!--     </tbody> -->
+    <!--   </table> -->
+    <!-- </section> -->
   </main>
 
   <footer th:replace="~{components/footer.html :: footer}"></footer>
+  <script>
+    function copyToClipboard(button) {
+      const url = button.getAttribute('data-url');
+      const fullUrl = window.location.origin + '/s/' + url;
+
+      navigator.clipboard.writeText(fullUrl)
+        .then(() => {
+          alert('Link copied to clipboard: ' + fullUrl);
+        })
+        .catch(err => {
+          console.error('Error copying text: ', err);
+        });
+    }
+  </script>
 
 </body>
 
