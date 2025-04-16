@@ -49,8 +49,15 @@ public class AuthController {
 
         System.out.println("✅ Usuario autenticado: " + user.getUsername());
 
-        JwtUtil jwtUtil = new JwtUtil();
+        /*JwtUtil jwtUtil = new JwtUtil();
         String token = jwtUtil.generateToken(Map.of(), new Authentication(user.getUsername(), user.getPassword()));
+        */
+
+        JwtUtil jwtUtil = new JwtUtil();
+        String token = jwtUtil.generateToken(
+                Map.of("user_id", user.getId().toHexString()), // 👈 se agrega aquí
+                new Authentication(user.getUsername(), user.getPassword())
+        );
 
         ctx.json(new JWTResponse(token));
         System.out.println("🔐 Token generado exitosamente");
