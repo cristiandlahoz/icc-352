@@ -30,6 +30,11 @@ public class JwtUtil {
         .compact();
   }
 
+  public String getUserIdFromToken(String token) {
+    return extractAllClaims(token).get("user_id", String.class);
+  }
+
+
   /*public boolean validateToken(String token) {
     try {
       SecretKey key = getSigningKey();
