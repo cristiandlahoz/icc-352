@@ -1,103 +1,122 @@
-import requests
+import os
+import json
+import urllib.request
+import urllib.parse
 import jwt
 
-BASE_URL = "http://localhost:7000"
+# Configuración
+PORT = int(os.getenv("PORT_REST", 7000))
+BASE_URL = f"http://localhost:{PORT}"
+LOGIN_URL = f"{BASE_URL}/auth/login"
+FULL_URLS_ENDPOINT = f"{BASE_URL}/urls/full"
+USER_URLS_ENDPOINT = f"{BASE_URL}/users/{{user_id}}/urls"
+
+# Colores
+GREEN = "\033[32m"
+RED = "\033[31m"
+YELLOW = "\033[33m"
+BLUE = "\033[34m"
+RESET = "\033[0m"
+
+# Variables globales
+token = None
+user_id = None
+
 
 def login():
+    global token, user_id
     print("Inicio de sesión")
     username = input("Usuario: ")
     password = input("Contraseña: ")
-
-    url = f"{BASE_URL}/auth/login"
-    data = {"username": username, "password": password}
-    response = requests.post(url, json=data)
-
-    if response.status_code == 200:
-        token = response.json()["token"]
-        print("Token obtenido")
-        return token
-    else:
-        print("Error al autenticar:", response.text)
-        return None
-
-# Decodificar user_id desde el JWT (sin verificar firma)
-def decode_user_id_from_token(token):
+    data = json.dumps({"username": username, "password": password}).encode()
     try:
-        decoded = jwt.decode(token, options={"verify_signature": False})
-        return decoded.get("user_id")
+        req = urllib.request.Request(LOGIN_URL, data=data, method="POST")
+        req.add_header("Content-Type", "application/json")
+        response = urllib.request.urlopen(req)
+        if response.status == 200:
+            res_data = json.loads(response.read().decode())
+            token = res_data["token"]
+            decoded = jwt.decode(token, options={"verify_signature": False})
+            user_id = decoded.get("user_id")
+            print(f"{GREEN} Login exitoso. ID de usuario: {user_id}{RESET}")
+        else:
+            print(f"{RED} Error al autenticar.{RESET}")
     except Exception as e:
-        print("Error al decodificar el token:", e)
-        return None
+        print(f"{RED}Error durante login: {e}{RESET}")
 
 
-def create_url(token, user_id):
-    url = f"{BASE_URL}/urls/full"
-    headers = {"Authorization": f"Bearer {token}"}
-    original = input("Ingresa la URL a acortar: ")
-
-    payload = {
+def crear_url():
+    original = input(" Ingresa la URL a acortar: ")
+    payload = json.dumps({
         "originalUrl": original,
-        "createdBy": {
-            "id": user_id
-        }
-    }
+        "createdBy": {"id": user_id}
+    }).encode()
 
-    response = requests.post(url, json=payload, headers=headers)
-    if response.status_code == 201:
-        data = response.json()
-        print("\nURL creada:")
-        print("  - Original:", data['originalUrl'])
-        print("  - Acortada:", data['shortenedUrl'])
-        print("  - Fecha creacion:", data['createdAt'])
-        print("  - Clicks:", data['stats']['clickCount'])
-        print("  - Vista previa (base64):", data['sitePreviewBase64'][:30], "...")
-    else:
-        print("Error al crear URL:", response.text)
+    try:
+        req = urllib.request.Request(FULL_URLS_ENDPOINT, data=payload, method="POST")
+        req.add_header("Content-Type", "application/json")
+        req.add_header("Authorization", f"Bearer {token}")
+        response = urllib.request.urlopen(req)
+        if response.status == 201:
+            res_data = json.loads(response.read().decode())
+            print(f"{GREEN} URL creada:")
+            print(f" - Original: {res_data['originalUrl']}")
+            print(f" - Acortada: {res_data['shortenedUrl']}")
+            print(f" - Fecha: {res_data['createdAt']}")
+            print(f" - Clicks: {res_data['stats']['clickCount']}")
+            print(f" - Vista previa: {res_data['sitePreviewBase64'][:30]}...{RESET}")
+        else:
+            print(f"{RED} Error al crear URL.{RESET}")
+    except Exception as e:
+        print(f"{RED}Error al crear URL: {e}{RESET}")
 
 
-def list_urls(token, user_id):
-    url = f"{BASE_URL}/users/{user_id}/urls"
-    headers = {"Authorization": f"Bearer {token}"}
-    response = requests.get(url, headers=headers)
-    if response.status_code == 200:
-        print("\nURLs del usuario:")
-        for item in response.json():
-            print("────────────────────────────")
-            print("Original:", item['originalUrl'])
-            print("Acortada:", item['shortenedUrl'])
-            print("Clicks:", item['clickCount'])
-            print("Visitantes únicos:", item['uniqueVisitors'])
-    else:
-        print("Error al listar URLs:", response.text)
+def listar_urls():
+    url = USER_URLS_ENDPOINT.format(user_id=user_id)
+    try:
+        req = urllib.request.Request(url, method="GET")
+        req.add_header("Authorization", f"Bearer {token}")
+        response = urllib.request.urlopen(req)
+        if response.status == 200:
+            urls = json.loads(response.read().decode())
+            print(f"\n{BLUE} URLs del usuario:{RESET}")
+            for u in urls:
+                print("────────────────────────────")
+                print(f"Original: {u['originalUrl']}")
+                print(f"Acortada: {u['shortenedUrl']}")
+                print(f"Clicks: {u['clickCount']}")
+                print(f"Visitantes únicos: {u['uniqueVisitors']}")
+        else:
+            print(f"{YELLOW} No se pudieron listar las URLs.{RESET}")
+    except Exception as e:
+        print(f"{RED}Error al listar URLs: {e}{RESET}")
+
 
 def main():
-    token = login()
-    if not token:
+    print(f"{BLUE}=== Cliente REST: Acortador de URLs ==={RESET}")
+    login()
+    if not token or not user_id:
+        print(f"{RED} No se pudo autenticar. Saliendo...{RESET}")
         return
-
-    user_id = decode_user_id_from_token(token)
-    if not user_id:
-        print("No se pudo obtener el ID del usuario desde el token.")
-        return
-
-    print(f"ID del usuario autenticado: {user_id}")
 
     while True:
         print("\nMenú:")
-        print("1. Crear URL")
-        print("2. Listar URLs")
+        print("1. Crear nueva URL")
+        print("2. Listar mis URLs")
         print("3. Salir")
+
         opcion = input("Selecciona una opción: ")
 
         if opcion == "1":
-            create_url(token, user_id)
+            crear_url()
         elif opcion == "2":
-            list_urls(token, user_id)
+            listar_urls()
         elif opcion == "3":
-            print("¡Hasta luego!")
+            print(f"{YELLOW}Saliendo del cliente...{RESET}")
             break
         else:
-            print("Opción inválida")
+            print(f"{RED} Opción inválida{RESET}")
+
 
 if __name__ == "__main__":
     main()
