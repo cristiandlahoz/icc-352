@@ -16,23 +16,34 @@ import org.wornux.urlshortener.model.AccessLog;
 import org.wornux.urlshortener.model.LinkPreview;
 import org.wornux.urlshortener.model.Url;
 import org.wornux.urlshortener.model.User;
+import org.wornux.urlshortener.util.LinkPreviewGenerator;
 import org.wornux.urlshortener.util.QRCodeGenerator;
 import org.wornux.urlshortener.util.UrlShortener;
-import org.wornux.urlshortener.util.WebPreviewUtil;
 
 public class UrlService {
   private final UrlDAO urlDAO;
   private final AccessLogsDAO accessLogsDAO;
   private final LinkPreviewDAO linkPreviewDAO;
 
-  public UrlService(UrlDAO urlDAO, AccessLogsDAO accessLogsDAO, AccessLogsDAO accessLogsDAO1, LinkPreviewDAO linkPreviewDAO) {
+  public UrlService(
+      UrlDAO urlDAO,
+      AccessLogsDAO accessLogsDAO,
+      AccessLogsDAO accessLogsDAO1,
+      LinkPreviewDAO linkPreviewDAO) {
     this.urlDAO = urlDAO;
-      this.accessLogsDAO = accessLogsDAO1;
-      this.linkPreviewDAO = linkPreviewDAO;
+    this.accessLogsDAO = accessLogsDAO1;
+    this.linkPreviewDAO = linkPreviewDAO;
   }
 
   public List<UrlCreatedDTO> getAllShortenedUrls() {
     return urlDAO.findAll().stream().map(UrlCreatedDTO::new).toList();
+  }
+
+  public List<UrlCreatedDTO> getShortenedUrlsByUser(User user) {
+    if (user == null) {
+      throw new IllegalArgumentException("User cannot be null");
+    }
+    return urlDAO.findByCreatedBy(user).stream().map(UrlCreatedDTO::new).toList();
   }
 
   public Optional<UrlCreatedDTO> getById(ObjectId id) {
@@ -89,35 +100,35 @@ public class UrlService {
       throw new IllegalArgumentException("Shortened URL not found");
     }
   }
+
   public List<UrlStatsDTO> getUrlsByUser(User user) {
     if (user == null) throw new IllegalArgumentException("User cannot be null");
 
     return urlDAO.findByCreatedBy(user).stream()
-            .map(url -> {
+        .map(
+            url -> {
               List<AccessLog> logs = accessLogsDAO.findByUrl(url);
               int totalAccesses = logs.size();
-              int uniqueVisitors = (int) logs.stream().map(AccessLog::getIpAddress).distinct().count();
-              Date lastAccess = logs.stream()
-                      .map(AccessLog::getAccessedAt)
-                      .max(Date::compareTo)
-                      .orElse(null);
+              int uniqueVisitors =
+                  (int) logs.stream().map(AccessLog::getIpAddress).distinct().count();
+              Date lastAccess =
+                  logs.stream().map(AccessLog::getAccessedAt).max(Date::compareTo).orElse(null);
               List<String> userAgents = logs.stream().map(AccessLog::getBrowser).toList();
               List<String> operatingSystems = logs.stream().map(AccessLog::getOs).toList();
 
               return new UrlStatsDTO(
-                      url.getId(),
-                      url.getOriginalUrl(),
-                      url.getShortenedUrl(),
-                      url.getCreatedAt(),
-                      url.getClickCount(),
-                      totalAccesses,
-                      uniqueVisitors,
-                      lastAccess,
-                      userAgents,
-                      operatingSystems
-              );
+                  url.getId(),
+                  url.getOriginalUrl(),
+                  url.getShortenedUrl(),
+                  url.getCreatedAt(),
+                  url.getClickCount(),
+                  totalAccesses,
+                  uniqueVisitors,
+                  lastAccess,
+                  userAgents,
+                  operatingSystems);
             })
-            .toList();
+        .toList();
   }
 
   public UrlCreatedFullDTO createFullUrlRecord(UrlDTO urlDTO) {
@@ -137,25 +148,23 @@ public class UrlService {
       urlDAO.save(url);
 
       // 4. Vista previa en base64
-      String previewBase64 = WebPreviewUtil.captureBase64Preview(urlDTO.originalUrl());
+      String previewBase64 = LinkPreviewGenerator.captureBase64Preview(urlDTO.originalUrl());
 
       // Crear entidad LinkPreview
       LinkPreview linkPreview = new LinkPreview(url, previewBase64);
       linkPreviewDAO.save(linkPreview);
 
-
       // 5. Obtener estadísticas iniciales (vacías)
       List<AccessLog> logs = accessLogsDAO.findByUrl(url); // Puede estar vacío
       int totalAccesses = logs.size();
       int uniqueVisitors = (int) logs.stream().map(AccessLog::getIpAddress).distinct().count();
-      Date lastAccess = logs.stream()
-              .map(AccessLog::getAccessedAt)
-              .max(Date::compareTo)
-              .orElse(null);
+      Date lastAccess =
+          logs.stream().map(AccessLog::getAccessedAt).max(Date::compareTo).orElse(null);
       List<String> userAgents = logs.stream().map(AccessLog::getBrowser).toList();
       List<String> operatingSystems = logs.stream().map(AccessLog::getOs).toList();
 
-      UrlStatsDTO stats = new UrlStatsDTO(
+      UrlStatsDTO stats =
+          new UrlStatsDTO(
               url.getId(),
               url.getOriginalUrl(),
               url.getShortenedUrl(),
@@ -165,21 +174,13 @@ public class UrlService {
               uniqueVisitors,
               lastAccess,
               userAgents,
-              operatingSystems
-      );
+              operatingSystems);
 
       return new UrlCreatedFullDTO(
-              url.getOriginalUrl(),
-              url.getShortenedUrl(),
-              url.getCreatedAt(),
-              stats,
-              previewBase64
-      );
+          url.getOriginalUrl(), url.getShortenedUrl(), url.getCreatedAt(), stats, previewBase64);
 
     } catch (Exception e) {
       throw new RuntimeException("Error al crear URL completa", e);
     }
   }
-
-
 }
