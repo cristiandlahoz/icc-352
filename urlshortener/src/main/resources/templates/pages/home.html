@@ -142,8 +142,8 @@
 
   <header class="flex items-end justify-end w-auto mt-10 mx-14">
     <nav class="flex items-end justify-end w-full sm:justify-end gap-x-24">
-      <ul th:if="${!user}" class="flex items-end gap-x-4">
-        <li class="flex items-center justify-center w-28">
+      <ul class="flex items-end gap-x-4">
+        <li th:if="${!user}" class="flex items-center justify-center w-28">
           <a class="text-white text-center border border-solid hover:scale-110 active:bg-btn-gray-border transition border-btn-gray-border bg-btn-gray rounded-full w-44 py-3 shadow-[rgba(0,_0,_0,_0.25)_0px_25px_50px_-12px]"
             th:href="@{/auth/login}">
             Login
@@ -154,10 +154,16 @@
             </svg>
           </a>
         </li>
-        <li class="flex items-center justify-center w-40 lg:flex">
+        <li th:if="${!user}" class="flex items-center justify-center w-40 lg:flex">
           <a class="text-center text-white border border-solid hover:scale-110 transition border-btn-blue bg-btn-blue rounded-full w-44 py-3 shadow-[-10px_-10px_30px_4px_rgba(0,0,0,0.1),_10px_10px_30px_4px_rgba(45,78,255,0.20)]"
             th:href="@{/auth/signup}">
             Register Now
+          </a>
+        </li>
+        <li th:if="${user}" class="flex items-center justify-center w-40 lg:flex">
+          <a class="text-center text-white border border-solid hover:scale-110 transition border-btn-blue bg-btn-blue rounded-full w-44 py-3 shadow-[-10px_-10px_30px_4px_rgba(0,0,0,0.1),_10px_10px_30px_4px_rgba(45,78,255,0.20)]"
+            th:href="@{/auth/logout}">
+            Logout
           </a>
         </li>
       </ul>
