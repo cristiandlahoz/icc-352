@@ -9,6 +9,7 @@ import org.wornux.urlshortener.enums.Role;
 import org.wornux.urlshortener.enums.Routes;
 import org.wornux.urlshortener.enums.SessionKeys;
 import org.wornux.urlshortener.model.User;
+import org.wornux.urlshortener.service.UrlService;
 import org.wornux.urlshortener.service.UserService;
 
 /**
@@ -20,6 +21,7 @@ import org.wornux.urlshortener.service.UserService;
 public class AuthController {
 
   private final UserService userService;
+  private final UrlService urlService;
 
   /**
    * Handles the GET request to render the login page.
@@ -55,8 +57,8 @@ public class AuthController {
         .authenticate(username, password)
         .ifPresentOrElse(
             user -> {
-              System.out.println("✅ Usuario autenticado: " + user.getUsername());
               ctx.sessionAttribute(SessionKeys.USER.getKey(), user);
+              urlService.migrateSessionUrlsToUser(ctx.req().getSession().getId(), user);
               ctx.redirect(Routes.HOME.getRoute());
             },
             () -> {
@@ -93,7 +95,7 @@ public class AuthController {
 
     try {
       userService.saveUser(newUser);
-      System.out.println("✅ Usuario registrado correctamente: " + username);
+      urlService.migrateSessionUrlsToUser(ctx.req().getSession().getId(), newUser);
       ctx.sessionAttribute(SessionKeys.USER.getKey(), newUser);
       ctx.redirect(Routes.HOME.getRoute());
     } catch (IllegalArgumentException e) {

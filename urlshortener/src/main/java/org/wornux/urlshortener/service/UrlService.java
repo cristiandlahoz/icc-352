@@ -209,4 +209,8 @@ public class UrlService {
   public List<UrlCreatedDTO> getUrlsBySession(@NotNull String sessionId) {
     return urlDAO.findBySession(sessionId).stream().map(UrlCreatedDTO::new).toList();
   }
+
+  public void migrateSessionUrlsToUser(@NotNull String sessionId, @NotNull User user) {
+    urlDAO.migrateSessionUrlsToUser(sessionId, user);
+  }
 }
