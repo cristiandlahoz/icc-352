@@ -23,8 +23,8 @@
           class="mb-4 text-4xl font-extrabold text-center text-transparent lg:text-5xl bg-clip-text bg-gradient-to-r from-btn-blue via-btn-pink to-btn-blue">
           Wornux</h2>
       </a>
-      <form method="post" action="/url"
-        class="justify-between items-center bg-btn-gray border-2 hidden lg:flex border-solid border-btn-gray-border min-w-fit w-[380px] sm:w-[700px] py-1 px-1 rounded-full shadow-[rgba(0,_0,_0,_0.25)_0px_25px_50px_-12px]">
+      <form method="post" action="/shortened/create"
+        class="justify-between items-center bg-btn-gray border-2 border-solid border-btn-gray-border w-auto min-w-[600px] hidden lg:flex py-1 px-1 rounded-full shadow-[rgba(0,_0,_0,_0.25)_0px_25px_50px_-12px]">
         <div>
           <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="white"
             class="inline ml-4 mr-1 size-6">
@@ -35,21 +35,20 @@
             <input required name="url" class="text-white bg-btn-gray caret-btn-pink focus:outline-none w-96" type="text"
               placeholder="Enter the link here" />
           </label>
-          <label>
-            <input hidden value="dashboard" name="dashboard" />
-          </label>
         </div>
         <button
           class="border border-solid text-white hover:scale-95 transition border-btn-blue bg-btn-blue w-36 py-3 rounded-full shadow-[-10px_-10px_30px_4px_rgba(0,0,0,0.1),_10px_10px_30px_4px_rgba(45,78,255,0.20)]"
           type="submit">Shorten
-          Now!</button>
+          Now!
+        </button>
       </form>
+
       <ul class="absolute right-[5%] flex items-start gap-x-4 min-w-fit">
         <li class="hidden lg:block">
           <img id="avatarButton" type="button" data-dropdown-toggle="userDropdown"
             data-dropdown-placement="bottom-start"
             class="p-1 transition rounded-full cursor-pointer size-12 ring-2 ring-btn-gray-border hover:ring-btn-blue"
-            th:src="@{'https://unavatar.io/' + ${session.user.username}}" alt="User dropdown">
+            th:src="@{'https://unavatar.io/' + ${user.username}}" alt="User dropdown">
         </li>
         <li>
           <button data-drawer-target="sidebar" data-drawer-toggle="sidebar" aria-controls="sidebar" type="button"
@@ -227,8 +226,8 @@
         </div>
         <div class="flex flex-col items-start justify-center ml-4 basis-4/5 lg:basis-3/4 gap-y-1">
           <h2 class="text-2xl font-medium text-white" th:text="'Link #' + ${iterStat.count}"></h2>
-          <a class="font-normal hover:underline text-btn-blue" target="_blank" th:href="${url.url}"
-            th:text="${url.url}"></a>
+          <a class="font-normal hover:underline text-orange-300 text-btn-blue" target="_blank"
+            th:href="${'/s/' + url.shortenedUrl}" th:text="${url.shortenedUrl}"></a>
           <a class="text-white font-extralight hover:underline  lg:max-w-[650px] md:max-w-[530px] max-w-[250px] overflow-hidden link"
             th:data-id="${url.id}" th:data-url="${url.originalUrl}" th:text="${url.originalUrl}"></a>
           <!--          AQUI-->
@@ -245,7 +244,7 @@
                 <path d="M7.8 16.2l-2.2 2.2" />
                 <path d="M12 12l9 3l-4 2l-2 4l-3 -9" />
               </svg>
-              <p class="inline text-white font-extraligh" th:text="${url.clicks}"></p>
+              <p class="inline text-white font-extraligh" th:text="${url.clickCount}"></p>
             </div>
             <div class="items-center hidden md:flex justity-center gap-x-2">
               <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none"
@@ -258,9 +257,9 @@
                 <path d="M4 11l16 0" />
                 <path d="M8 15h2v2h-2z" />
               </svg>
-              <p class="text-white font-extralight" th:text="${url.date}"></p>
+              <p class="text-white font-extralight" th:text="${url.createdAt}"></p>
             </div>
-            <div class="flex items-center justify-center gap-x-1 " th:if="${url.status}">
+            <div class="flex items-center justify-center gap-x-1 " th:unless="${url.isOffensive}">
               <p class="text-center text-green-600 min-w-14">Active</p>
               <div class="flex items-center justify-center rounded-full size-9 bg-green-600/30">
                 <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none"
@@ -273,7 +272,7 @@
                 </svg>
               </div>
             </div>
-            <div class="flex items-center justify-center gap-x-2" th:unless="${url.status}">
+            <div class="flex items-center justify-center gap-x-2" th:if="${url.isOffensive}">
               <p class="text-center text-yellow-600 min-w-14">Inactive</p>
               <div class="flex items-center justify-center rounded-full size-9 bg-yellow-600/30">
                 <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none"
@@ -321,7 +320,7 @@
       <div class="flex flex-col justify-between h-full intems center">
         <ul class="flex flex-col justify-center text-xl font-medium font gap-y-2">
           <li>
-            <a href="/dashboard"
+            <a href="/shortened/dashboard"
               class="flex items-center p-2 text-white transition rounded-lg gap-x-3 hover:bg-btn-blue hover:scale-105 ">
               <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none"
                 stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"
@@ -374,7 +373,7 @@
               <p>QR Links</p>
             </a>
           </li>
-          <li th:if="${session.user.role} == T(org.wornux.urlshortener.enums.Role).ADMIN">
+          <li th:if="${isAdmin}">
             <a href="/links"
               class="flex items-center p-2 text-white transition rounded-lg hover:bg-btn-blue gap-x-3 hover:scale-105">
               <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none"
@@ -388,7 +387,7 @@
               <p>Links</p>
             </a>
           </li>
-          <li th:if="${session.user.role} == T(org.wornux.urlshortener.enums.Role).ADMIN">
+          <li th:if="${isAdmin}">
             <a href="/users"
               class="flex items-center p-2 text-white transition rounded-lg gap-x-3 hover:bg-btn-blue hover:scale-105">
               <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none"
@@ -411,8 +410,8 @@
     <div id="userDropdown"
       class="absolute right-[2%] top-[11%] mt-2 z-10 hidden bg-btn-gray divide-y divide-btn-gray-border rounded-lg shadow w-44">
       <div class="px-4 py-3 text-sm text-white">
-        <p th:text="${session.user.name}"></p>
-        <p class="font-medium truncate" th:text="${session.user.email}"></p>
+        <p th:text="${user.username}"></p>
+        <p class="font-medium truncate" th:text="${user.email}"></p>
       </div>
       <ul class="py-2 text-sm text-white" aria-labelledby="avatarButton">
         <li>

@@ -213,4 +213,15 @@ public class UrlService {
   public void migrateSessionUrlsToUser(@NotNull String sessionId, @NotNull User user) {
     urlDAO.migrateSessionUrlsToUser(sessionId, user);
   }
+
+  public void incrementUrlAccessCount(ObjectId id) {
+    Optional<Url> shortenedUrl = urlDAO.findById(id);
+    if (shortenedUrl.isPresent()) {
+      Url url = shortenedUrl.get();
+      url.setClickCount(url.getClickCount() + 1);
+      urlDAO.save(url);
+    } else {
+      throw new IllegalArgumentException("Shortened URL not found");
+    }
+  }
 }

@@ -12,6 +12,7 @@ import org.wornux.urlshortener.core.routing.annotations.POST;
 import org.wornux.urlshortener.dto.UrlCreatedDTO;
 import org.wornux.urlshortener.dto.UrlDTO;
 import org.wornux.urlshortener.dto.UrlUnknownDTO;
+import org.wornux.urlshortener.enums.Role;
 import org.wornux.urlshortener.enums.SessionKeys;
 import org.wornux.urlshortener.model.User;
 import org.wornux.urlshortener.service.UrlService;
@@ -39,41 +40,17 @@ public class UrlController {
   @GET(path = "/")
   public void listShortenedUrls(Context ctx) {
     User user = ctx.sessionAttribute(SessionKeys.USER.getKey());
-    if (user != null) {
-      ctx.redirect("/shortened/logged");
-      return;
-    }
     String sessionId = ctx.req().getSession().getId();
     Map<String, Object> model =
         new HashMap<>() {
           {
             put("user", user);
-            put("urls", urlService.getUrlsBySession(sessionId));
+            if (user != null) {
+              put("urls", urlService.getShortenedUrlsByUser(user));
+            } else put("urls", urlService.getUrlsBySession(sessionId));
           }
         };
     ctx.render("pages/home.html", model);
-  }
-
-  /**
-   * Handles GET requests to display the dashboard for logged-in users.
-   *
-   * @param ctx The Javalin HTTP context.
-   */
-  @GET(path = "/logged")
-  public void logged(Context ctx) {
-    User user = ctx.sessionAttribute(SessionKeys.USER.getKey());
-    if (user == null) {
-      ctx.redirect("/");
-      return;
-    }
-    Map<String, Object> model =
-        new HashMap<>() {
-          {
-            put("user", user);
-            put("urls", urlService.getShortenedUrlsByUser(user));
-          }
-        };
-    ctx.render("pages/registered.html", model);
   }
 
   /**
@@ -81,16 +58,18 @@ public class UrlController {
    *
    * @param ctx The Javalin HTTP context.
    */
-  @GET(path = "/{id}/dashboard")
+  @GET(path = "/dashboard")
   public void dashboard(Context ctx) {
-    String id = ctx.pathParam("id");
-
-    Optional<UrlCreatedDTO> url = urlService.getShortenedUrlById(new ObjectId(id));
+    User user = ctx.sessionAttribute(SessionKeys.USER.getKey());
+    String sessionId = ctx.req().getSession().getId();
     Map<String, Object> model =
         new HashMap<>() {
           {
-            put("shortenedUrl", url);
-            put("session", ctx.sessionAttribute(SessionKeys.USER.getKey()));
+            put("user", user);
+            put("isAdmin", user != null && user.getRole().equals(Role.ADMIN));
+            if (user != null) {
+              put("urls", urlService.getShortenedUrlsByUser(user));
+            } else put("urls", urlService.getUrlsBySession(sessionId));
           }
         };
     ctx.render("pages/dashboard.html", model);
@@ -116,25 +95,6 @@ public class UrlController {
     urlService.createShortenedUrl(urlDTO);
 
     ctx.redirect("/");
-  }
-
-  /**
-   * Handles GET requests to retrieve details of a specific shortened URL.
-   *
-   * @param ctx The Javalin HTTP context.
-   */
-  @GET(path = "/{id}")
-  public void getShortenedUrl(Context ctx) {
-    String id = ctx.pathParam("id");
-
-    Optional<UrlCreatedDTO> url = urlService.getShortenedUrlById(new ObjectId(id));
-    Map<String, Object> model =
-        new HashMap<>() {
-          {
-            put("shortenedUrl", url);
-          }
-        };
-    ctx.render("shortenedUrlDetails.html", model);
   }
 
   /**

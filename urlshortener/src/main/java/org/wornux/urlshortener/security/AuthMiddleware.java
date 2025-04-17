@@ -36,6 +36,7 @@ public class AuthMiddleware implements Handler {
     if (currentPath.startsWith("/images")
         || currentPath.equals("/shortened")
         || currentPath.equals("/shortened/create")
+        || currentPath.equals("/shortened/dashboard")
         || currentPath.matches("/shortened/[a-fA-F0-9]{24}/qr")
         || currentPath.startsWith("/css")
         || currentPath.startsWith("/js")
