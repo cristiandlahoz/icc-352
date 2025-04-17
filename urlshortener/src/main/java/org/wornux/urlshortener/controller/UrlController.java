@@ -11,6 +11,7 @@ import org.wornux.urlshortener.core.routing.annotations.GET;
 import org.wornux.urlshortener.core.routing.annotations.POST;
 import org.wornux.urlshortener.dto.UrlCreatedDTO;
 import org.wornux.urlshortener.dto.UrlDTO;
+import org.wornux.urlshortener.dto.UrlUnknownDTO;
 import org.wornux.urlshortener.enums.SessionKeys;
 import org.wornux.urlshortener.model.User;
 import org.wornux.urlshortener.service.UrlService;
@@ -42,11 +43,12 @@ public class UrlController {
       ctx.redirect("/shortened/logged");
       return;
     }
+    String sessionId = ctx.req().getSession().getId();
     Map<String, Object> model =
         new HashMap<>() {
           {
             put("user", user);
-            put("urls", urlService.getShortenedUrlsByUser(user));
+            put("urls", urlService.getUrlsBySession(sessionId));
           }
         };
     ctx.render("pages/home.html", model);
@@ -103,6 +105,13 @@ public class UrlController {
   public void createShortenedUrl(Context ctx) {
     String url = ctx.formParam("url");
     User user = ctx.sessionAttribute(SessionKeys.USER.getKey());
+    if (user == null) {
+      String sessionId = ctx.req().getSession().getId();
+      UrlUnknownDTO urlUnknownDTO = new UrlUnknownDTO(url, sessionId);
+      urlService.createShortenedUrl(urlUnknownDTO);
+      ctx.redirect("/");
+      return;
+    }
     UrlDTO urlDTO = new UrlDTO(url, user);
     urlService.createShortenedUrl(urlDTO);
 
