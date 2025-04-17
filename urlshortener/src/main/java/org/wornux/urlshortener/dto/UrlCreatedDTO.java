@@ -5,8 +5,6 @@ import org.bson.types.ObjectId;
 import org.wornux.urlshortener.model.Url;
 import org.wornux.urlshortener.model.User;
 
-import javax.sql.RowSet;
-
 /**
  * A Data Transfer Object (DTO) representing the creation of a shortened URL. This record
  * encapsulates the original URL, the shortened URL, and a QR code.
@@ -71,7 +69,7 @@ public record UrlCreatedDTO(
         url.getCreatedAt(),
         url.getQrCode(),
         url.getClickCount(),
-        url.isOffensive(), url.getCreatedBy());
+        url.isOffensive(),
+        url.getCreatedBy());
   }
-
 }

@@ -2,7 +2,6 @@ package org.wornux.urlshortener.dao;
 
 import dev.morphia.Datastore;
 import dev.morphia.query.filters.Filters;
-
 import java.util.List;
 import java.util.Optional;
 import org.bson.types.ObjectId;
@@ -22,9 +21,6 @@ public class UrlDAO extends BaseDAO<Url, ObjectId> {
   }
 
   public List<Url> findByCreatedBy(User user) {
-    return datastore.find(Url.class)
-            .filter(Filters.eq("createdBy", user))
-            .iterator()
-            .toList();
+    return datastore.find(Url.class).filter(Filters.eq("createdBy", user)).iterator().toList();
   }
 }

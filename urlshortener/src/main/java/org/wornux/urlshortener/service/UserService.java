@@ -42,5 +42,4 @@ public class UserService {
   public Optional<User> getUserByUsername(@Nonnull String username) {
     return userDAO.findByUsername(username);
   }
-
 }
