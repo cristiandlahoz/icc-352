@@ -17,11 +17,12 @@ public record UrlDTO(String originalUrl, User createdBy) {
    * @throws IllegalArgumentException if the original URL is invalid or the user is null.
    */
   public UrlDTO {
-    if (originalUrl == null
-        || originalUrl.isBlank()
-        || !originalUrl.matches("^(https?|ftp)://[^\\s/$.?#].[^\\s]*$")) {
-      throw new IllegalArgumentException(
-          "Original URL cannot be blank and must be a valid URL format");
+    if (originalUrl == null) {
+      throw new IllegalArgumentException("Original URL cannot be null");
+    } else if (originalUrl.isBlank()) {
+      throw new IllegalArgumentException("Original URL cannot be blank");
+    } else if (!originalUrl.matches("^(https?|ftp)://[^\\s/$.?#].[^\\s]*$")) {
+      throw new IllegalArgumentException("Original URL must be a valid URL format");
     }
     if (createdBy == null) {
       throw new IllegalArgumentException("User cannot be null");
