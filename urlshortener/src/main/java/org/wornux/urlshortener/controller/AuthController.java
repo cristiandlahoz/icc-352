@@ -75,7 +75,7 @@ public class AuthController {
   @GET(path = "/logout")
   public void logout(Context ctx) {
     ctx.req().getSession().invalidate();
-    ctx.redirect(Routes.USER_LOGIN.getRoute());
+    ctx.redirect(Routes.HOME.getRoute());
   }
 
   /**
