@@ -5,6 +5,7 @@ import java.util.Date;
 import java.util.List;
 import java.util.Optional;
 import org.bson.types.ObjectId;
+import org.jetbrains.annotations.NotNull;
 import org.wornux.urlshortener.dao.AccessLogsDAO;
 import org.wornux.urlshortener.dao.LinkPreviewDAO;
 import org.wornux.urlshortener.dao.UrlDAO;
@@ -12,6 +13,7 @@ import org.wornux.urlshortener.dto.UrlCreatedDTO;
 import org.wornux.urlshortener.dto.UrlCreatedFullDTO;
 import org.wornux.urlshortener.dto.UrlDTO;
 import org.wornux.urlshortener.dto.UrlStatsDTO;
+import org.wornux.urlshortener.dto.UrlUnknownDTO;
 import org.wornux.urlshortener.model.AccessLog;
 import org.wornux.urlshortener.model.LinkPreview;
 import org.wornux.urlshortener.model.Url;
@@ -60,6 +62,26 @@ public class UrlService {
       byte[] qrCode;
       qrCode = QRCodeGenerator.generateQRCode(originalUrl);
       Url url = new Url(originalUrl, shortUrl, urlDTO.createdBy(), qrCode);
+      urlDAO.save(url);
+    } catch (IOException e) {
+      throw new RuntimeException("Failed to generate QR code", e);
+    } catch (IllegalArgumentException e) {
+      throw new IllegalArgumentException("Invalid URL format", e);
+    } catch (Exception e) {
+      throw new RuntimeException("Failed to create shortened URL", e);
+    }
+  }
+
+  public void createShortenedUrl(UrlUnknownDTO urlDTO) {
+    if (urlDTO == null) {
+      throw new IllegalArgumentException("Shortened URL cannot be null");
+    }
+    try {
+      String originalUrl = urlDTO.originalUrl();
+      String shortUrl = UrlShortener.generateShortUrl();
+      byte[] qrCode;
+      qrCode = QRCodeGenerator.generateQRCode(originalUrl);
+      Url url = new Url(originalUrl, shortUrl, urlDTO.sessionId(), qrCode);
       urlDAO.save(url);
     } catch (IOException e) {
       throw new RuntimeException("Failed to generate QR code", e);
@@ -182,5 +204,9 @@ public class UrlService {
     } catch (Exception e) {
       throw new RuntimeException("Error al crear URL completa", e);
     }
+  }
+
+  public List<UrlCreatedDTO> getUrlsBySession(@NotNull String sessionId) {
+    return urlDAO.findBySession(sessionId).stream().map(UrlCreatedDTO::new).toList();
   }
 }
