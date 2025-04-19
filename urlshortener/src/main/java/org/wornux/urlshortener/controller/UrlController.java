@@ -4,7 +4,6 @@ import io.javalin.http.Context;
 import io.javalin.http.HttpStatus;
 import java.util.Base64;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 import org.bson.types.ObjectId;
@@ -111,17 +110,15 @@ public class UrlController {
   @GET(path = "/analytics")
   public void analytics(Context ctx) {
     User user = ctx.sessionAttribute(SessionKeys.USER.getKey());
-    if (user == null) {
-      ctx.status(HttpStatus.UNAUTHORIZED.getCode()).redirect(Routes.USER_LOGIN.getRoute());
-      return;
-    }
+    String sessionId = ctx.req().getSession().getId();
 
-    List<UrlCreatedDTO> userUrls = urlService.getShortenedUrlsByUser(user);
     Map<String, Object> model =
         new HashMap<>() {
           {
             put("user", user);
-            put("urls", userUrls);
+            if (user != null) {
+              put("urls", urlService.getShortenedUrlsByUser(user));
+            } else put("urls", urlService.getUrlsBySession(sessionId));
           }
         };
     ctx.render("pages/analytics.html", model);
