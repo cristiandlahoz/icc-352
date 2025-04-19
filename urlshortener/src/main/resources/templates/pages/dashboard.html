@@ -10,6 +10,7 @@
     crossorigin="anonymous"></script>
   <script th:src="@{/js/toggleSideMenu.js}"></script>
   <script th:src="@{/js/toggleAvatarMenu.js}"></script>
+  <script th:src="@{/js/copyUrlToClipboard.js}"></script>
   <title>Wornux - Dashboard</title>
   <meta name="description"
     content="Wornux is an efficient and easy-to-use URL shortening service that streamlines your online experience.">
@@ -95,17 +96,20 @@
           </div>
         </div>
         <div class="flex flex-col items-center justify-center lg:flex-row gap-y-3 gap-x-4 basis-1/12 lg:basis-2/12 ">
+          <button class="flex items-center justify-center rounded-full size-9" onclick="copyToClipboard(this)"
+            th:attr="data-url=${url.shortenedUrl}" title="Copy to clipboard">
+            <svg xmlns="http://www.w3.org/2000/svg" width="28" height="28" viewBox="0 0 24 24" fill="none"
+              stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"
+              class="icon icon-tabler icons-tabler-outline icon-tabler-copy text-white hover:text-orange-300 hover:scale-110">
+              <path stroke="none" d="M0 0h24v24H0z" fill="none" />
+              <path
+                d="M7 7m0 2.667a2.667 2.667 0 0 1 2.667 -2.667h8.666a2.667 2.667 0 0 1 2.667 2.667v8.666a2.667 2.667 0 0 1 -2.667 2.667h-8.666a2.667 2.667 0 0 1 -2.667 -2.667z" />
+              <path d="M4.012 16.737a2.005 2.005 0 0 1 -1.012 -1.737v-10c0 -1.1 .9 -2 2 -2h10c.75 0 1.158 .385 1.5 1" />
+            </svg>
+          </button>
           <svg xmlns="http://www.w3.org/2000/svg" width="28" height="28" viewBox="0 0 24 24" fill="none"
             stroke="currentColor" stroke-width="1" stroke-linecap="round" stroke-linejoin="round"
-            class="text-white transition rounded-full icon icon-tabler icons-tabler-outline icon-tabler-copy bg-btn hover:text-btn-blue hover:scale-110">
-            <path stroke="none" d="M0 0h24v24H0z" fill="none" />
-            <path
-              d="M7 7m0 2.667a2.667 2.667 0 0 1 2.667 -2.667h8.666a2.667 2.667 0 0 1 2.667 2.667v8.666a2.667 2.667 0 0 1 -2.667 2.667h-8.666a2.667 2.667 0 0 1 -2.667 -2.667z" />
-            <path d="M4.012 16.737a2.005 2.005 0 0 1 -1.012 -1.737v-10c0 -1.1 .9 -2 2 -2h10c.75 0 1.158 .385 1.5 1" />
-          </svg>
-          <svg xmlns="http://www.w3.org/2000/svg" width="28" height="28" viewBox="0 0 24 24" fill="none"
-            stroke="currentColor" stroke-width="1" stroke-linecap="round" stroke-linejoin="round"
-            class="text-white transition icon icon-tabler icons-tabler-outline icon-tabler-edit hover:text-btn-blue hover:scale-110">
+            class="text-white transition icon icon-tabler icons-tabler-outline icon-tabler-edit hover:text-orange-300 hover:scale-110">
             <path stroke="none" d="M0 0h24v24H0z" fill="none" />
             <path d="M7 7h-1a2 2 0 0 0 -2 2v9a2 2 0 0 0 2 2h9a2 2 0 0 0 2 -2v-1" />
             <path d="M20.385 6.585a2.1 2.1 0 0 0 -2.97 -2.97l-8.415 8.385v3h3l8.385 -8.415z" />
