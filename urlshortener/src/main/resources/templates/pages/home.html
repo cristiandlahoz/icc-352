@@ -103,7 +103,7 @@
               th:text="${#strings.length(url.originalUrl) > 70 ? #strings.substring(url.originalUrl, 0, 70) + '...' : (url.originalUrl)}">
             </td>
             <td class="px-4 py-2 text-center border-btn-gray-border ">
-              <a th:href="'shortened/' + ${url.id} + '/qr'" class="btn">
+              <a th:href="'/shortened/' + ${url.id} + '/qr'" class="btn">
                 <svg xmlns="http://www.w3.org/2000/svg" class="m-auto size-8" viewBox="0 0 300 300"
                   shape-rendering="geometricPrecision" text-rendering="geometricPrecision">
                   <path
