@@ -33,9 +33,57 @@
           <img id="link-preview-image" th:class="'a'+${url.id}" src="" alt="Link preview">
         </div>
         <div class="flex flex-col items-start justify-center ml-4 basis-4/5 lg:basis-3/4 gap-y-1">
-          <h2 class="text-2xl font-medium text-white" th:text="'Link #' + ${iterStat.count}"></h2>
-          <a class="font-normal hover:underline text-orange-300 text-btn-blue" target="_blank"
-            th:href="${'/s/' + url.shortenedUrl}" th:text="${url.shortenedUrl}"></a>
+          <div class="flex items-center justify-center gap-x-5">
+            <div class="flex flex-col">
+              <h2 class="text-2xl font-medium text-white" th:text="'Link #' + ${iterStat.count}"></h2>
+              <a class="font-normal hover:underline text-orange-300 text-btn-blue" target="_blank"
+                th:href="${'/s/' + url.shortenedUrl}" th:text="${url.shortenedUrl}"></a>
+            </div>
+            <a th:href="'/shortened/' + ${url.id} + '/qr'" class="btn">
+              <svg xmlns="http://www.w3.org/2000/svg" class="m-auto size-8" viewBox="0 0 300 300"
+                shape-rendering="geometricPrecision" text-rendering="geometricPrecision">
+                <path
+                  d="M0 125V0h125v125H0Zm100.873-24.127V24.127H24.127v76.746h76.746ZM175 125V0h125v125H175Zm100.873-24.127V24.127h-76.746v76.746h76.746Z"
+                  fill="#666" />
+                <rect width="100" height="100" rx="0" ry="0" transform="matrix(.28833 0 0 .29003 223.083 47.998)"
+                  fill="#666" />
+                <path d="M0 300V175h125v125H0Zm100.873-24.127v-76.746H24.127v76.746h76.746Z" fill="#666" />
+                <rect width="100" height="100" rx="0" ry="0" transform="matrix(.28833 0 0 .29003 48.083 222.998)"
+                  fill="#666" />
+                <rect width="100" height="100" rx="0" ry="0" transform="matrix(.76745 0 0 .76745 200 335.085)"
+                  fill="#fff" />
+                <rect width="100" height="100" rx="0" ry="0" transform="matrix(.28833 0 0 .29003 48.083 47.998)"
+                  fill="#666" />
+                <rect width="25" height="30" rx="0" ry="0" transform="translate(0 150)" fill="#666" />
+                <rect width="25" height="30" rx="0" ry="0" transform="translate(75 150)" fill="#666" />
+                <rect width="25" height="30" rx="0" ry="0" transform="translate(25 120)" fill="#666" />
+                <rect width="25" height="30" rx="0" ry="0" transform="translate(275 120)" fill="#666" />
+                <rect width="25" height="30" rx="0" ry="0" transform="translate(225 120)" fill="#666" />
+                <rect width="25" height="25" rx="0" ry="0" transform="translate(200 150)" fill="#666" />
+                <rect width="25" height="25" rx="0" ry="0" transform="translate(150 150)" fill="#666" />
+                <rect width="25" height="25" rx="0" ry="0" transform="matrix(1 0 0 1.41206 150 168.82)" fill="#666" />
+                <rect width="25" height="25" rx="0" ry="0" transform="translate(175 250)" fill="#666" />
+                <rect width="25" height="25" rx="0" ry="0" transform="matrix(1.59923 0 0 1 150 250)" fill="#666" />
+                <rect width="25" height="25" rx="0" ry="0" transform="translate(175 275)" fill="#666" />
+                <rect width="25" height="25" rx="0" ry="0" transform="translate(250 252.002)" fill="#666" />
+                <rect width="25" height="25" rx="0" ry="0" transform="translate(275 197.998)" fill="#666" />
+                <rect width="25" height="25" rx="0" ry="0" transform="translate(200 226)" fill="#666" />
+                <rect width="25" height="25" rx="0" ry="0" transform="translate(200 226)" fill="#666" />
+                <rect width="25" height="25" rx="0" ry="0" transform="matrix(1 0 0 1.2001 175 196.998)" fill="#666" />
+                <rect width="25" height="25" rx="0" ry="0" transform="matrix(1.5 0 0 1.2001 150 196.998)" fill="#666" />
+                <rect width="25" height="25" rx="0" ry="0" transform="translate(275 275)" fill="#666" />
+                <rect width="25" height="25" rx="0" ry="0" transform="translate(225 275)" fill="#666" />
+                <rect width="30" height="25" rx="0" ry="0" transform="matrix(1.337 0 0 1 114.945 175)" fill="#666" />
+                <rect width="30" height="25" rx="0" ry="0" transform="matrix(4.59826 0 0 1 162.052 175)" fill="#666" />
+                <rect width="30" height="25" rx="0" ry="0" transform="translate(120 100)" fill="#666" />
+                <rect width="30" height="25" rx="0" ry="0" transform="translate(120 25)" fill="#666" />
+                <rect width="30" height="25" rx="0" ry="0" transform="translate(150)" fill="#666" />
+                <rect width="30" height="25" rx="0" ry="0" transform="translate(150 75)" fill="#666" />
+                <rect width="30" height="25" rx="0" ry="0" transform="translate(120 226)" fill="#666" />
+                <rect width="30" height="25" rx="0" ry="0" transform="translate(120 275)" fill="#666" />
+              </svg>
+            </a>
+          </div>
           <a class="text-white font-extralight hover:underline  lg:max-w-[650px] md:max-w-[530px] max-w-[250px] overflow-hidden link"
             th:data-id="${url.id}" th:data-url="${url.originalUrl}" th:text="${url.originalUrl}"></a>
           <div class="flex items-center justify-center mt-2 gap-x-5">
