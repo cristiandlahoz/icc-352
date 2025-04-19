@@ -8,6 +8,7 @@
   <link rel="stylesheet" th:href="@{/css/tailwind.css}">
   <script src="https://code.jquery.com/jquery-3.7.1.js" integrity="sha256-eKhayi8LEQwp4NKxN+CfCh+3qOVUtJn3QNZ0TciWLP4="
     crossorigin="anonymous"></script>
+  <script th:src="@{/js/copyUrlToClipboard.js}"></script>
   <title>Wornux</title>
   <meta name="description"
     content="Wornux is an efficient and easy-to-use URL shortening service that streamlines your online experience.">
@@ -189,21 +190,6 @@
   </main>
 
   <footer th:replace="~{components/footer.html :: footer}"></footer>
-  <script>
-    function copyToClipboard(button) {
-      const url = button.getAttribute('data-url');
-      const fullUrl = window.location.origin + '/s/' + url;
-
-      navigator.clipboard.writeText(fullUrl)
-        .then(() => {
-          alert('Link copied to clipboard: ' + fullUrl);
-        })
-        .catch(err => {
-          console.error('Error copying text: ', err);
-        });
-    }
-  </script>
-
 </body>
 
 </html>
