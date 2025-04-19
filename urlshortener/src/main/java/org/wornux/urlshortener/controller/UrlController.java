@@ -57,6 +57,31 @@ public class UrlController {
   }
 
   /**
+   * handles get all urls requests for admins
+   *
+   * @param ctx Javalin HTTP context
+   */
+  @GET(path = "/urls")
+  public void getAllUrls(Context ctx) {
+    User user = ctx.sessionAttribute(SessionKeys.USER.getKey());
+    if (user == null) {
+      ctx.redirect(Routes.USER_LOGIN.getRoute());
+      return;
+    } else if (!user.getRole().equals(Role.ADMIN)) {
+      ctx.status(HttpStatus.FORBIDDEN.getCode());
+      return;
+    }
+    Map<String, Object> model =
+        new HashMap<>() {
+          {
+            put("user", user);
+            put("urls", urlService.getAllShortenedUrls());
+          }
+        };
+    ctx.render("pages/urls.html", model);
+  }
+
+  /**
    * Handles GET requests to display the dashboard for a specific shortened URL.
    *
    * @param ctx The Javalin HTTP context.
