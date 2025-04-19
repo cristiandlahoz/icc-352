@@ -7,7 +7,7 @@
     </a>
     <form th:replace="~{components/urlshortened-prompt.html :: prompt}"></form>
 
-    <ul class="absolute right-[5%] flex items-start gap-x-4 min-w-fit">
+    <ul th:if="${user}" class="absolute right-[5%] flex items-start gap-x-4 min-w-fit">
       <li class="hidden lg:block">
         <img id="avatarButton" type="button" data-dropdown-toggle="userDropdown" data-dropdown-placement="bottom-start"
           class="p-1 transition rounded-full cursor-pointer size-12 ring-2 ring-btn-gray-border hover:ring-btn-blue"
