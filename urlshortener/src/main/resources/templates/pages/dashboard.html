@@ -64,7 +64,7 @@
                 <path d="M4 11l16 0" />
                 <path d="M8 15h2v2h-2z" />
               </svg>
-              <p class="text-white font-extralight" th:text="${url.createdAt}"></p>
+              <p class="text-white font-extralight" th:text="${#dates.format(url.createdAt, 'dd-MM-yyyy HH:mm')}"></p>
             </div>
             <div class="flex items-center justify-center gap-x-1 " th:unless="${url.isOffensive}">
               <p class="text-center text-green-600 min-w-14">Active</p>
