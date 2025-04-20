@@ -16,6 +16,7 @@ import org.wornux.urlshortener.dto.UrlUnknownDTO;
 import org.wornux.urlshortener.enums.Role;
 import org.wornux.urlshortener.enums.Routes;
 import org.wornux.urlshortener.enums.SessionKeys;
+import org.wornux.urlshortener.model.Url;
 import org.wornux.urlshortener.model.User;
 import org.wornux.urlshortener.service.UrlService;
 
@@ -122,6 +123,42 @@ public class UrlController {
           }
         };
     ctx.render("pages/analytics.html", model);
+  }
+
+  /**
+   * Handles toggleOffensiveUrl Requests
+   *
+   * @param ctx Javalin HTTP context
+   */
+  @GET(path = "/toggleOffensiveUrl/{hash}")
+  public void toggleOffensiveUrl(Context ctx) {
+    User user = ctx.sessionAttribute(SessionKeys.USER.getKey());
+    if (user == null) {
+      ctx.redirect(Routes.USER_LOGIN.getRoute());
+      return;
+    } else if (!user.getRole().equals(Role.ADMIN)) {
+      ctx.status(HttpStatus.FORBIDDEN.getCode());
+      return;
+    }
+    String hash = ctx.pathParam("hash");
+    if (hash.isEmpty() || hash == null) {
+      ctx.status(HttpStatus.NOT_FOUND.getCode()).redirect(Routes.URLS_LIST.getRoute());
+      return;
+    }
+
+    Optional<Url> url = urlService.getShortenedUrlByHash(hash);
+    url.ifPresentOrElse(
+        u -> {
+          if (u.isOffensive()) u.setOffensive(false);
+          else u.setOffensive(true);
+          urlService.update(u);
+          ctx.status(HttpStatus.OK.getCode()).redirect(Routes.URLS_LIST.getRoute());
+          return;
+        },
+        () -> {
+          ctx.status(HttpStatus.NOT_FOUND.getCode()).redirect(Routes.URLS_LIST.getRoute());
+          return;
+        });
   }
 
   /**
