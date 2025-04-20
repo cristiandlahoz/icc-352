@@ -47,7 +47,7 @@
             <td class="flex items-center justify-center px-4 py-2 gap-x-3 border-btn-gray-border"
               th:unless="${user.role.name() == 'ADMIN'}">
               <p class="text-center text-green-600 min-w-14">Normal</p>
-              <a th:href="'users/levelUserAlter/' + ${user.username}">
+              <a th:href="'users/toggleUserRole/' + ${user.username}">
                 <div
                   class="flex items-center justify-center hover:scale-125 transition rounded-full size-9 bg-green-600/30">
                   <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none"
@@ -63,7 +63,7 @@
             <td class="flex items-center justify-center py-2 text-center gap-x-3 border-btn-gray-border"
               th:if="${user.role.name() == 'ADMIN'}">
               <p class="text-center text-btn-blue min-w-14">Admin</p>
-              <a th:href="'users/levelUserAlter/' + ${user.username}">
+              <a th:href="'users/toggleUserRole/' + ${user.username}">
                 <div
                   class="flex items-center justify-center rounded-full hover:scale-125 transition size-9 bg-blue-600/30">
                   <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none"
