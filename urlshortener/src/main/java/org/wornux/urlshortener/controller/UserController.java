@@ -4,6 +4,7 @@ import io.javalin.http.Context;
 import io.javalin.http.HttpStatus;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Optional;
 import javax.annotation.Nonnull;
 import org.wornux.urlshortener.core.routing.annotations.CONTROLLER;
 import org.wornux.urlshortener.core.routing.annotations.GET;
@@ -45,5 +46,31 @@ public class UserController {
           }
         };
     ctx.render("pages/users.html", model);
+  }
+
+  @GET(path = "/toggleUserRole/{username}")
+  public void toggleUserRole(Context ctx) {
+    String username = ctx.pathParam("username");
+    User user = ctx.sessionAttribute(SessionKeys.USER.getKey());
+
+    if (user == null) {
+      ctx.status(HttpStatus.UNAUTHORIZED.getCode()).redirect(Routes.USER_LOGIN.getRoute());
+      return;
+    } else if (!user.getRole().equals(Role.ADMIN)) {
+      ctx.status(HttpStatus.FORBIDDEN.getCode());
+      return;
+    }
+    Optional<User> target = userService.getUserByUsername(username);
+    target.ifPresentOrElse(
+        u -> {
+          if (u.getRole().equals(Role.ADMIN)) u.setRole(Role.USER);
+          else u.setRole(Role.ADMIN);
+          userService.updateUser(u);
+          ctx.status(HttpStatus.OK.getCode()).redirect(Routes.USER_LIST.getRoute());
+        },
+        () -> {
+          ctx.status(HttpStatus.NOT_FOUND.getCode()).redirect(Routes.USER_LIST.getRoute());
+          return;
+        });
   }
 }
