@@ -3,6 +3,7 @@ const STATIC_ASSETS = [
     '/shortened',
     '/shortened/dashboard',
     '/js/indexDB.js',
+    '/js/offline.js',
     '/js/toggleSideMenu.js',
     '/js/toggleAvatarMenu.js',
     '/js/preview.js',
