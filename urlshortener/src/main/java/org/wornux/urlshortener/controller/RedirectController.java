@@ -1,6 +1,7 @@
 package org.wornux.urlshortener.controller;
 
 import io.javalin.http.Context;
+import io.javalin.http.HttpStatus;
 import java.util.Optional;
 import org.wornux.urlshortener.core.routing.annotations.CONTROLLER;
 import org.wornux.urlshortener.core.routing.annotations.GET;
@@ -35,8 +36,11 @@ public class RedirectController {
     String shortUrl = ctx.pathParam("shortUrl");
     Optional<Url> shortenedUrl = urlService.getShortenedUrlByHash(shortUrl);
     if (shortenedUrl.isPresent()) {
-      // Increment click count
-      // take metrics
+      if (shortenedUrl.get().isOffensive()) {
+        ctx.status(HttpStatus.NOT_FOUND.getCode());
+        return;
+      }
+
       String userAgent = ctx.userAgent();
       String ipAddress = ctx.ip();
       String browser = UserAgentParser.getBrowser(userAgent);
