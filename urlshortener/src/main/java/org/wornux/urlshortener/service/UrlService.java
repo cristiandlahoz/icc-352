@@ -224,4 +224,8 @@ public class UrlService {
       throw new IllegalArgumentException("Shortened URL not found");
     }
   }
+
+  public void update(@NotNull Url u) {
+    urlDAO.update(u);
+  }
 }
