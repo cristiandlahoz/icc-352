@@ -2,7 +2,6 @@ const CACHE_NAME = 'my-app-cache-v1';
 const STATIC_ASSETS = [
     '/shortened',
     '/shortened/dashboard',
-    '/js/offline.js',
     '/js/indexDB.js',
     '/js/toggleSideMenu.js',
     '/js/toggleAvatarMenu.js',
