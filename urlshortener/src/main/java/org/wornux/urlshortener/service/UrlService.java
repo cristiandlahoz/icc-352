@@ -1,10 +1,14 @@
 package org.wornux.urlshortener.service;
 
 import java.io.IOException;
+import java.text.SimpleDateFormat;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 import org.bson.types.ObjectId;
+import org.jetbrains.annotations.NotNull;
 import org.wornux.urlshortener.dao.AccessLogsDAO;
 import org.wornux.urlshortener.dao.LinkPreviewDAO;
 import org.wornux.urlshortener.dao.UrlDAO;
@@ -12,13 +16,14 @@ import org.wornux.urlshortener.dto.UrlCreatedDTO;
 import org.wornux.urlshortener.dto.UrlCreatedFullDTO;
 import org.wornux.urlshortener.dto.UrlDTO;
 import org.wornux.urlshortener.dto.UrlStatsDTO;
+import org.wornux.urlshortener.dto.UrlUnknownDTO;
 import org.wornux.urlshortener.model.AccessLog;
 import org.wornux.urlshortener.model.LinkPreview;
 import org.wornux.urlshortener.model.Url;
 import org.wornux.urlshortener.model.User;
+import org.wornux.urlshortener.util.LinkPreviewGenerator;
 import org.wornux.urlshortener.util.QRCodeGenerator;
 import org.wornux.urlshortener.util.UrlShortener;
-import org.wornux.urlshortener.util.WebPreviewUtil;
 
 public class UrlService {
   private final UrlDAO urlDAO;
@@ -39,6 +44,24 @@ public class UrlService {
     return urlDAO.findAll().stream().map(UrlCreatedDTO::new).toList();
   }
 
+  public List<UrlCreatedDTO> getShortenedUrlsByUser(User user) {
+    if (user == null) {
+      throw new IllegalArgumentException("User cannot be null");
+    }
+
+    return urlDAO.findByCreatedBy(user).stream()
+        .sorted((o1, o2) -> o2.getCreatedAt().compareTo(o1.getCreatedAt()))
+        .map(UrlCreatedDTO::new)
+        .toList();
+  }
+
+  public List<UrlCreatedDTO> getUrlsBySession(@NotNull String sessionId) {
+    return urlDAO.findBySession(sessionId).stream()
+        .sorted((o1, o2) -> o2.getCreatedAt().compareTo(o1.getCreatedAt()))
+        .map(UrlCreatedDTO::new)
+        .toList();
+  }
+
   public Optional<UrlCreatedDTO> getById(ObjectId id) {
     return urlDAO.findById(id).map(UrlCreatedDTO::new);
   }
@@ -53,6 +76,26 @@ public class UrlService {
       byte[] qrCode;
       qrCode = QRCodeGenerator.generateQRCode(originalUrl);
       Url url = new Url(originalUrl, shortUrl, urlDTO.createdBy(), qrCode);
+      urlDAO.save(url);
+    } catch (IOException e) {
+      throw new RuntimeException("Failed to generate QR code", e);
+    } catch (IllegalArgumentException e) {
+      throw new IllegalArgumentException("Invalid URL format", e);
+    } catch (Exception e) {
+      throw new RuntimeException("Failed to create shortened URL", e);
+    }
+  }
+
+  public void createShortenedUrl(UrlUnknownDTO urlDTO) {
+    if (urlDTO == null) {
+      throw new IllegalArgumentException("Shortened URL cannot be null");
+    }
+    try {
+      String originalUrl = urlDTO.originalUrl();
+      String shortUrl = UrlShortener.generateShortUrl();
+      byte[] qrCode;
+      qrCode = QRCodeGenerator.generateQRCode(originalUrl);
+      Url url = new Url(originalUrl, shortUrl, urlDTO.sessionId(), qrCode);
       urlDAO.save(url);
     } catch (IOException e) {
       throw new RuntimeException("Failed to generate QR code", e);
@@ -141,7 +184,7 @@ public class UrlService {
       urlDAO.save(url);
 
       // 4. Vista previa en base64
-      String previewBase64 = WebPreviewUtil.captureBase64Preview(urlDTO.originalUrl());
+      String previewBase64 = LinkPreviewGenerator.captureBase64Preview(urlDTO.originalUrl());
 
       // Crear entidad LinkPreview
       LinkPreview linkPreview = new LinkPreview(url, previewBase64);
@@ -175,5 +218,96 @@ public class UrlService {
     } catch (Exception e) {
       throw new RuntimeException("Error al crear URL completa", e);
     }
+  }
+
+  public void migrateSessionUrlsToUser(@NotNull String sessionId, @NotNull User user) {
+    urlDAO.migrateSessionUrlsToUser(sessionId, user);
+  }
+
+  public void update(@NotNull Url u) {
+    urlDAO.update(u);
+  }
+
+  public void deleteById(@NotNull ObjectId id) {
+    urlDAO.deleteById(id);
+  }
+
+  public void incrementUrlAccessCount(ObjectId id) {
+    Optional<Url> shortenedUrl = urlDAO.findById(id);
+    if (shortenedUrl.isPresent()) {
+      Url url = shortenedUrl.get();
+      url.setClickCount(url.getClickCount() + 1);
+      urlDAO.save(url);
+    } else {
+      throw new IllegalArgumentException("Shortened URL not found");
+    }
+  }
+
+  public Map<String, Integer> getAnaliticsByUser(@NotNull User user) {
+    List<Url> urls = urlDAO.findByCreatedBy(user);
+    Map<String, Integer> analytics = new HashMap<>();
+
+    for (Url url : urls) {
+      List<AccessLog> logs = accessLogsDAO.findByUrl(url);
+      for (AccessLog log : logs) {
+        Date date = log.getAccessedAt();
+        String formattedDate = new SimpleDateFormat("dd-mm-yyy HH a").format(date);
+        analytics.put(formattedDate, analytics.getOrDefault(formattedDate, 0) + 1);
+      }
+    }
+
+    return analytics;
+  }
+
+  public Map<String, Integer> getAnaliticsBySession(@NotNull String sessionId) {
+    List<Url> urls = urlDAO.findBySession(sessionId);
+    Map<String, Integer> analytics = new HashMap<>();
+
+    for (Url url : urls) {
+      List<AccessLog> logs = accessLogsDAO.findByUrl(url);
+      for (AccessLog log : logs) {
+        Date date = log.getAccessedAt();
+        String formattedDate = new SimpleDateFormat("dd-mm-yyy hh a").format(date);
+        analytics.put(formattedDate, analytics.getOrDefault(formattedDate, 0) + 1);
+      }
+    }
+
+    return analytics;
+  }
+
+  public Map<String, Integer> getAnaliticsBySessionAndHash(String sessionId, String hash) {
+    List<Url> urls = urlDAO.findBySession(sessionId);
+    Map<String, Integer> analytics = new HashMap<>();
+
+    for (Url url : urls) {
+      if (url.getShortenedUrl().equals(hash)) {
+        List<AccessLog> logs = accessLogsDAO.findByUrl(url);
+        for (AccessLog log : logs) {
+          Date date = log.getAccessedAt();
+          String formattedDate = new SimpleDateFormat("dd-mm-yyy hh a").format(date);
+          analytics.put(formattedDate, analytics.getOrDefault(formattedDate, 0) + 1);
+        }
+      }
+    }
+
+    return analytics;
+  }
+
+  public Map<String, Integer> getAnaliticsByUserAndHash(User user, String hash) {
+    List<Url> urls = urlDAO.findByCreatedBy(user);
+    Map<String, Integer> analytics = new HashMap<>();
+
+    for (Url url : urls) {
+      if (url.getShortenedUrl().equals(hash)) {
+        List<AccessLog> logs = accessLogsDAO.findByUrl(url);
+        for (AccessLog log : logs) {
+          Date date = log.getAccessedAt();
+          String formattedDate = new SimpleDateFormat("dd-mm-yyy hh a").format(date);
+          analytics.put(formattedDate, analytics.getOrDefault(formattedDate, 0) + 1);
+        }
+      }
+    }
+
+    return analytics;
   }
 }

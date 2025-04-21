@@ -60,6 +60,7 @@ public class AccessLogsService {
             .getShortenedUrlByHash(accessLogDTO.shortenedUrl())
             .orElseThrow(() -> new IllegalArgumentException("Shortened URL not found"));
 
+    urlService.incrementUrlAccessCount(url.getId());
     AccessLog accessLog =
         new AccessLog(url, accessLogDTO.browser(), accessLogDTO.ipAddress(), accessLogDTO.os());
     accessLogsDAO.save(accessLog);

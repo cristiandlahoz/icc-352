@@ -52,10 +52,6 @@ public class AuthController {
 
         System.out.println("✅ Usuario autenticado: " + user.getUsername());
 
-        /*JwtUtil jwtUtil = new JwtUtil();
-        String token = jwtUtil.generateToken(Map.of(), new Authentication(user.getUsername(), user.getPassword()));
-        */
-
         JwtUtil jwtUtil = new JwtUtil();
         String token =
             jwtUtil.generateToken(
