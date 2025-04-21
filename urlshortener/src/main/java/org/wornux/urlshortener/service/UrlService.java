@@ -2,6 +2,7 @@ package org.wornux.urlshortener.service;
 
 import java.io.IOException;
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
@@ -12,9 +13,11 @@ import org.jetbrains.annotations.NotNull;
 import org.wornux.urlshortener.dao.AccessLogsDAO;
 import org.wornux.urlshortener.dao.LinkPreviewDAO;
 import org.wornux.urlshortener.dao.UrlDAO;
+import org.wornux.urlshortener.dto.AnalyticsDTO;
 import org.wornux.urlshortener.dto.UrlCreatedDTO;
 import org.wornux.urlshortener.dto.UrlCreatedFullDTO;
 import org.wornux.urlshortener.dto.UrlDTO;
+import org.wornux.urlshortener.dto.UrlResponseDTO;
 import org.wornux.urlshortener.dto.UrlStatsDTO;
 import org.wornux.urlshortener.dto.UrlUnknownDTO;
 import org.wornux.urlshortener.model.AccessLog;
@@ -137,34 +140,34 @@ public class UrlService {
     }
   }
 
-  public List<UrlStatsDTO> getUrlsByUser(User user) {
-    if (user == null) throw new IllegalArgumentException("User cannot be null");
+  public List<UrlResponseDTO> getUrlsByUser(User user) {
+    if (user == null) {}
 
-    return urlDAO.findByCreatedBy(user).stream()
-        .map(
-            url -> {
-              List<AccessLog> logs = accessLogsDAO.findByUrl(url);
-              int totalAccesses = logs.size();
-              int uniqueVisitors =
-                  (int) logs.stream().map(AccessLog::getIpAddress).distinct().count();
-              Date lastAccess =
-                  logs.stream().map(AccessLog::getAccessedAt).max(Date::compareTo).orElse(null);
-              List<String> userAgents = logs.stream().map(AccessLog::getBrowser).toList();
-              List<String> operatingSystems = logs.stream().map(AccessLog::getOs).toList();
+    List<Url> urls = urlDAO.findByCreatedBy(user);
+    List<UrlResponseDTO> urlResponseDTOs = new ArrayList<>();
+    for (Url url : urls) {
+      List<AccessLog> logs = accessLogsDAO.findByUrl(url);
+      List<AnalyticsDTO> analytics =
+          logs.stream()
+              .map(
+                  log ->
+                      new AnalyticsDTO(
+                          new SimpleDateFormat("dd-MM-yyyy HH:mm:ss").format(log.getAccessedAt()),
+                          log.getBrowser(),
+                          log.getIpAddress(),
+                          log.getOs()))
+              .toList();
+      UrlResponseDTO urlResponseDTO =
+          new UrlResponseDTO(
+              url.getOriginalUrl(),
+              url.getShortenedUrl(),
+              url.getCreatedBy().getUsername(),
+              new SimpleDateFormat("dd-MM-yyyy HH:mm:ss").format(url.getCreatedAt()),
+              analytics);
+      urlResponseDTOs.add(urlResponseDTO);
+    }
 
-              return new UrlStatsDTO(
-                  url.getId(),
-                  url.getOriginalUrl(),
-                  url.getShortenedUrl(),
-                  url.getCreatedAt(),
-                  url.getClickCount(),
-                  totalAccesses,
-                  uniqueVisitors,
-                  lastAccess,
-                  userAgents,
-                  operatingSystems);
-            })
-        .toList();
+    return urlResponseDTOs;
   }
 
   public UrlCreatedFullDTO createFullUrlRecord(UrlDTO urlDTO) {
