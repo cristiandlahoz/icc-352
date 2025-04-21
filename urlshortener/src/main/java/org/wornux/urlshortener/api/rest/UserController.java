@@ -17,11 +17,11 @@ public class UserController {
   private final UserService userService;
 
   public void applyRoutes(JavalinDefaultRouting router) {
-    router.get("/users/", this::getAllUsers, Role.USER_READ);
-    router.post("/users/", this::createUser, Role.USER_WRITE);
-    router.get("/users/{userId}", this::getUser, Role.USER_READ);
-    router.put("/users/{userId}", this::updateUser, Role.USER_WRITE);
-    router.delete("/users/{userId}", this::deleteUser, Role.ADMIN);
+    router.get("/users/", this::getAllUsers, Role.ADMIN, Role.USER_READ);
+    router.post("/users/", this::createUser, Role.ADMIN, Role.USER_WRITE);
+    router.get("/users/{userId}", this::getUser, Role.ADMIN, Role.USER_READ);
+    router.put("/users/{userId}", this::updateUser, Role.ADMIN, Role.USER_WRITE);
+    router.delete("/users/{userId}", this::deleteUser, Role.ADMIN, Role.ADMIN);
   }
 
   // GET /users/ --> Lista todos los usuarios

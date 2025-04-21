@@ -21,8 +21,8 @@ public class UrlController {
   private final UserService userService;
 
   public void applyRoutes(JavalinDefaultRouting router) {
-    router.get("/users/{userId}/urls", this::getUrlsByUser, Role.USER);
-    router.post("/urls/full", this::createFullUrlRecord, Role.USER);
+    router.get("/users/{userId}/urls", this::getUrlsByUser, Role.ADMIN, Role.USER);
+    router.post("/urls/full", this::createFullUrlRecord, Role.ADMIN, Role.USER);
   }
 
   public void getUrlsByUser(@Nonnull Context ctx) {
