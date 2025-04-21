@@ -126,6 +126,23 @@ public class UrlController {
   }
 
   /**
+   * Handles GET requests to render analytics page for a specific shortened URL by its hash.
+   *
+   * @param ctx The Javalin HTTP context
+   */
+  @GET(path = "/analytics/{hash}")
+  public void analyticsByHash(Context ctx) {
+    String hash = ctx.pathParam("hash");
+    Map<String, Object> model =
+        new HashMap<>() {
+          {
+            put("hash", hash);
+          }
+        };
+    ctx.render("pages/analytics.html", model);
+  }
+
+  /**
    * Handles toggleOffensiveUrl Requests
    *
    * @param ctx Javalin HTTP context
@@ -162,6 +179,41 @@ public class UrlController {
   }
 
   /**
+   * Handles GET requests to retrieve analytics data for a specific user.
+   *
+   * @param ctx The Javalin HTTP context.
+   */
+  @GET(path = "/analytics_data/")
+  public void getAnalyticsData(Context ctx) {
+    User user = ctx.sessionAttribute(SessionKeys.USER.getKey());
+    String sessionId = ctx.req().getSession().getId();
+
+    if (user == null) {
+      ctx.status(HttpStatus.OK.getCode()).json(urlService.getAnaliticsBySession(sessionId));
+      return;
+    }
+    ctx.status(HttpStatus.OK.getCode()).json(urlService.getAnaliticsByUser(user));
+  }
+
+  /**
+   * Handles GET requests to retrieve analytics data for a specific shortened URL by its hash.
+   *
+   * @param ctx The Javalin HTTP context.
+   */
+  @GET(path = "/analytics_data/{hash}")
+  public void getAnalyticsDataByHash(Context ctx) {
+    User user = ctx.sessionAttribute(SessionKeys.USER.getKey());
+    String sessionId = ctx.req().getSession().getId();
+    String hash = ctx.pathParam("hash");
+    if (user == null) {
+      ctx.status(HttpStatus.OK.getCode())
+          .json(urlService.getAnaliticsBySessionAndHash(sessionId, hash));
+      return;
+    }
+    ctx.status(HttpStatus.OK.getCode()).json(urlService.getAnaliticsByUserAndHash(user, hash));
+  }
+
+  /**
    * Handles POST requests to create a new shortened URL.
    *
    * @param ctx The Javalin HTTP context.
@@ -184,15 +236,15 @@ public class UrlController {
   }
 
   /**
-   * Handles POST requests to delete a specific shortened URL.
+   * Handles GET requests to delete a specific shortened URL.
    *
    * @param ctx The Javalin HTTP context.
    */
-  @POST(path = "/{id}/delete")
+  @GET(path = "/{id}/delete")
   public void deleteShortenedUrl(Context ctx) {
     String id = ctx.pathParam("id");
     urlService.deleteShortenedUrl(new ObjectId(id));
-    ctx.redirect("/shortened/");
+    ctx.redirect("/shortened/dashboard");
   }
 
   /**
