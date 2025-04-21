@@ -73,4 +73,35 @@ public class UserController {
           return;
         });
   }
+
+  @GET(path = "/toggleUserStatus/{username}")
+  public void toggleUserStatus(Context ctx) {
+    String username = ctx.pathParam("username");
+    User user = ctx.sessionAttribute(SessionKeys.USER.getKey());
+
+    if (user == null) {
+      ctx.status(HttpStatus.UNAUTHORIZED.getCode()).redirect(Routes.USER_LOGIN.getRoute());
+      return;
+    } else if (!user.getRole().equals(Role.ADMIN)) {
+      ctx.status(HttpStatus.FORBIDDEN.getCode());
+      return;
+    }
+    Optional<User> target = userService.getUserByUsername(username);
+    target.ifPresentOrElse(
+        u -> {
+          if (u.isDeleted()) u.setDeleted(false);
+          else u.setDeleted(true);
+
+          if (u.getUsername().equals("admin")) {
+            ctx.status(HttpStatus.FORBIDDEN.getCode());
+            return;
+          }
+          userService.updateUser(u);
+          ctx.status(HttpStatus.OK.getCode()).redirect(Routes.USER_LIST.getRoute());
+        },
+        () -> {
+          ctx.status(HttpStatus.NOT_FOUND.getCode()).redirect(Routes.USER_LIST.getRoute());
+          return;
+        });
+  }
 }
