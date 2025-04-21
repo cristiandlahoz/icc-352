@@ -228,4 +228,8 @@ public class UrlService {
   public void update(@NotNull Url u) {
     urlDAO.update(u);
   }
+
+  public void deleteById(@NotNull ObjectId id) {
+    urlDAO.deleteById(id);
+  }
 }
