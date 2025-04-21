@@ -87,7 +87,7 @@
             <td class="px-4 py-2 border-btn-gray-border" th:if="${user.isDeleted}">
               <div class="flex justify-center items-center gap-x-3">
                 <p class="text-center text-yellow-600 min-w-14">Inactive</p>
-                <a th:href="'users/userAlter/' + ${user.username}">
+                <a th:href="'users/toggleUserStatus/' + ${user.username}">
                   <div
                     class="flex items-center justify-center hover:scale-125 transition rounded-full size-9 bg-yellow-600/30">
                     <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none"
@@ -106,7 +106,7 @@
             <td class="py-2 text-center border-btn-gray-border" th:unless="${user.isDeleted}">
               <div class="flex justify-center items-center gap-x-3">
                 <p class="text-center text-green-600 min-w-14">Active</p>
-                <a th:href="'users/userAlter/' + ${user.username}">
+                <a th:href="'users/toggleUserStatus/' + ${user.username}">
                   <div
                     class="flex items-center justify-center rounded-full hover:scale-125 transition size-9 bg-green-600/30">
                     <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none"
