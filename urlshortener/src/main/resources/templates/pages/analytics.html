@@ -18,7 +18,7 @@
     content="Wornux is an efficient and easy-to-use URL shortening service that streamlines your online experience.">
 </head>
 
-<body>
+<body th:attr="data-hash=${hash}">
   <nav th:replace="~{components/navbar.html :: navbar}"></nav>
   <header th:replace="~{components/header.html :: header}"></header>
   <main>
