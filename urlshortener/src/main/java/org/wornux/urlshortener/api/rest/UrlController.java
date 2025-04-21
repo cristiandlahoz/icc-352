@@ -22,7 +22,7 @@ public class UrlController {
 
   public void applyRoutes(JavalinDefaultRouting router) {
     router.get("/users/{userId}/urls", this::getUrlsByUser, Role.ADMIN, Role.USER);
-    router.post("/urls/full", this::createFullUrlRecord, Role.ADMIN, Role.USER);
+    router.post("/urls/", this::createFullUrlRecord, Role.ADMIN, Role.USER);
   }
 
   public void getUrlsByUser(@Nonnull Context ctx) {

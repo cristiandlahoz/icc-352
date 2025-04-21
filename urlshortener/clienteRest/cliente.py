@@ -8,7 +8,7 @@ import jwt
 PORT = int(os.getenv("PORT_REST", 7000))
 BASE_URL = f"http://localhost:{PORT}"
 LOGIN_URL = f"{BASE_URL}/auth/login"
-FULL_URLS_ENDPOINT = f"{BASE_URL}/urls/full"
+FULL_URLS_ENDPOINT = f"{BASE_URL}/urls"
 USER_URLS_ENDPOINT = f"{BASE_URL}/users/{{user_id}}/urls"
 
 # Colores
@@ -47,10 +47,9 @@ def login():
 
 def crear_url():
     original = input(" Ingresa la URL a acortar: ")
-    payload = json.dumps({
-        "originalUrl": original,
-        "createdBy": {"id": user_id}
-    }).encode()
+    payload = json.dumps(
+        {"originalUrl": original, "createdBy": {"id": user_id}}
+    ).encode()
 
     try:
         req = urllib.request.Request(FULL_URLS_ENDPOINT, data=payload, method="POST")
