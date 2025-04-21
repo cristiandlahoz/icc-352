@@ -3,7 +3,6 @@ package org.wornux.urlshortener.dao;
 import dev.morphia.Datastore;
 import dev.morphia.query.filters.Filters;
 import dev.morphia.query.updates.UpdateOperators;
-import java.util.Collection;
 import java.util.List;
 import java.util.Optional;
 import org.bson.types.ObjectId;
@@ -35,7 +34,7 @@ public class UrlDAO extends BaseDAO<Url, ObjectId> {
         .execute();
   }
 
-  public Collection<Url> findBySession(@NotNull String sessionId) {
+  public List<Url> findBySession(@NotNull String sessionId) {
     return datastore.find(Url.class).filter(Filters.eq("sessionId", sessionId)).iterator().toList();
   }
 }
