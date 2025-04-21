@@ -427,58 +427,24 @@
 
 <!-- Scripts de lógica base primero -->
 <script th:src="@{/js/preview.js}"></script>
-<script src="/js/indexDB.js"></script>
-<script src="/js/offline.js"></script>
 
-<!-- Service Worker -->
+<!--<script>
+  if ('serviceWorker' in navigator) {
+    navigator.serviceWorker.register('/sw.js')
+            .then((reg) => console.log('Service Worker Registered!', reg))
+            .catch((err) => console.error('Service Worker registration failed:', err));
+  }
+</script>-->
+
 <script>
   if ('serviceWorker' in navigator) {
     navigator.serviceWorker.register('/sw.js')
             .then((reg) => console.log('Service Worker Registered!', reg))
             .catch((err) => console.error('Service Worker registration failed:', err));
   }
-
-  document.addEventListener('DOMContentLoaded', async () => {
-    if (!navigator.onLine) {
-      console.log('🔴 Sin conexión: cargando URLs desde IndexedDB');
-      await loadUrls();
-    }
-  });
 </script>
 
-<!-- Script para interceptar el submit y recargar las URLs sin reload -->
-<script>
-  document.addEventListener('DOMContentLoaded', () => {
-    const form = document.querySelector('form[action="/shortened/create"]');
-    if (form) {
-      form.addEventListener('submit', async (event) => {
-        event.preventDefault(); // Evitar que recargue toda la página
 
-        const formData = new FormData(form);
-        const url = formData.get('url');
-
-        if (!url) return;
-
-        try {
-          const response = await fetch('/shortened/create', {
-            method: 'POST',
-            body: formData,
-          });
-
-          if (response.ok) {
-            console.log('✅ URL creada exitosamente');
-            await loadUrls(); // 🔥 Volver a cargar la lista de URLs sin refrescar
-            form.reset();      // Limpiar input
-          } else {
-            console.error('Error al crear URL:', response.status);
-          }
-        } catch (err) {
-          console.error('Error de red:', err);
-        }
-      });
-    }
-  });
-</script>
 
 </html>
 
