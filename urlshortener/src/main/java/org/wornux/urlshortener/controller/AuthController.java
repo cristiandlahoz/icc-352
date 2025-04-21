@@ -57,9 +57,13 @@ public class AuthController {
         .authenticate(username, password)
         .ifPresentOrElse(
             user -> {
-              ctx.sessionAttribute(SessionKeys.USER.getKey(), user);
-              urlService.migrateSessionUrlsToUser(ctx.req().getSession().getId(), user);
-              ctx.redirect(Routes.HOME.getRoute());
+              if (!user.isDeleted()) {
+                ctx.sessionAttribute(SessionKeys.USER.getKey(), user);
+                urlService.migrateSessionUrlsToUser(ctx.req().getSession().getId(), user);
+                ctx.redirect(Routes.HOME.getRoute());
+                return;
+              }
+              ctx.redirect(Routes.USER_LOGIN.getRoute());
             },
             () -> {
               System.out.println("❌ Error: Usuario no autenticado.");

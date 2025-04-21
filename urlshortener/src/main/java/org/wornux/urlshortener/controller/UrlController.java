@@ -1,6 +1,7 @@
 package org.wornux.urlshortener.controller;
 
 import io.javalin.http.Context;
+import io.javalin.http.HttpStatus;
 import java.util.Base64;
 import java.util.HashMap;
 import java.util.Map;
@@ -13,7 +14,9 @@ import org.wornux.urlshortener.dto.UrlCreatedDTO;
 import org.wornux.urlshortener.dto.UrlDTO;
 import org.wornux.urlshortener.dto.UrlUnknownDTO;
 import org.wornux.urlshortener.enums.Role;
+import org.wornux.urlshortener.enums.Routes;
 import org.wornux.urlshortener.enums.SessionKeys;
+import org.wornux.urlshortener.model.Url;
 import org.wornux.urlshortener.model.User;
 import org.wornux.urlshortener.service.UrlService;
 
@@ -54,6 +57,31 @@ public class UrlController {
   }
 
   /**
+   * handles get all urls requests for admins
+   *
+   * @param ctx Javalin HTTP context
+   */
+  @GET(path = "/urls")
+  public void getAllUrls(Context ctx) {
+    User user = ctx.sessionAttribute(SessionKeys.USER.getKey());
+    if (user == null) {
+      ctx.redirect(Routes.USER_LOGIN.getRoute());
+      return;
+    } else if (!user.getRole().equals(Role.ADMIN)) {
+      ctx.status(HttpStatus.FORBIDDEN.getCode());
+      return;
+    }
+    Map<String, Object> model =
+        new HashMap<>() {
+          {
+            put("user", user);
+            put("urls", urlService.getAllShortenedUrls());
+          }
+        };
+    ctx.render("pages/urls.html", model);
+  }
+
+  /**
    * Handles GET requests to display the dashboard for a specific shortened URL.
    *
    * @param ctx The Javalin HTTP context.
@@ -73,6 +101,116 @@ public class UrlController {
           }
         };
     ctx.render("pages/dashboard.html", model);
+  }
+
+  /**
+   * Handles GET requests to render analytics page
+   *
+   * @param ctx The Javalin HTTP context
+   */
+  @GET(path = "/analytics")
+  public void analytics(Context ctx) {
+    User user = ctx.sessionAttribute(SessionKeys.USER.getKey());
+    String sessionId = ctx.req().getSession().getId();
+
+    Map<String, Object> model =
+        new HashMap<>() {
+          {
+            put("user", user);
+            if (user != null) {
+              put("urls", urlService.getShortenedUrlsByUser(user));
+            } else put("urls", urlService.getUrlsBySession(sessionId));
+          }
+        };
+    ctx.render("pages/analytics.html", model);
+  }
+
+  /**
+   * Handles GET requests to render analytics page for a specific shortened URL by its hash.
+   *
+   * @param ctx The Javalin HTTP context
+   */
+  @GET(path = "/analytics/{hash}")
+  public void analyticsByHash(Context ctx) {
+    String hash = ctx.pathParam("hash");
+    Map<String, Object> model =
+        new HashMap<>() {
+          {
+            put("hash", hash);
+          }
+        };
+    ctx.render("pages/analytics.html", model);
+  }
+
+  /**
+   * Handles toggleOffensiveUrl Requests
+   *
+   * @param ctx Javalin HTTP context
+   */
+  @GET(path = "/toggleOffensiveUrl/{hash}")
+  public void toggleOffensiveUrl(Context ctx) {
+    User user = ctx.sessionAttribute(SessionKeys.USER.getKey());
+    if (user == null) {
+      ctx.redirect(Routes.USER_LOGIN.getRoute());
+      return;
+    } else if (!user.getRole().equals(Role.ADMIN)) {
+      ctx.status(HttpStatus.FORBIDDEN.getCode());
+      return;
+    }
+    String hash = ctx.pathParam("hash");
+    if (hash.isEmpty() || hash == null) {
+      ctx.status(HttpStatus.NOT_FOUND.getCode()).redirect(Routes.URLS_LIST.getRoute());
+      return;
+    }
+
+    Optional<Url> url = urlService.getShortenedUrlByHash(hash);
+    url.ifPresentOrElse(
+        u -> {
+          if (u.isOffensive()) u.setOffensive(false);
+          else u.setOffensive(true);
+          urlService.update(u);
+          ctx.status(HttpStatus.OK.getCode()).redirect(Routes.URLS_LIST.getRoute());
+          return;
+        },
+        () -> {
+          ctx.status(HttpStatus.NOT_FOUND.getCode()).redirect(Routes.URLS_LIST.getRoute());
+          return;
+        });
+  }
+
+  /**
+   * Handles GET requests to retrieve analytics data for a specific user.
+   *
+   * @param ctx The Javalin HTTP context.
+   */
+  @GET(path = "/analytics_data/")
+  public void getAnalyticsData(Context ctx) {
+    User user = ctx.sessionAttribute(SessionKeys.USER.getKey());
+    String sessionId = ctx.req().getSession().getId();
+
+    if (user == null) {
+      ctx.status(HttpStatus.OK.getCode()).json(urlService.getAnaliticsBySession(sessionId));
+      return;
+    }
+    ctx.status(HttpStatus.OK.getCode()).json(urlService.getAnaliticsByUser(user));
+  }
+
+  /**
+   * Handles GET requests to retrieve analytics data for a specific shortened URL by its hash.
+   *
+   * @param ctx The Javalin HTTP context.
+   */
+  @GET(path = "/analytics_data/{hash}")
+  public void getAnalyticsDataByHash(Context ctx) {
+    User user = ctx.sessionAttribute(SessionKeys.USER.getKey());
+    String sessionId = ctx.req().getSession().getId();
+    String hash = ctx.pathParam("hash");
+    if (user == null) {
+      ctx.status(HttpStatus.OK.getCode())
+          .json(urlService.getAnaliticsBySessionAndHash(sessionId, hash));
+      return;
+    }
+    ctx.status(HttpStatus.OK.getCode()).json(urlService.getAnaliticsByUserAndHash(user, hash));
   }
 
   /**
@@ -98,15 +236,15 @@ public class UrlController {
   }
 
   /**
-   * Handles POST requests to delete a specific shortened URL.
+   * Handles GET requests to delete a specific shortened URL.
    *
    * @param ctx The Javalin HTTP context.
    */
-  @POST(path = "/{id}/delete")
+  @GET(path = "/{id}/delete")
   public void deleteShortenedUrl(Context ctx) {
     String id = ctx.pathParam("id");
     urlService.deleteShortenedUrl(new ObjectId(id));
-    ctx.redirect("/shortened/");
+    ctx.redirect("/shortened/dashboard");
   }
 
   /**

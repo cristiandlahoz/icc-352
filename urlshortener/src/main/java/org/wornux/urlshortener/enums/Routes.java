@@ -11,7 +11,8 @@ public enum Routes {
   USER_DELETE("/users/{id}/delete"),
   // Redirect routes
   REDIRECT("/r/{id}"),
-  HOME("/shortened");
+  HOME("/shortened"),
+  URLS_LIST("/shortened/urls");
   // statics
 
   private final String route;

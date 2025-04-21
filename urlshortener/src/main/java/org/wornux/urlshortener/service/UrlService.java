@@ -1,8 +1,11 @@
 package org.wornux.urlshortener.service;
 
 import java.io.IOException;
+import java.text.SimpleDateFormat;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 import org.bson.types.ObjectId;
 import org.jetbrains.annotations.NotNull;
@@ -45,7 +48,18 @@ public class UrlService {
     if (user == null) {
       throw new IllegalArgumentException("User cannot be null");
     }
-    return urlDAO.findByCreatedBy(user).stream().map(UrlCreatedDTO::new).toList();
+
+    return urlDAO.findByCreatedBy(user).stream()
+        .sorted((o1, o2) -> o2.getCreatedAt().compareTo(o1.getCreatedAt()))
+        .map(UrlCreatedDTO::new)
+        .toList();
+  }
+
+  public List<UrlCreatedDTO> getUrlsBySession(@NotNull String sessionId) {
+    return urlDAO.findBySession(sessionId).stream()
+        .sorted((o1, o2) -> o2.getCreatedAt().compareTo(o1.getCreatedAt()))
+        .map(UrlCreatedDTO::new)
+        .toList();
   }
 
   public Optional<UrlCreatedDTO> getById(ObjectId id) {
@@ -206,12 +220,16 @@ public class UrlService {
     }
   }
 
-  public List<UrlCreatedDTO> getUrlsBySession(@NotNull String sessionId) {
-    return urlDAO.findBySession(sessionId).stream().map(UrlCreatedDTO::new).toList();
-  }
-
   public void migrateSessionUrlsToUser(@NotNull String sessionId, @NotNull User user) {
     urlDAO.migrateSessionUrlsToUser(sessionId, user);
+  }
+
+  public void update(@NotNull Url u) {
+    urlDAO.update(u);
+  }
+
+  public void deleteById(@NotNull ObjectId id) {
+    urlDAO.deleteById(id);
   }
 
   public void incrementUrlAccessCount(ObjectId id) {
@@ -223,5 +241,73 @@ public class UrlService {
     } else {
       throw new IllegalArgumentException("Shortened URL not found");
     }
+  }
+
+  public Map<String, Integer> getAnaliticsByUser(@NotNull User user) {
+    List<Url> urls = urlDAO.findByCreatedBy(user);
+    Map<String, Integer> analytics = new HashMap<>();
+
+    for (Url url : urls) {
+      List<AccessLog> logs = accessLogsDAO.findByUrl(url);
+      for (AccessLog log : logs) {
+        Date date = log.getAccessedAt();
+        String formattedDate = new SimpleDateFormat("dd-mm-yyy HH a").format(date);
+        analytics.put(formattedDate, analytics.getOrDefault(formattedDate, 0) + 1);
+      }
+    }
+
+    return analytics;
+  }
+
+  public Map<String, Integer> getAnaliticsBySession(@NotNull String sessionId) {
+    List<Url> urls = urlDAO.findBySession(sessionId);
+    Map<String, Integer> analytics = new HashMap<>();
+
+    for (Url url : urls) {
+      List<AccessLog> logs = accessLogsDAO.findByUrl(url);
+      for (AccessLog log : logs) {
+        Date date = log.getAccessedAt();
+        String formattedDate = new SimpleDateFormat("dd-mm-yyy hh a").format(date);
+        analytics.put(formattedDate, analytics.getOrDefault(formattedDate, 0) + 1);
+      }
+    }
+
+    return analytics;
+  }
+
+  public Map<String, Integer> getAnaliticsBySessionAndHash(String sessionId, String hash) {
+    List<Url> urls = urlDAO.findBySession(sessionId);
+    Map<String, Integer> analytics = new HashMap<>();
+
+    for (Url url : urls) {
+      if (url.getShortenedUrl().equals(hash)) {
+        List<AccessLog> logs = accessLogsDAO.findByUrl(url);
+        for (AccessLog log : logs) {
+          Date date = log.getAccessedAt();
+          String formattedDate = new SimpleDateFormat("dd-mm-yyy hh a").format(date);
+          analytics.put(formattedDate, analytics.getOrDefault(formattedDate, 0) + 1);
+        }
+      }
+    }
+
+    return analytics;
+  }
+
+  public Map<String, Integer> getAnaliticsByUserAndHash(User user, String hash) {
+    List<Url> urls = urlDAO.findByCreatedBy(user);
+    Map<String, Integer> analytics = new HashMap<>();
+
+    for (Url url : urls) {
+      if (url.getShortenedUrl().equals(hash)) {
+        List<AccessLog> logs = accessLogsDAO.findByUrl(url);
+        for (AccessLog log : logs) {
+          Date date = log.getAccessedAt();
+          String formattedDate = new SimpleDateFormat("dd-mm-yyy hh a").format(date);
+          analytics.put(formattedDate, analytics.getOrDefault(formattedDate, 0) + 1);
+        }
+      }
+    }
+
+    return analytics;
   }
 }
