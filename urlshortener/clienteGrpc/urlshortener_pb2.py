@@ -22,10 +22,9 @@ _runtime_version.ValidateProtobufRuntimeVersion(
 _sym_db = _symbol_database.Default()
 
 
-from google.protobuf import timestamp_pb2 as google_dot_protobuf_dot_timestamp__pb2
 
 
-DESCRIPTOR = _descriptor_pool.Default().AddSerializedFile(b'\n\x12urlshortener.proto\x1a\x1fgoogle/protobuf/timestamp.proto\"&\n\x13ListUserUrlsRequest\x12\x0f\n\x07user_id\x18\x01 \x01(\t\"\xe6\x01\n\x14ListUserUrlsResponse\x12\x34\n\tuser_urls\x18\x01 \x03(\x0b\x32!.ListUserUrlsResponse.UserUrlData\x1a\x97\x01\n\x0bUserUrlData\x12\x14\n\x0coriginal_url\x18\x01 \x01(\t\x12\x11\n\tshort_url\x18\x02 \x01(\t\x12\x31\n\rcreation_date\x18\x03 \x01(\x0b\x32\x1a.google.protobuf.Timestamp\x12\x18\n\x05stats\x18\x04 \x01(\x0b\x32\t.UrlStats\x12\x12\n\nsite_image\x18\x05 \x01(\t\"9\n\x10\x43reateUrlRequest\x12\x0f\n\x07user_id\x18\x01 \x01(\t\x12\x14\n\x0coriginal_url\x18\x02 \x01(\t\"\x9d\x01\n\x11\x43reateUrlResponse\x12\x14\n\x0coriginal_url\x18\x01 \x01(\t\x12\x11\n\tshort_url\x18\x02 \x01(\t\x12\x31\n\rcreation_date\x18\x03 \x01(\x0b\x32\x1a.google.protobuf.Timestamp\x12\x18\n\x05stats\x18\x04 \x01(\x0b\x32\t.UrlStats\x12\x12\n\nsite_image\x18\x05 \x01(\t\"3\n\x08UrlStats\x12\x0e\n\x06\x63licks\x18\x01 \x01(\x05\x12\x17\n\x0funique_visitors\x18\x02 \x01(\x05\x32\x86\x01\n\x13UrlShortenerService\x12;\n\x0cListUserUrls\x12\x14.ListUserUrlsRequest\x1a\x15.ListUserUrlsResponse\x12\x32\n\tCreateUrl\x12\x11.CreateUrlRequest\x1a\x12.CreateUrlResponseB:\n#org.wornux.urlshortener.api.grpc.v1B\x11UrlShortenerProtoP\x01\x62\x06proto3')
+DESCRIPTOR = _descriptor_pool.Default().AddSerializedFile(b'\n\x12urlshortener.proto\x12#org.wornux.urlshortener.api.grpc.v1\"&\n\x13ListUserUrlsRequest\x12\x0f\n\x07user_id\x18\x01 \x01(\t\"9\n\x10\x43reateUrlRequest\x12\x0f\n\x07user_id\x18\x01 \x01(\t\x12\x14\n\x0coriginal_url\x18\x02 \x01(\t\"R\n\x14ListUserUrlsResponse\x12:\n\x04urls\x18\x01 \x03(\x0b\x32,.org.wornux.urlshortener.api.grpc.v1.UrlData\"N\n\x11\x43reateUrlResponse\x12\x39\n\x03url\x18\x01 \x01(\x0b\x32,.org.wornux.urlshortener.api.grpc.v1.UrlData\"\xa1\x01\n\x07UrlData\x12\x14\n\x0coriginal_url\x18\x01 \x01(\t\x12\x15\n\rshortened_url\x18\x02 \x01(\t\x12\x12\n\ncreated_by\x18\x03 \x01(\t\x12\x12\n\ncreated_at\x18\x04 \x01(\t\x12\x41\n\tanalytics\x18\x05 \x03(\x0b\x32..org.wornux.urlshortener.api.grpc.v1.Analytics\"P\n\tAnalytics\x12\x13\n\x0b\x61\x63\x63\x65ss_date\x18\x01 \x01(\t\x12\x0f\n\x07\x62rowser\x18\x02 \x01(\t\x12\x11\n\tip_adress\x18\x03 \x01(\t\x12\n\n\x02os\x18\x04 \x01(\t2\x97\x02\n\x13UrlShortenerService\x12\x83\x01\n\x0cListUserUrls\x12\x38.org.wornux.urlshortener.api.grpc.v1.ListUserUrlsRequest\x1a\x39.org.wornux.urlshortener.api.grpc.v1.ListUserUrlsResponse\x12z\n\tCreateUrl\x12\x35.org.wornux.urlshortener.api.grpc.v1.CreateUrlRequest\x1a\x36.org.wornux.urlshortener.api.grpc.v1.CreateUrlResponseB:\n#org.wornux.urlshortener.api.grpc.v1B\x11UrlShortenerProtoP\x01\x62\x06proto3')
 
 _globals = globals()
 _builder.BuildMessageAndEnumDescriptors(DESCRIPTOR, _globals)
@@ -33,18 +32,18 @@ _builder.BuildTopDescriptorsAndMessages(DESCRIPTOR, 'urlshortener_pb2', _globals
 if not _descriptor._USE_C_DESCRIPTORS:
   _globals['DESCRIPTOR']._loaded_options = None
   _globals['DESCRIPTOR']._serialized_options = b'\n#org.wornux.urlshortener.api.grpc.v1B\021UrlShortenerProtoP\001'
-  _globals['_LISTUSERURLSREQUEST']._serialized_start=55
-  _globals['_LISTUSERURLSREQUEST']._serialized_end=93
-  _globals['_LISTUSERURLSRESPONSE']._serialized_start=96
-  _globals['_LISTUSERURLSRESPONSE']._serialized_end=326
-  _globals['_LISTUSERURLSRESPONSE_USERURLDATA']._serialized_start=175
-  _globals['_LISTUSERURLSRESPONSE_USERURLDATA']._serialized_end=326
-  _globals['_CREATEURLREQUEST']._serialized_start=328
-  _globals['_CREATEURLREQUEST']._serialized_end=385
-  _globals['_CREATEURLRESPONSE']._serialized_start=388
-  _globals['_CREATEURLRESPONSE']._serialized_end=545
-  _globals['_URLSTATS']._serialized_start=547
-  _globals['_URLSTATS']._serialized_end=598
-  _globals['_URLSHORTENERSERVICE']._serialized_start=601
-  _globals['_URLSHORTENERSERVICE']._serialized_end=735
+  _globals['_LISTUSERURLSREQUEST']._serialized_start=59
+  _globals['_LISTUSERURLSREQUEST']._serialized_end=97
+  _globals['_CREATEURLREQUEST']._serialized_start=99
+  _globals['_CREATEURLREQUEST']._serialized_end=156
+  _globals['_LISTUSERURLSRESPONSE']._serialized_start=158
+  _globals['_LISTUSERURLSRESPONSE']._serialized_end=240
+  _globals['_CREATEURLRESPONSE']._serialized_start=242
+  _globals['_CREATEURLRESPONSE']._serialized_end=320
+  _globals['_URLDATA']._serialized_start=323
+  _globals['_URLDATA']._serialized_end=484
+  _globals['_ANALYTICS']._serialized_start=486
+  _globals['_ANALYTICS']._serialized_end=566
+  _globals['_URLSHORTENERSERVICE']._serialized_start=569
+  _globals['_URLSHORTENERSERVICE']._serialized_end=848
 # @@protoc_insertion_point(module_scope)

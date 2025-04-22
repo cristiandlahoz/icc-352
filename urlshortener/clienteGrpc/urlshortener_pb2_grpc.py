@@ -26,8 +26,7 @@ if _version_not_supported:
 
 
 class UrlShortenerServiceStub(object):
-    """*
-    Service for managing URL shortening and retrieval.
+    """Servicio para gestionar el acortamiento de URL y la recuperación de datos
     """
 
     def __init__(self, channel):
@@ -37,38 +36,29 @@ class UrlShortenerServiceStub(object):
             channel: A grpc.Channel.
         """
         self.ListUserUrls = channel.unary_unary(
-                '/UrlShortenerService/ListUserUrls',
+                '/org.wornux.urlshortener.api.grpc.v1.UrlShortenerService/ListUserUrls',
                 request_serializer=urlshortener__pb2.ListUserUrlsRequest.SerializeToString,
                 response_deserializer=urlshortener__pb2.ListUserUrlsResponse.FromString,
                 _registered_method=True)
         self.CreateUrl = channel.unary_unary(
-                '/UrlShortenerService/CreateUrl',
+                '/org.wornux.urlshortener.api.grpc.v1.UrlShortenerService/CreateUrl',
                 request_serializer=urlshortener__pb2.CreateUrlRequest.SerializeToString,
                 response_deserializer=urlshortener__pb2.CreateUrlResponse.FromString,
                 _registered_method=True)
 
 
 class UrlShortenerServiceServicer(object):
-    """*
-    Service for managing URL shortening and retrieval.
+    """Servicio para gestionar el acortamiento de URL y la recuperación de datos
     """
 
     def ListUserUrls(self, request, context):
-        """*
-        Retrieves a list of URLs associated with a specific user.
-        @param ListUserUrlsRequest - The request containing the user ID.
-        @return ListUserUrlsResponse - The response containing the list of URLs.
-        """
+        """Missing associated documentation comment in .proto file."""
         context.set_code(grpc.StatusCode.UNIMPLEMENTED)
         context.set_details('Method not implemented!')
         raise NotImplementedError('Method not implemented!')
 
     def CreateUrl(self, request, context):
-        """*
-        Creates a shortened URL for a given original URL.
-        @param CreateUrlRequest - The request containing the user ID and original URL.
-        @return CreateUrlResponse - The response containing the shortened URL and metadata.
-        """
+        """Missing associated documentation comment in .proto file."""
         context.set_code(grpc.StatusCode.UNIMPLEMENTED)
         context.set_details('Method not implemented!')
         raise NotImplementedError('Method not implemented!')
@@ -88,15 +78,14 @@ def add_UrlShortenerServiceServicer_to_server(servicer, server):
             ),
     }
     generic_handler = grpc.method_handlers_generic_handler(
-            'UrlShortenerService', rpc_method_handlers)
+            'org.wornux.urlshortener.api.grpc.v1.UrlShortenerService', rpc_method_handlers)
     server.add_generic_rpc_handlers((generic_handler,))
-    server.add_registered_method_handlers('UrlShortenerService', rpc_method_handlers)
+    server.add_registered_method_handlers('org.wornux.urlshortener.api.grpc.v1.UrlShortenerService', rpc_method_handlers)
 
 
  # This class is part of an EXPERIMENTAL API.
 class UrlShortenerService(object):
-    """*
-    Service for managing URL shortening and retrieval.
+    """Servicio para gestionar el acortamiento de URL y la recuperación de datos
     """
 
     @staticmethod
@@ -113,7 +102,7 @@ class UrlShortenerService(object):
         return grpc.experimental.unary_unary(
             request,
             target,
-            '/UrlShortenerService/ListUserUrls',
+            '/org.wornux.urlshortener.api.grpc.v1.UrlShortenerService/ListUserUrls',
             urlshortener__pb2.ListUserUrlsRequest.SerializeToString,
             urlshortener__pb2.ListUserUrlsResponse.FromString,
             options,
@@ -140,7 +129,7 @@ class UrlShortenerService(object):
         return grpc.experimental.unary_unary(
             request,
             target,
-            '/UrlShortenerService/CreateUrl',
+            '/org.wornux.urlshortener.api.grpc.v1.UrlShortenerService/CreateUrl',
             urlshortener__pb2.CreateUrlRequest.SerializeToString,
             urlshortener__pb2.CreateUrlResponse.FromString,
             options,
