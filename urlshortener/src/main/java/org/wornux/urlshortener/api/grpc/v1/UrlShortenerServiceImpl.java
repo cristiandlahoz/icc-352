@@ -1,11 +1,13 @@
 package org.wornux.urlshortener.api.grpc.v1;
 
-import com.google.protobuf.Timestamp;
+import io.grpc.Status;
 import io.grpc.stub.StreamObserver;
-import java.util.List;
 import lombok.RequiredArgsConstructor;
 import org.bson.types.ObjectId;
 import org.wornux.urlshortener.dto.UrlCreatedFullDTO;
+import org.wornux.urlshortener.dto.UrlDTO;
+import org.wornux.urlshortener.dto.UrlResponseDTO;
+import org.wornux.urlshortener.dto.AnalyticsDTO;
 import org.wornux.urlshortener.model.User;
 import org.wornux.urlshortener.service.UrlService;
 import org.wornux.urlshortener.service.UserService;
@@ -13,81 +15,97 @@ import org.wornux.urlshortener.service.UserService;
 @RequiredArgsConstructor
 public class UrlShortenerServiceImpl extends UrlShortenerServiceGrpc.UrlShortenerServiceImplBase {
 
-  private final UrlService urlService;
-  private final UserService userService;
+    private final UrlService urlService;
+    private final UserService userService;
 
-  @Override
-  public void createUrl(
-      CreateUrlRequest request, StreamObserver<CreateUrlResponse> responseObserver) {
-    try {
-      ObjectId userId = new ObjectId(request.getUserId());
-      User user = userService.getUserById(userId).orElseThrow();
+    @Override
+    public void listUserUrls(ListUserUrlsRequest request, StreamObserver<ListUserUrlsResponse> responseObserver) {
+        try {
+            // Parse and validate user ID
+            ObjectId userId = new ObjectId(request.getUserId());
+            User user = userService.getUserById(userId)
+                    .orElseThrow(() -> new IllegalArgumentException("Usuario no encontrado"));
 
-      UrlCreatedFullDTO dto =
-          urlService.createFullUrlRecord(
-              new org.wornux.urlshortener.dto.UrlDTO(request.getOriginalUrl(), user));
+            // Lógica extraída de tu UrlController.getUrlsByUser
+            var urlDtos = urlService.getUrlsByUser(user);
 
-      Timestamp timestamp =
-          Timestamp.newBuilder().setSeconds(dto.createdAt().getTime() / 1000).build();
+            // Construir respuesta gRPC
+            ListUserUrlsResponse.Builder respBuilder = ListUserUrlsResponse.newBuilder();
+            for (UrlResponseDTO dto : urlDtos) {
+                UrlData.Builder ud = UrlData.newBuilder()
+                        .setOriginalUrl(dto.originalUrl())
+                        .setShortenedUrl(dto.shortenedUrl())
+                        .setCreatedBy(dto.createdBy())
+                        .setCreatedAt(dto.createdAt());
 
-      CreateUrlResponse response =
-          CreateUrlResponse.newBuilder()
-              .setOriginalUrl(dto.originalUrl())
-              .setShortUrl(dto.shortenedUrl())
-              .setCreationDate(timestamp)
-              .setSiteImage(dto.sitePreviewBase64())
-              .setStats(
-                  UrlStats.newBuilder()
-                      .setClicks(dto.stats().clickCount())
-                      .setUniqueVisitors(dto.stats().uniqueVisitors())
-                      .build())
-              .build();
+                for (AnalyticsDTO a : dto.analytics()) {
+                    ud.addAnalytics(
+                            Analytics.newBuilder()
+                                    .setAccessDate(a.accessDate())
+                                    .setBrowser(a.browser())
+                                    .setIpAdress(a.ipAdress())
+                                    .setOs(a.os())
+                                    .build()
+                    );
+                }
 
-      responseObserver.onNext(response);
-      responseObserver.onCompleted();
+                respBuilder.addUrls(ud.build());
+            }
 
-    } catch (Exception e) {
-      responseObserver.onError(e);
+            responseObserver.onNext(respBuilder.build());
+            responseObserver.onCompleted();
+
+        } catch (IllegalArgumentException e) {
+            responseObserver.onError(
+                    Status.NOT_FOUND.withDescription(e.getMessage()).asRuntimeException()
+            );
+        } catch (Exception e) {
+            responseObserver.onError(
+                    Status.INTERNAL.withDescription("Error interno: " + e.getMessage()).asRuntimeException()
+            );
+        }
     }
-  }
 
-  @Override
-  public void listUserUrls(
-      ListUserUrlsRequest request, StreamObserver<ListUserUrlsResponse> responseObserver) {
-    try {
-      ObjectId userId = new ObjectId(request.getUserId());
-      User user = userService.getUserById(userId).orElseThrow();
+    @Override
+    public void createUrl(CreateUrlRequest request, StreamObserver<CreateUrlResponse> responseObserver) {
+        try {
+            // Validar userId y obtener User
+            ObjectId userId = new ObjectId(request.getUserId());
+            User user = userService.getUserById(userId)
+                    .orElseThrow(() -> new IllegalArgumentException("Usuario no encontrado"));
 
-      // ✅ Usa el método correcto
-      List<UrlCreatedFullDTO> urls = urlService.getFullUrlsByUser(user);
+            // Crear la URL usando UrlDTO (la lógica de tu controller)
+            UrlDTO urlDto = new UrlDTO(request.getOriginalUrl(), user);
+            UrlCreatedFullDTO created = urlService.createFullUrlRecord(urlDto);
 
-      ListUserUrlsResponse.Builder responseBuilder = ListUserUrlsResponse.newBuilder();
+            // Formatear fecha al mismo patrón que Javalin
+            String createdAt = new java.text.SimpleDateFormat("dd-MM-yyyy HH:mm:ss")
+                    .format(created.createdAt());
 
-      for (UrlCreatedFullDTO dto : urls) {
-        Timestamp created =
-            Timestamp.newBuilder().setSeconds(dto.createdAt().getTime() / 1000).build();
+            // Construir mensaje gRPC con la respuesta completa
+            UrlData.Builder ud = UrlData.newBuilder()
+                    .setOriginalUrl(created.originalUrl())
+                    .setShortenedUrl(created.shortenedUrl())
+                    .setCreatedBy(user.getUsername())
+                    .setCreatedAt(createdAt);
 
-        ListUserUrlsResponse.UserUrlData userUrl =
-            ListUserUrlsResponse.UserUrlData.newBuilder()
-                .setOriginalUrl(dto.originalUrl())
-                .setShortUrl(dto.shortenedUrl())
-                .setCreationDate(created)
-                .setSiteImage(dto.sitePreviewBase64())
-                .setStats(
-                    UrlStats.newBuilder()
-                        .setClicks(dto.stats().clickCount())
-                        .setUniqueVisitors(dto.stats().uniqueVisitors())
-                        .build())
-                .build();
+            // analytics inicialmente vacío (no hay accesos aún)
 
-        responseBuilder.addUserUrls(userUrl);
-      }
+            CreateUrlResponse response = CreateUrlResponse.newBuilder()
+                    .setUrl(ud.build())
+                    .build();
 
-      responseObserver.onNext(responseBuilder.build());
-      responseObserver.onCompleted();
+            responseObserver.onNext(response);
+            responseObserver.onCompleted();
 
-    } catch (Exception e) {
-      responseObserver.onError(e);
+        } catch (IllegalArgumentException e) {
+            responseObserver.onError(
+                    Status.NOT_FOUND.withDescription(e.getMessage()).asRuntimeException()
+            );
+        } catch (Exception e) {
+            responseObserver.onError(
+                    Status.INTERNAL.withDescription("Error al crear URL completa: " + e.getMessage()).asRuntimeException()
+            );
+        }
     }
-  }
 }
