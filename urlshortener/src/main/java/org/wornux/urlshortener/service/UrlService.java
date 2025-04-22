@@ -313,4 +313,39 @@ public class UrlService {
 
     return analytics;
   }
+
+  public List<UrlCreatedFullDTO> getFullUrlsByUser(User user) {
+    return urlDAO.findByCreatedBy(user).stream()
+        .map(
+            url -> {
+              List<AccessLog> logs = accessLogsDAO.findByUrl(url);
+              int totalAccesses = logs.size();
+              int uniqueVisitors =
+                  (int) logs.stream().map(AccessLog::getIpAddress).distinct().count();
+              Date lastAccess =
+                  logs.stream().map(AccessLog::getAccessedAt).max(Date::compareTo).orElse(null);
+              List<String> userAgents = logs.stream().map(AccessLog::getBrowser).toList();
+              List<String> operatingSystems = logs.stream().map(AccessLog::getOs).toList();
+
+              UrlStatsDTO stats =
+                  new UrlStatsDTO(
+                      url.getId(),
+                      url.getOriginalUrl(),
+                      url.getShortenedUrl(),
+                      url.getCreatedAt(),
+                      url.getClickCount(),
+                      totalAccesses,
+                      uniqueVisitors,
+                      lastAccess,
+                      userAgents,
+                      operatingSystems);
+
+              String preview =
+                  linkPreviewDAO.findFirstByUrl(url).map(LinkPreview::getPreviewImage).orElse("");
+
+              return new UrlCreatedFullDTO(
+                  url.getOriginalUrl(), url.getShortenedUrl(), url.getCreatedAt(), stats, preview);
+            })
+        .toList();
+  }
 }
