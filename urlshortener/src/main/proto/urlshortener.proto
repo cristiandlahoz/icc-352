@@ -1,83 +1,51 @@
 syntax = "proto3";
 
-/**
- * Package for the URL Shortener service.
- * This package provides functionality to shorten URLs and retrieve user-specific URL data.
- */
+package org.wornux.urlshortener.api.grpc.v1;
+
 option java_multiple_files = true;
 option java_package = "org.wornux.urlshortener.api.grpc.v1";
 option java_outer_classname = "UrlShortenerProto";
 
-
-import "google/protobuf/timestamp.proto";
-
-/**
- * Service for managing URL shortening and retrieval.
- */
+// Servicio para gestionar el acortamiento de URL y la recuperación de datos
 service UrlShortenerService {
-  /**
-   * Retrieves a list of URLs associated with a specific user.
-   * @param ListUserUrlsRequest - The request containing the user ID.
-   * @return ListUserUrlsResponse - The response containing the list of URLs.
-   */
   rpc ListUserUrls(ListUserUrlsRequest) returns (ListUserUrlsResponse);
-
-  /**
-   * Creates a shortened URL for a given original URL.
-   * @param CreateUrlRequest - The request containing the user ID and original URL.
-   * @return CreateUrlResponse - The response containing the shortened URL and metadata.
-   */
   rpc CreateUrl(CreateUrlRequest) returns (CreateUrlResponse);
 }
 
-/**
- * Request message for retrieving a user's URLs.
- */
+// Solicitud para listar URLs de un usuario
 message ListUserUrlsRequest {
-  string user_id = 1; // User ID making the request
+  string user_id = 1;
 }
 
-/**
- * Response message containing a list of a user's URLs.
- */
-message ListUserUrlsResponse {
-  repeated UserUrlData user_urls = 1; // List of user's URLs
-
-  /**
-   * Information about a user's URL.
-   */
-  message UserUrlData {
-    string original_url = 1; // Original URL
-    string short_url = 2; // Shortened URL
-    google.protobuf.Timestamp creation_date = 3; // Creation date
-    UrlStats stats = 4; // URL statistics
-    string site_image = 5; // Base64-encoded site image
-  }
-}
-
-/**
- * Request message for creating a shortened URL.
- */
+// Solicitud para crear una URL acortada
 message CreateUrlRequest {
-  string user_id = 1; // User ID
-  string original_url = 2; // Original URL to shorten
+  string user_id = 1;
+  string original_url = 2;
 }
 
-/**
- * Response message containing the shortened URL and metadata.
- */
+// Respuesta con la lista de URLs
+message ListUserUrlsResponse {
+  repeated UrlData urls = 1;
+}
+
+// Respuesta con una URL creada
 message CreateUrlResponse {
-  string original_url = 1; // Original URL
-  string short_url = 2; // Shortened URL
-  google.protobuf.Timestamp creation_date = 3; // Creation date
-  UrlStats stats = 4; // Initial statistics
-  string site_image = 5; // Base64-encoded site image
+  UrlData url = 1;
 }
 
-/**
- * Statistics for a shortened URL.
- */
-message UrlStats {
-  int32 clicks = 1; // Number of clicks
-  int32 unique_visitors = 2; // Number of unique visitors
+// Estructura que refleja tu JSON:
+message UrlData {
+  string original_url = 1;
+  string shortened_url = 2;
+  string created_by    = 3;
+  string created_at    = 4;
+  repeated Analytics analytics = 5;
+}
+
+// Detalle de analytics para cada acceso
+message Analytics {
+  string access_date = 1;
+  string browser     = 2;
+  string ip_adress   = 3;
+  string os          = 4;
 }
