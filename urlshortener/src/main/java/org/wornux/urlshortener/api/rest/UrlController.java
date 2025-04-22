@@ -2,14 +2,12 @@ package org.wornux.urlshortener.api.rest;
 
 import io.javalin.http.Context;
 import io.javalin.router.JavalinDefaultRouting;
-import java.util.List;
 import java.util.Optional;
 import javax.annotation.Nonnull;
 import lombok.RequiredArgsConstructor;
 import org.bson.types.ObjectId;
 import org.wornux.urlshortener.dto.UrlCreatedFullDTO;
 import org.wornux.urlshortener.dto.UrlDTO;
-import org.wornux.urlshortener.dto.UrlStatsDTO;
 import org.wornux.urlshortener.enums.Role;
 import org.wornux.urlshortener.model.User;
 import org.wornux.urlshortener.service.UrlService;
@@ -21,8 +19,8 @@ public class UrlController {
   private final UserService userService;
 
   public void applyRoutes(JavalinDefaultRouting router) {
-    router.get("/users/{userId}/urls", this::getUrlsByUser, Role.USER);
-    router.post("/urls/full", this::createFullUrlRecord, Role.USER);
+    router.get("/users/{userId}/urls", this::getUrlsByUser, Role.ADMIN, Role.USER);
+    router.post("/urls/", this::createFullUrlRecord, Role.ADMIN, Role.USER);
   }
 
   public void getUrlsByUser(@Nonnull Context ctx) {
@@ -30,8 +28,8 @@ public class UrlController {
       ObjectId userId = new ObjectId(ctx.pathParam("userId"));
       Optional<User> userOpt = userService.getUserById(userId);
       if (userOpt.isPresent()) {
-        List<UrlStatsDTO> urls = urlService.getUrlsByUser(userOpt.get());
-        ctx.json(urls);
+        ctx.json(urlService.getUrlsByUser(userOpt.get()));
+        return;
       } else {
         ctx.status(404).result("Usuario no encontrado");
       }

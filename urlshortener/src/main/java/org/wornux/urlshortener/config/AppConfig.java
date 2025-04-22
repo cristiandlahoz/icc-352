@@ -2,6 +2,7 @@ package org.wornux.urlshortener.config;
 
 import io.javalin.Javalin;
 import io.javalin.config.JavalinConfig;
+import io.javalin.http.HttpStatus;
 import io.javalin.rendering.template.JavalinThymeleaf;
 import org.thymeleaf.TemplateEngine;
 import org.thymeleaf.templateresolver.ClassLoaderTemplateResolver;
@@ -37,9 +38,14 @@ public class AppConfig {
 
   public static void ConfigureExceptionHandlers(Javalin app) {
     app.error(
-        404,
+        HttpStatus.NOT_FOUND.getCode(),
         ctx -> {
           ctx.render("pages/404.html");
+        });
+    app.error(
+        HttpStatus.FORBIDDEN.getCode(),
+        ctx -> {
+          ctx.render("pages/403.html");
         });
   }
 }

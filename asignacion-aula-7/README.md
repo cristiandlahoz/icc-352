@@ -1,16 +1,99 @@
-# Proyecto ORM con JPA
+# CRUD de Estudiantes - Proyecto gRPC
 
-Proyecto para demostrar la funcionalidad de ORM con JPA,
-preparado para ser utilizado con Heroku con Postgres.
+Este proyecto implementa un sistema CRUD para la gestión de estudiantes utilizando **gRPC**. El servidor está desarrollado en Java (Gradle + mínimo Java 21), y el cliente es un script interactivo en Python.
 
-## Utiliza:
+---
 
-* Javalin 6.1.3
-* Hibernate 6
-* JPA 3.X
-* OpenApi para Javalin (https://github.com/javalin/javalin-openapi)
+## 📁 Estructura del proyecto
 
-## Requiere:
+```
+├── cliente/
+│   ├── asignacion_aula_7_pb2.py         # Código generado por gRPC a partir del .proto
+│   ├── asignacion_aula_7_pb2_grpc.py    # Código generado por gRPC a partir del .proto
+│   └── cliente.py                        # Cliente interactivo gRPC en Python
+├── src/
+│   └── main/
+│       ├── java/                         # Código fuente del servidor
+│       └── proto/
+│           └── asignacion_aula_7.proto  # Definición del servicio y mensajes gRPC
+├── build.gradle
+└── settings.gradle
+```
 
-* Java 21
-* Gradle 8.5
+---
+
+## 🚀 Requisitos
+
+- Java 21
+- Gradle
+- Python 3.10 o superior
+- `virtualenv` (opcional pero recomendado)
+
+---
+
+## 🔧 Cómo ejecutar el proyecto
+
+### 1️⃣ Iniciar el servidor gRPC en Java
+
+En una **primera terminal**, desde la raíz del proyecto, ejecuta:
+
+```bash
+./gradlew run
+```
+
+Esto levantará el servidor gRPC que gestiona las operaciones CRUD de estudiantes.
+
+---
+
+### 2️⃣ Ejecutar el cliente Python
+
+Abre una **segunda terminal** y navega a la carpeta `cliente/`:
+
+```bash
+cd cliente
+python3 -m venv venv
+source venv/bin/activate  # En Windows: venv\Scripts\activate
+pip install grpcio grpcio-tools
+```
+
+Una vez instaladas las dependencias, ejecuta el cliente:
+
+```bash
+python3 cliente.py
+```
+
+Este script desplegará un **menú interactivo** para realizar las siguientes operaciones:
+
+- Crear un estudiante
+- Listar todos los estudiantes
+- Editar un estudiante
+- Eliminar un estudiante
+
+---
+
+## ⚙️ Generar nuevamente los archivos `*_pb2.py`
+
+Si realizas cambios en el archivo `.proto`, puedes regenerar los archivos necesarios con:
+
+```bash
+python3 -m grpc_tools.protoc -I../src/main/proto --python_out=. --grpc_python_out=. ../src/main/proto/asignacion_aula_7.proto
+```
+
+---
+
+## 📌 Notas
+
+- Asegúrate de que el servidor Java esté ejecutándose antes de lanzar el cliente Python.
+- El archivo `.proto` define los contratos entre el cliente y el servidor, por lo tanto, debe mantenerse sincronizado en ambos entornos.
+
+---
+
+## 👤 Autor
+
+Cristian de la Hoz y Carolina bencosme
+
+---
+
+## 📜 Licencia
+
+MIT License

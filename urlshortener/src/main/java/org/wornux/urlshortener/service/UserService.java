@@ -28,6 +28,9 @@ public class UserService {
   }
 
   public void saveUser(@Nonnull User user) {
+    if (getUserByUsername(user.getUsername()).isPresent()) {
+      throw new IllegalArgumentException("User with this username already exists");
+    }
     userDAO.save(user);
   }
 

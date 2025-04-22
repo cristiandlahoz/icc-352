@@ -55,13 +55,14 @@ public class AuthController {
         JwtUtil jwtUtil = new JwtUtil();
         String token =
             jwtUtil.generateToken(
-                Map.of(), new Authentication(user.getUsername(), user.getPassword()));
+                Map.of("user_id", user.getId().toHexString()), // 👈 se agrega aquí
+                new Authentication(user.getUsername(), user.getPassword()));
 
         ctx.json(new JWTResponse(token));
         System.out.println("🔐 Token generado exitosamente");
       } else {
         System.out.println("❌ Credenciales incorrectas");
-        ctx.status(401).result("Credenciales incorrectas");
+        ctx.status(401).result("Credenciales incorrectas o usuario no encontrado");
       }
 
     } catch (Exception e) {

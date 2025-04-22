@@ -1,6 +1,8 @@
 package org.wornux.urlshortener.model;
 
-import dev.morphia.annotations.*;
+import dev.morphia.annotations.Entity;
+import dev.morphia.annotations.Id;
+import dev.morphia.annotations.PrePersist;
 import java.util.Date;
 import lombok.Getter;
 import lombok.NoArgsConstructor;

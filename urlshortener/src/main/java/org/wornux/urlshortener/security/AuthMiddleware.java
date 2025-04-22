@@ -27,9 +27,19 @@ public class AuthMiddleware implements Handler {
   public void handle(Context ctx) throws Exception {
     String currentPath = ctx.path();
 
-    // Allow public and authentication routes without checks
+    /**
+     * This block checks if the current path is one of the public routes that do not require
+     * authentication. If the path matches any of these routes, the method returns early, allowing
+     * the request to proceed without further checks. [a-fA-F0-9]{24} is a regex pattern that
+     * matches a 24-character hexadecimal string, which is an ObjectId of MongoDB.
+     */
     if (currentPath.startsWith("/images")
         || currentPath.equals("/shortened")
+        || currentPath.equals("/shortened/create")
+        || currentPath.equals("/shortened/dashboard")
+        || currentPath.equals("/shortened/analytics")
+        || currentPath.matches("/shortened/analytics/.*")
+        || currentPath.matches("/shortened/[a-fA-F0-9]{24}/qr")
         || currentPath.startsWith("/css")
         || currentPath.startsWith("/js")
         || currentPath.startsWith("/auth")) return;
