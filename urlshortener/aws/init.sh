@@ -52,24 +52,17 @@ export PATH="$JAVA_HOME/bin:$PATH"
 
 sudo service apache2 start
 
-sudo curl -H "Authorization: token $TOKEN" -o /etc/apache2/sites-available/proxyreverso.conf \
-  -L "https://raw.githubusercontent.com/$GITHUB_USER/icc-352/main/practica-4/config/proxyreverso.conf"
-
-sudo curl -H "Authorization: token $TOKEN" -o /etc/apache2/sites-available/seguro.conf \
-  -L "https://raw.githubusercontent.com/$GITHUB_USER/icc-352/main/practica-4/config/seguro.conf"
+sudo curl -H "Authorization: token $TOKEN" -o /etc/apache2/sites-available/site.conf \
+  -L "https://raw.githubusercontent.com/$GITHUB_USER/icc-352/main/urlshortened/aws/site.conf"
 
 cd "$HOME" || exit
-git clone https://"$TOKEN"@github.com/"$GITHUB_USER"/"$GITHUB_REPO"
-cd "$GITHUB_REPO" || exit || exit
+git clone --filter=blob:none --no-checkout https://"$TOKEN"@github.com/"$GITHUB_USER"/"$GITHUB_REPO".git
+cd "$GITHUB_REPO" || exit
+git sparse-checkout init --cone
+git sparse-checkout set urlshortned
+git checkout main
 
-./gradlew shadowjar
-
-java -jar "$HOME"/"$GITHUB_REPO"/app/build/libs/app.jar >"$HOME"/"$GITHUB_REPO"/app/build/libs/output.log 2>"$HOME"/"$GITHUB_REPO"/app/build/libs/error.log &
-
-cd "$HOME" || exit
-git clone https://github.com/"$GITHUB_USER"/"$GITHUB_SECOND_REPO"
-cd "$GITHUB_SECOND_REPO" || exit
-
-./gradlew shadowjar
-
-java -jar "$HOME"/"$GITHUB_SECOND_REPO"/app/build/libs/app.jar >"$HOME"/"$GITHUB_SECOND_REPO"/app/build/libs/output.log 2>"$HOME"/"$GITHUB_SECOND_REPO"/app/build/libs/error.log &
+sudo a2ensite site.conf
+sudo a2enmod ssl
+sudo a2enmod proxy proxy_http
+sudo service apache2 restart
