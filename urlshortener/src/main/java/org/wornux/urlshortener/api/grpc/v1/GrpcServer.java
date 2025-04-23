@@ -2,6 +2,7 @@ package org.wornux.urlshortener.api.grpc.v1;
 
 import io.grpc.Server;
 import io.grpc.ServerBuilder;
+import io.grpc.protobuf.services.ProtoReflectionService;
 import org.wornux.urlshortener.core.routing.DIContainer;
 
 public class GrpcServer {
@@ -13,6 +14,7 @@ public class GrpcServer {
     Server server =
         ServerBuilder.forPort(port)
             .addService(new UrlShortenerServiceImpl(urlService, userService))
+            .addService(ProtoReflectionService.newInstance())
             .build()
             .start();
 

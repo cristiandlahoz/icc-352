@@ -56,7 +56,7 @@ sudo curl -H "Authorization: token $TOKEN" -o /etc/apache2/sites-available/site.
   -L "https://raw.githubusercontent.com/$GITHUB_USER/icc-352/main/urlshortened/aws/site.conf"
 
 cd "$HOME" || exit
-git clone --filter=blob:none --no-checkout https://"$TOKEN"@github.com/"$GITHUB_USER"/"$GITHUB_REPO".git
+git clone https://"$TOKEN"@github.com/"$GITHUB_USER"/"$GITHUB_REPO".git
 cd "$GITHUB_REPO" || exit
 git sparse-checkout init --cone
 git sparse-checkout set urlshortned

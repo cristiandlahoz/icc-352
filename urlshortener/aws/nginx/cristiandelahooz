@@ -1,0 +1,73 @@
+server {
+    listen 80;
+    server_name www.cristiandelahooz.me;
+
+    return 301 https://$host$request_uri;
+}
+
+server {
+    listen 443 ssl;
+    server_name www.cristiandelahooz.me;
+
+    ssl_certificate     /etc/letsencrypt/live/cristiandelahooz.me/fullchain.pem;
+    ssl_certificate_key /etc/letsencrypt/live/cristiandelahooz.me/privkey.pem;
+
+    location / {
+        proxy_pass         http://localhost:3000;
+        proxy_set_header   Host $host;
+        proxy_set_header   X-Real-IP $remote_addr;
+        proxy_set_header   X-Forwarded-For $proxy_add_x_forwarded_for;
+        proxy_set_header   X-Forwarded-Proto $scheme;
+    }
+}
+
+server {
+    listen 80;
+    server_name rest.cristiandelahooz.me;
+
+    return 301 https://$host$request_uri;
+}
+
+server {
+    listen 443 ssl;
+    server_name rest.cristiandelahooz.me;
+
+    ssl_certificate     /etc/letsencrypt/live/cristiandelahooz.me/fullchain.pem;
+    ssl_certificate_key /etc/letsencrypt/live/cristiandelahooz.me/privkey.pem;
+
+    location / {
+        proxy_pass         http://localhost:7000;
+        proxy_set_header   Host $host;
+        proxy_set_header   X-Real-IP $remote_addr;
+        proxy_set_header   X-Forwarded-For $proxy_add_x_forwarded_for;
+        proxy_set_header   X-Forwarded-Proto $scheme;
+    }
+}
+server {
+    listen 80;
+    server_name grpc.cristiandelahooz.me;
+
+    return 301 https://$host$request_uri;
+}
+
+server {
+    listen 443 ssl http2;
+    server_name grpc.cristiandelahooz.me;
+
+    ssl_certificate     /etc/letsencrypt/live/cristiandelahooz.me/fullchain.pem;
+    ssl_certificate_key /etc/letsencrypt/live/cristiandelahooz.me/privkey.pem;
+
+    location / {
+        grpc_pass grpc://localhost:9090;
+        error_page 502 = /error502grpc;
+    }
+
+    location = /error502grpc {
+        internal;
+        default_type application/grpc;
+        add_header grpc-status 14;
+        add_header grpc-message "unavailable";
+        return 204;
+    }
+}
+

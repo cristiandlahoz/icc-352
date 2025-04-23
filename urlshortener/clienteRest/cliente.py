@@ -6,7 +6,7 @@ import jwt
 
 # Configuración
 PORT = int(os.getenv("PORT_REST", 7000))
-BASE_URL = f"http://localhost:{PORT}"
+BASE_URL = "https://rest.cristiandelahooz.me"
 LOGIN_URL = f"{BASE_URL}/auth/login"
 FULL_URLS_ENDPOINT = f"{BASE_URL}/urls"
 USER_URLS_ENDPOINT = f"{BASE_URL}/users/{{user_id}}/urls"
@@ -55,8 +55,7 @@ def crear_url():
     ).encode()
 
     try:
-        req = urllib.request.Request(
-            FULL_URLS_ENDPOINT, data=payload, method="POST")
+        req = urllib.request.Request(FULL_URLS_ENDPOINT, data=payload, method="POST")
         req.add_header("Content-Type", "application/json")
         req.add_header("Authorization", f"Bearer {token}")
         response = urllib.request.urlopen(req)
@@ -67,8 +66,7 @@ def crear_url():
             print(f" - Acortada: {res_data['shortenedUrl']}")
             print(f" - Fecha: {res_data['createdAt']}")
             print(f" - Clicks: {res_data['stats']['clickCount']}")
-            print(
-                f" - Vista previa: {res_data['sitePreviewBase64'][:30]}...{RESET}")
+            print(f" - Vista previa: {res_data['sitePreviewBase64'][:30]}...{RESET}")
         else:
             print(f"{RED} Error al crear URL.{RESET}")
     except Exception as e:
@@ -95,22 +93,19 @@ def listar_urls():
                 return
 
             for i, item in enumerate(items, 1):
-                print(f"{CYAN}╔═════════════ URL #{
-                      i:02d} ═════════════╗{RESET}")
+                print(f"{CYAN}╔═════════════ URL #{i:02d} ═════════════╗{RESET}")
                 for key, value in item.items():
                     if key == "analytics" and isinstance(value, list):
                         print(f"{MAGENTA}║ 📊 Analytics:{RESET}")
                         if not value:
-                            print(
-                                f"{MAGENTA}║   └ 🟠 Sin datos de análisis{RESET}")
+                            print(f"{MAGENTA}║   └ 🟠 Sin datos de análisis{RESET}")
                         else:
                             for j, analytic in enumerate(value, 1):
                                 print(f"{MAGENTA}║   ┌ 📈 Entrada #{j}{RESET}")
                                 for sub_key, sub_value in analytic.items():
                                     sub_k = sub_key.replace("_", " ").title()
                                     sub_v = str(sub_value)[:40] + (
-                                        "..." if len(
-                                            str(sub_value)) > 40 else ""
+                                        "..." if len(str(sub_value)) > 40 else ""
                                     )
                                     print(
                                         f"{MAGENTA}║   │{RESET} {WHITE}{sub_k:<15}:{
@@ -118,16 +113,14 @@ def listar_urls():
                                         } {sub_v}"
                                     )
                                 print(
-                                    f"{MAGENTA}║   └────────────────────────────{
-                                        RESET}"
+                                    f"{MAGENTA}║   └────────────────────────────{RESET}"
                                 )
                     else:
                         label = key.replace("_", " ").title()
                         value_str = str(value)[:50] + (
                             "..." if len(str(value)) > 50 else ""
                         )
-                        print(f"{CYAN}║{RESET} {WHITE}{
-                              label:<18}:{RESET} {value_str}")
+                        print(f"{CYAN}║{RESET} {WHITE}{label:<18}:{RESET} {value_str}")
                 print(f"{CYAN}╚═══════════════════════════════════════╝{RESET}\n")
     except Exception as e:
         print(f"{RED}Error al crear URL: {e}{RESET}")

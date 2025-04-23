@@ -1,4 +1,4 @@
-import os
+import ssl
 import json
 import jwt
 import urllib.request
@@ -7,10 +7,8 @@ import urlshortener_pb2
 import urlshortener_pb2_grpc
 
 # Configuración
-PORT_GRPC = int(os.getenv("PORT_GRPC", 9090))
-SERVER_ADDRESS = f"grpc.cristiandelahooz.me:{PORT_GRPC}"
-PORT_REST = int(os.getenv("PORT_REST", 7000))
-REST_LOGIN_URL = f"https://grpc.cristiandelahooz.me:{PORT_REST}/auth/login"
+SERVER_ADDRESS = "grpc.cristiandelahooz.me:443"
+REST_LOGIN_URL = "https://rest.cristiandelahooz.me/auth/login"
 
 # Colores
 CYAN = "\033[96m"
@@ -51,7 +49,8 @@ def login_rest():
 
 
 def crear_url():
-    channel = grpc.insecure_channel(SERVER_ADDRESS)
+    credentials = grpc.ssl_channel_credentials()
+    channel = grpc.secure_channel(SERVER_ADDRESS, credentials)
     stub = urlshortener_pb2_grpc.UrlShortenerServiceStub(channel)
 
     original = input(" Ingresa la URL a acortar: ")
@@ -80,7 +79,8 @@ def crear_url():
 
 
 def listar_urls():
-    channel = grpc.insecure_channel(SERVER_ADDRESS)
+    credentials = grpc.ssl_channel_credentials()
+    channel = grpc.secure_channel(SERVER_ADDRESS, credentials)
     stub = urlshortener_pb2_grpc.UrlShortenerServiceStub(channel)
 
     request = urlshortener_pb2.ListUserUrlsRequest(user_id=user_id)
