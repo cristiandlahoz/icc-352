@@ -8,23 +8,24 @@ import urlshortener_pb2_grpc
 
 # Configuración
 PORT_GRPC = int(os.getenv("PORT_GRPC", 9090))
-SERVER_ADDRESS = f"localhost:{PORT_GRPC}"
+SERVER_ADDRESS = f"grpc.cristiandelahooz.me:{PORT_GRPC}"
 PORT_REST = int(os.getenv("PORT_REST", 7000))
-REST_LOGIN_URL = f"http://localhost:{PORT_REST}/auth/login"
+REST_LOGIN_URL = f"https://grpc.cristiandelahooz.me:{PORT_REST}/auth/login"
 
 # Colores
-CYAN    = "\033[96m"
+CYAN = "\033[96m"
 MAGENTA = "\033[38;2;251;146;60m"
-YELLOW  = "\033[93m"
-RED     = "\033[91m"
-WHITE   = "\033[97m"
-RESET   = "\033[0m"
-GREEN   = "\033[32m"
-BLUE    = "\033[34m"
+YELLOW = "\033[93m"
+RED = "\033[91m"
+WHITE = "\033[97m"
+RESET = "\033[0m"
+GREEN = "\033[32m"
+BLUE = "\033[34m"
 
 # Variables globales
 user_id = None
 token = None
+
 
 def login_rest():
     global user_id, token
@@ -48,19 +49,17 @@ def login_rest():
     except Exception as e:
         print(f"{RED} Error durante login: {e}{RESET}")
 
+
 def crear_url():
     channel = grpc.insecure_channel(SERVER_ADDRESS)
-    stub   = urlshortener_pb2_grpc.UrlShortenerServiceStub(channel)
+    stub = urlshortener_pb2_grpc.UrlShortenerServiceStub(channel)
 
     original = input(" Ingresa la URL a acortar: ")
-    request  = urlshortener_pb2.CreateUrlRequest(
-        user_id      = user_id,
-        original_url = original
-    )
+    request = urlshortener_pb2.CreateUrlRequest(user_id=user_id, original_url=original)
 
     try:
         response = stub.CreateUrl(request)
-        ud       = response.url   # <— aquí el UrlData
+        ud = response.url  # <— aquí el UrlData
 
         print(f"{GREEN} URL creada:")
         print(f"{CYAN}╔═══════════════════════════════════════╗{RESET}")
@@ -99,9 +98,21 @@ def listar_urls():
         for i, url_data in enumerate(urls, 1):
             print(f"{CYAN}╔═════════════ URL #{i:02d} ═════════════╗{RESET}")
             # Campos principales
-            print(f"{CYAN}║{RESET} {WHITE}Original URL       :{RESET} {url_data.original_url}")
-            print(f"{CYAN}║{RESET} {WHITE}Acortada           :{RESET} {url_data.shortened_url}")
-            print(f"{CYAN}║{RESET} {WHITE}Fecha              :{RESET} {url_data.created_at}")
+            print(
+                f"{CYAN}║{RESET} {WHITE}Original URL       :{RESET} {
+                    url_data.original_url
+                }"
+            )
+            print(
+                f"{CYAN}║{RESET} {WHITE}Acortada           :{RESET} {
+                    url_data.shortened_url
+                }"
+            )
+            print(
+                f"{CYAN}║{RESET} {WHITE}Fecha              :{RESET} {
+                    url_data.created_at
+                }"
+            )
 
             # Analytics
             print(f"{MAGENTA}║ 📊 Analytics:{RESET}")
@@ -112,9 +123,21 @@ def listar_urls():
                 for j, a in enumerate(analytics, 1):
                     print(f"{MAGENTA}║   ┌ 📈 Entrada #{j}{RESET}")
                     # Cada campo del analytic
-                    print(f"{MAGENTA}║   │{RESET} {WHITE}{'Access Date':<15}:{RESET} {a.access_date}")
-                    print(f"{MAGENTA}║   │{RESET} {WHITE}{'Browser':<15}:{RESET} {a.browser}")
-                    print(f"{MAGENTA}║   │{RESET} {WHITE}{'Ip Adress':<15}:{RESET} {a.ip_adress}")
+                    print(
+                        f"{MAGENTA}║   │{RESET} {WHITE}{'Access Date':<15}:{RESET} {
+                            a.access_date
+                        }"
+                    )
+                    print(
+                        f"{MAGENTA}║   │{RESET} {WHITE}{'Browser':<15}:{RESET} {
+                            a.browser
+                        }"
+                    )
+                    print(
+                        f"{MAGENTA}║   │{RESET} {WHITE}{'Ip Adress':<15}:{RESET} {
+                            a.ip_adress
+                        }"
+                    )
                     print(f"{MAGENTA}║   │{RESET} {WHITE}{'Os':<15}:{RESET} {a.os}")
                     print(f"{MAGENTA}║   └────────────────────────────{RESET}")
             print(f"{CYAN}╚═══════════════════════════════════════╝{RESET}\n")
@@ -122,6 +145,7 @@ def listar_urls():
         print(f"{RED} Error en ListUserUrls: {e}{RESET}")
     finally:
         channel.close()
+
 
 def main():
     print(f"{BLUE}=== Cliente gRPC: Acortador de URLs ==={RESET}")
@@ -145,6 +169,7 @@ def main():
             break
         else:
             print(f"{RED} Opción inválida{RESET}")
+
 
 if __name__ == "__main__":
     main()
