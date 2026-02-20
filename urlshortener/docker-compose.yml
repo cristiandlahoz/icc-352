@@ -12,15 +12,17 @@ services:
 
   javalin_app:
 #    build: .
-    image: cristiandelahooz/urlshortener-javalin
+    image: cristiandelahooz/urlshortener-javalin:1.0.1
     container_name: javalin_dev
     ports:
       - "8765:8765"
       - "9876:9876"
     environment:
-      - PORT=8765
-      - PORT_GRPC=9876
+#      - PORT=8765
+#      - PORT_GRPC=9876
       - MONGODB_URL=mongodb://admin:admin123@mongo:27017/?authSource=admin
+    volumes:
+      - ./logs:/app/logs
     depends_on:
       - mongo
 

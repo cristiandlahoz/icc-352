@@ -17,4 +17,4 @@ ENV PORT_GRPC=9876
 EXPOSE 8765 9876
 
 # El comando de inicio
-ENTRYPOINT ["java", "-jar", "/app/app.jar"]
+ENTRYPOINT ["sh", "-c", "exec java -jar /app/app.jar > /app/logs/app.log 2>&1"]
