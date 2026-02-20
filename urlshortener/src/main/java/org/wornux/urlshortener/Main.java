@@ -27,7 +27,7 @@ public class Main {
     new Thread(org.wornux.urlshortener.api.rest.Router::start).start();
 
     int PORT = EnvReader.getInt("PORT", 7_0_0_0);
-    Javalin app = Javalin.create(config -> AppConfig.configureApp(config)).start(PORT);
+    Javalin app = Javalin.create(AppConfig::configureApp).start(PORT);
     AppConfig.ConfigureExceptionHandlers(app);
 
     new Thread(

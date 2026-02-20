@@ -34,16 +34,11 @@ public class AppConfig {
               }
 
               User user = ctx.sessionAttribute(SessionKeys.USER.getKey());
-              System.out.println(
-                  "Verificando sesión de usuario en ruta: "
-                      + path
-                      + " - Usuario en sesión: "
-                      + user);
+
 
               if (user == null) {
                 ctx.redirect(Routes.LOGIN.getPath());
               }
-              System.out.println("Request: " + ctx.method() + " " + ctx.path());
             })
         .after(
             ctx -> {
